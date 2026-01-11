@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.1.0] - 2024-12-XX
+## [1.1.0] - 2026-01-11
 
 ### Added
 - **Type Safety Improvements**: Replaced all `any` types with proper TypeScript types
@@ -31,7 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Error Handling**: Fixed error handling to properly check error types before accessing properties
 - **Non-null Assertions**: Removed unsafe non-null assertions
 
-## [1.0.1] - 2024-12-XX
+## [1.0.1] - 2026-01-11
 
 ### Fixed
 - **Unused Imports**: Removed unused imports (takeUntilDestroyed, debounceTime, distinctUntilChanged)
@@ -43,7 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Enum Usage**: Component now uses ImageFilter and CaptionTone enums from model
 - **Filter Mapping**: Uses IMAGE_FILTER_CSS_MAP from model instead of duplicate definition
 
-## [1.0.0] - 2024-12-XX
+## [1.0.0] - 2026-01-11
 
 ### Added
 - Initial release of AI Meme Generator
