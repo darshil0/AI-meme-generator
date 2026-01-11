@@ -1,8 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./src/**/*.{html,ts}",
-    "./index.html"
+    "./index.html",
+    "./src/**/*.{html,ts}"
   ],
   theme: {
     extend: {
@@ -10,7 +10,7 @@ module.exports = {
         'inter': ['Inter', 'sans-serif'],
         'impact': ['Impact', 'sans-serif']
       }
-    },
+    }
   },
   plugins: [],
 }
