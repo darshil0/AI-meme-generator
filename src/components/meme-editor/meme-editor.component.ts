@@ -6,9 +6,7 @@ import {
   computed,
   signal,
   inject,
-  DestroyRef,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { GeminiService } from '../../services/gemini.service';
@@ -17,8 +15,8 @@ import {
   ImageFilter,
   MemeTemplate,
   TextLayer,
+  IMAGE_FILTER_CSS_MAP,
 } from '../../models/meme.model';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 interface SavedMemeState {
   selectedImage: { url: string; data: string; mimeType: string } | null;
@@ -43,7 +41,6 @@ export class MemeEditorComponent {
   @ViewChild('imagePreview') imagePreview!: ElementRef<HTMLImageElement>;
 
   private geminiService = inject(GeminiService);
-  private destroyRef = inject(DestroyRef);
 
   // State Signals
   selectedImage = signal<{ url: string; data: string; mimeType: string } | null>(null);
@@ -73,12 +70,28 @@ export class MemeEditorComponent {
   private nextLayerId = signal(1);
 
   // Image filter signals
-  imageFilter = signal<ImageFilter>('none');
-  filters: ImageFilter[] = ['none', 'grayscale', 'sepia', 'invert', 'blur', 'brightness', 'contrast'];
+  imageFilter = signal<ImageFilter>(ImageFilter.NONE);
+  filters: ImageFilter[] = [
+    ImageFilter.NONE,
+    ImageFilter.GRAYSCALE,
+    ImageFilter.SEPIA,
+    ImageFilter.INVERT,
+    ImageFilter.BLUR,
+    ImageFilter.BRIGHTNESS,
+    ImageFilter.CONTRAST,
+  ];
 
   // Caption tone signals
-  selectedTone = signal<CaptionTone>('humorous');
-  tones: CaptionTone[] = ['humorous', 'sarcastic', 'wholesome', 'absurd', 'dark', 'professional', 'poetic'];
+  selectedTone = signal<CaptionTone>(CaptionTone.HUMOROUS);
+  tones: CaptionTone[] = [
+    CaptionTone.HUMOROUS,
+    CaptionTone.SARCASTIC,
+    CaptionTone.WHOLESOME,
+    CaptionTone.ABSURD,
+    CaptionTone.DARK,
+    CaptionTone.PROFESSIONAL,
+    CaptionTone.POETIC,
+  ];
   userContext = signal('');
 
   // Custom Template signals
@@ -114,16 +127,7 @@ export class MemeEditorComponent {
 
   computedImageFilter = computed(() => {
     const filter = this.imageFilter();
-    const filters: Record<ImageFilter, string> = {
-      none: 'none',
-      grayscale: 'grayscale(100%)',
-      sepia: 'sepia(85%) saturate(200%)',
-      invert: 'invert(100%)',
-      blur: 'blur(2px)',
-      brightness: 'brightness(150%)',
-      contrast: 'contrast(150%)',
-    };
-    return filters[filter] || 'none';
+    return IMAGE_FILTER_CSS_MAP[filter] || IMAGE_FILTER_CSS_MAP[ImageFilter.NONE];
   });
 
   defaultTemplates: MemeTemplate[] = [
@@ -146,12 +150,6 @@ export class MemeEditorComponent {
     this.isApiKeyConfigured.set(this.geminiService.isConfigured());
     this.loadCustomTemplates();
     this.checkForSavedState();
-    
-    // Debounced template search
-    effect(() => {
-      this.templateSearchQuery();
-      // Trigger recomputation of filtered templates
-    }, { allowSignalWrites: true });
   }
 
   private loadCustomTemplates(): void {
@@ -233,7 +231,7 @@ export class MemeEditorComponent {
     if (!keepTemplateName) {
       this.selectedTemplateName.set(null);
     }
-    this.imageFilter.set('none');
+    this.imageFilter.set(ImageFilter.NONE);
     this.showSaveTemplateInput.set(false);
     this.loadingPreviewUrl.set(null);
     this.layers.set([]);
@@ -614,10 +612,10 @@ export class MemeEditorComponent {
       
       this.selectedImage.set(state.selectedImage);
       this.layers.set(state.layers || []);
-      this.imageFilter.set(state.imageFilter || 'none');
+      this.imageFilter.set(state.imageFilter || ImageFilter.NONE);
       this.selectedTemplateName.set(state.selectedTemplateName);
       this.userContext.set(state.userContext || '');
-      this.selectedTone.set(state.selectedTone || 'humorous');
+      this.selectedTone.set(state.selectedTone || CaptionTone.HUMOROUS);
       this.downloadQuality.set(state.downloadQuality || 0.92);
       this.nextLayerId.set(state.nextLayerId || 1);
 
