@@ -31,7 +31,7 @@ export class GeminiService {
     return captions.map(caption => caption.replace(tagRegex, '').trim());
   }
 
-  private async _generateCaptions(contents: { parts: any[] }): Promise<string[]> {
+  private async _generateCaptions(contents: { parts: Array<{ text?: string; inlineData?: { mimeType: string; data: string } }> }): Promise<string[]> {
     if (!this.ai) {
       throw new Error('Gemini AI client is not initialized. Check API key.');
     }
@@ -63,7 +63,7 @@ export class GeminiService {
       }
 
       // ✅ Parse and validate JSON structure
-      let parsed: any;
+      let parsed: unknown;
       try {
         parsed = JSON.parse(jsonString);
       } catch (parseError) {
@@ -75,15 +75,20 @@ export class GeminiService {
         throw new Error('Gemini response is not an array.');
       }
 
-      return this.sanitizeCaptions(parsed.slice(0, 5));
-    } catch (error: any) {
+      // Validate array contains strings
+      const stringArray = parsed.filter((item): item is string => typeof item === 'string');
+      return this.sanitizeCaptions(stringArray.slice(0, 5));
+    } catch (error) {
       console.error('Error generating captions:', error);
-      if (
-        error.message.includes('invalid') ||
-        error.message.includes('unexpected') ||
-        error.message.includes('array')
-      ) {
-        throw error;
+      if (error instanceof Error) {
+        const errorMessage = error.message.toLowerCase();
+        if (
+          errorMessage.includes('invalid') ||
+          errorMessage.includes('unexpected') ||
+          errorMessage.includes('array')
+        ) {
+          throw error;
+        }
       }
       throw new Error('Failed to generate captions. Try again later.');
     }

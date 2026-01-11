@@ -4,5 +4,7 @@
 
 export const environment = {
   production: false,
-  apiKey: process.env['NG_APP_GEMINI_API_KEY'] || '', // Set your Gemini API key here or via environment variable
+  // Set your Gemini API key here or configure via build-time replacement
+  // For Angular, use fileReplacements in angular.json to replace this file in production
+  apiKey: '', // TODO: Add your Gemini API key here or configure via build process
 };

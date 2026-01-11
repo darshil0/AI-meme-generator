@@ -16,18 +16,9 @@ import {
   MemeTemplate,
   TextLayer,
   IMAGE_FILTER_CSS_MAP,
+  SavedMemeState,
+  MEME_CONSTANTS,
 } from '../../models/meme.model';
-
-interface SavedMemeState {
-  selectedImage: { url: string; data: string; mimeType: string } | null;
-  layers: TextLayer[];
-  imageFilter: ImageFilter;
-  selectedTemplateName: string | null;
-  userContext: string;
-  selectedTone: CaptionTone;
-  downloadQuality: number;
-  nextLayerId: number;
-}
 
 @Component({
   selector: 'app-meme-editor',
@@ -265,9 +256,9 @@ export class MemeEditorComponent {
       return;
     }
 
-    // Validate file size (10MB max)
-    if (file.size > 10 * 1024 * 1024) {
-      this.error.set('File size must be less than 10MB.');
+    // Validate file size
+    if (file.size > MEME_CONSTANTS.MAX_FILE_SIZE) {
+      this.error.set(`File size must be less than ${MEME_CONSTANTS.MAX_FILE_SIZE / (1024 * 1024)}MB.`);
       return;
     }
 
@@ -443,16 +434,22 @@ export class MemeEditorComponent {
     try {
       let captions: string[];
       
-      if (this.selectedImage()?.data) {
+      const selectedImage = this.selectedImage();
+      if (selectedImage?.data) {
         captions = await this.geminiService.generateMemeCaptions(
-          this.selectedImage()!.data,
-          this.selectedImage()!.mimeType,
+          selectedImage.data,
+          selectedImage.mimeType,
           this.selectedTone(),
           this.userContext()
         );
       } else {
+        const templateName = this.selectedTemplateName();
+        if (!templateName) {
+          this.error.set('Please select a template first.');
+          return;
+        }
         captions = await this.geminiService.generateCaptionsFromText(
-          this.selectedTemplateName()!,
+          templateName,
           this.selectedTone(),
           this.userContext()
         );
@@ -580,8 +577,19 @@ export class MemeEditorComponent {
   saveState(): void {
     if (!this.isEditing()) return;
 
+    const selectedImage = this.selectedImage();
+    const dimensions = this.imageDimensions();
+    
     const state: SavedMemeState = {
-      selectedImage: this.selectedImage(),
+      version: 1,
+      selectedImage: selectedImage && dimensions
+        ? {
+            url: selectedImage.url,
+            data: selectedImage.data,
+            mimeType: selectedImage.mimeType,
+            dimensions: dimensions,
+          }
+        : null,
       layers: this.layers(),
       imageFilter: this.imageFilter(),
       selectedTemplateName: this.selectedTemplateName(),
@@ -589,6 +597,7 @@ export class MemeEditorComponent {
       selectedTone: this.selectedTone(),
       downloadQuality: this.downloadQuality(),
       nextLayerId: this.nextLayerId(),
+      timestamp: new Date().toISOString(),
     };
 
     try {
@@ -610,13 +619,31 @@ export class MemeEditorComponent {
       
       this._resetEditorState(state.selectedTemplateName !== null);
       
-      this.selectedImage.set(state.selectedImage);
+      // Handle migration from old state format (without version/dimensions)
+      if (state.selectedImage) {
+        if ('dimensions' in state.selectedImage && state.selectedImage.dimensions) {
+          // New format with dimensions
+          this.selectedImage.set({
+            url: state.selectedImage.url,
+            data: state.selectedImage.data,
+            mimeType: state.selectedImage.mimeType,
+          });
+          this.imageDimensions.set(state.selectedImage.dimensions);
+        } else {
+          // Old format - try to reconstruct
+          this.selectedImage.set(state.selectedImage as any);
+          // Dimensions will be set when image loads
+        }
+      } else {
+        this.selectedImage.set(null);
+      }
+      
       this.layers.set(state.layers || []);
       this.imageFilter.set(state.imageFilter || ImageFilter.NONE);
       this.selectedTemplateName.set(state.selectedTemplateName);
       this.userContext.set(state.userContext || '');
       this.selectedTone.set(state.selectedTone || CaptionTone.HUMOROUS);
-      this.downloadQuality.set(state.downloadQuality || 0.92);
+      this.downloadQuality.set(state.downloadQuality || MEME_CONSTANTS.DEFAULT_QUALITY);
       this.nextLayerId.set(state.nextLayerId || 1);
 
       this.error.set(null);
