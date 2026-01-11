@@ -6,23 +6,32 @@
   "scripts": {
     "dev": "ng serve",
     "build": "ng build",
-    "preview": "ng serve --configuration=production"
+    "preview": "ng serve --configuration=production",
+    "lint": "ng lint"
   },
   "dependencies": {
-    "rxjs": "^7.8.2",
-    "@google/genai": "^1.35.0",
-    "@angular/platform-browser": "^21.0.0",
+    "@angular/animations": "^21.0.0",
+    "@angular/cdk": "^21.0.0",
+    "@angular/common": "^21.0.0",
     "@angular/compiler": "^21.0.0",
     "@angular/core": "^21.0.0",
-    "@angular/build": "^21.0.0",
-    "@angular/cli": "^21.0.0",
-    "@angular/common": "^21.0.0",
-    "@angular/compiler-cli": "^21.0.0",
-    "tailwindcss": "latest"
+    "@angular/forms": "^21.0.0",
+    "@angular/platform-browser": "^21.0.0",
+    "@angular/platform-browser-dynamic": "^21.0.0",
+    "@angular/router": "^21.0.0",
+    "@google/genai": "^1.35.0",
+    "rxjs": "~7.8.2",
+    "tslib": "^2.3.0",
+    "zone.js": "^0.15.0"
   },
   "devDependencies": {
+    "@angular-devkit/build-angular": "^21.0.0",
+    "@angular/cli": "^21.0.0",
+    "@angular/compiler-cli": "^21.0.0",
     "@types/node": "^22.14.0",
-    "typescript": "~5.8.2",
-    "vite": "^6.2.0"
+    "tailwindcss": "^3.4.0",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.38",
+    "typescript": "~5.8.2"
   }
 }
