@@ -76,7 +76,7 @@
    ========================================================================== */
 @layer components {
   /* Custom Range Inputs */
-  input[type="range"] {
+  input[type='range'] {
     @apply w-full h-3 bg-gray-700 rounded-lg cursor-pointer appearance-none relative;
     
     &::-webkit-slider-thumb {
@@ -92,7 +92,7 @@
   }
   
   /* Color Inputs */
-  input[type="color"] {
+  input[type='color'] {
     @apply w-full h-14 p-1 rounded-xl border-2 border-gray-600 hover:border-gray-500 
            focus:border-purple-500 focus:ring-4 focus:ring-purple-500/30 transition-all 
            cursor-pointer shadow-lg hover:shadow-xl;
@@ -115,8 +115,12 @@
    ========================================================================== */
 @layer utilities {
   @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
   }
   
   .animate-float {
@@ -124,25 +128,31 @@
   }
   
   @keyframes shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
   }
   
   .shimmer {
-    background: linear-gradient(90deg, 
-      transparent 0%, 
-      rgba(255,255,255,0.1) 50%, 
-      transparent 100%);
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.1) 50%,
+      transparent 100%
+    );
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
   }
   
   @keyframes pulse-glow {
-    0%, 100% { 
-      box-shadow: 0 0 20px rgba(168, 85, 247, 0.4); 
+    0%, 100% {
+      box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
     }
-    50% { 
-      box-shadow: 0 0 40px rgba(168, 85, 247, 0.8); 
+    50% {
+      box-shadow: 0 0 40px rgba(168, 85, 247, 0.8);
     }
   }
   
@@ -243,8 +253,12 @@
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* ==========================================================================
@@ -262,15 +276,16 @@
 /* ==========================================================================
    RESPONSIVE UTILITIES
    ========================================================================== */
+/* Tailwind v3 generates responsive variants automatically; use standard classes
+   or media queries instead of @responsive. */
+/* Example helpers if you want custom names: */
 @layer utilities {
-  @responsive {
-    .text-hero {
-      font-size: clamp(2.5rem, 8vw, 6rem);
-    }
-    
-    .canvas-responsive {
-      min-height: clamp(400px, 70vh, 700px);
-    }
+  .text-hero {
+    font-size: clamp(2.5rem, 8vw, 6rem);
+  }
+
+  .canvas-responsive {
+    min-height: clamp(400px, 70vh, 700px);
   }
 }
 
