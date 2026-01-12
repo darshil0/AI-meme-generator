@@ -4,7 +4,12 @@ import { MemeEditorComponent } from './components/meme-editor/meme-editor.compon
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
+  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MemeEditorComponent],
 })
-export class AppComponent {}
+export class AppComponent {
+  scrollToEditor(): void {
+    document.getElementById('meme-editor')?.scrollIntoView({ behavior: 'smooth' });
+  }
+}
