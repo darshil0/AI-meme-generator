@@ -1,7 +1,7 @@
 // meme.model.ts
 
 /**
- * Meme template configuration for both default and custom templates
+ * Meme template configuration for both default and custom templates.
  */
 export interface MemeTemplate {
   name: string;
@@ -12,7 +12,7 @@ export interface MemeTemplate {
 }
 
 /**
- * Individual text layer configuration for meme rendering
+ * Individual text layer configuration for meme rendering.
  */
 export interface TextLayer {
   id: number;
@@ -22,7 +22,7 @@ export interface TextLayer {
   outlineColor: string;
   textBlur: number;
   top: number; // Position as percentage (0-100) from top edge
-  
+
   // Additional styling options
   fontWeight?: 'normal' | 'bold' | 'bolder';
   textAlign?: 'left' | 'center' | 'right';
@@ -31,7 +31,7 @@ export interface TextLayer {
 }
 
 /**
- * Image filter options for canvas manipulation
+ * Image filter options for canvas manipulation.
  */
 export enum ImageFilter {
   NONE = 'none',
@@ -43,11 +43,11 @@ export enum ImageFilter {
   CONTRAST = 'contrast',
   SATURATE = 'saturate',
   HUE_ROTATE = 'hue-rotate',
-  OPACITY = 'opacity'
+  OPACITY = 'opacity',
 }
 
 /**
- * AI Caption generation tones/styles
+ * AI Caption generation tones/styles.
  */
 export enum CaptionTone {
   HUMOROUS = 'humorous',
@@ -59,11 +59,11 @@ export enum CaptionTone {
   POETIC = 'poetic',
   DRAMATIC = 'dramatic',
   INSPIRATIONAL = 'inspirational',
-  SNARKY = 'snarky'
+  SNARKY = 'snarky',
 }
 
 /**
- * Download quality presets
+ * Download quality presets.
  */
 export interface DownloadQuality {
   label: string;
@@ -71,7 +71,7 @@ export interface DownloadQuality {
 }
 
 /**
- * Complete saved meme state for persistence
+ * Complete saved meme state for persistence.
  */
 export interface SavedMemeState {
   version: number; // Schema version for future migrations
@@ -92,7 +92,7 @@ export interface SavedMemeState {
 }
 
 /**
- * API Response types
+ * API Response types.
  */
 export interface GeneratedCaptionsResponse {
   captions: string[];
@@ -102,7 +102,7 @@ export interface GeneratedCaptionsResponse {
 }
 
 /**
- * Validation utilities
+ * Validation utilities.
  */
 export const MEME_CONSTANTS = {
   MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB
@@ -112,21 +112,21 @@ export const MEME_CONSTANTS = {
   DEFAULT_QUALITY: 0.92,
   SUPPORTED_MIME_TYPES: [
     'image/jpeg',
-    'image/png', 
+    'image/png',
     'image/gif',
     'image/webp',
     'image/bmp',
-    'image/svg+xml'
-  ] as const;
+    'image/svg+xml',
+  ] as const,
 } as const;
 
 /**
- * Utility type for template filtering
+ * Utility type for template filtering.
  */
 export type TemplateCategory = 'all' | 'popular' | 'classic' | 'recent' | 'custom';
 
 /**
- * Computed filter mapping for CSS
+ * Computed filter mapping for CSS.
  */
 export const IMAGE_FILTER_CSS_MAP: Record<ImageFilter, string> = {
   [ImageFilter.NONE]: 'none',
@@ -138,11 +138,11 @@ export const IMAGE_FILTER_CSS_MAP: Record<ImageFilter, string> = {
   [ImageFilter.CONTRAST]: 'contrast(150%)',
   [ImageFilter.SATURATE]: 'saturate(200%)',
   [ImageFilter.HUE_ROTATE]: 'hue-rotate(90deg)',
-  [ImageFilter.OPACITY]: 'opacity(75%)'
+  [ImageFilter.OPACITY]: 'opacity(75%)',
 };
 
 /**
- * Tone descriptions for UI tooltips
+ * Tone descriptions for UI tooltips.
  */
 export const CAPTION_TONE_DESCRIPTIONS: Record<CaptionTone, string> = {
   [CaptionTone.HUMOROUS]: 'Funny and lighthearted',
@@ -154,5 +154,5 @@ export const CAPTION_TONE_DESCRIPTIONS: Record<CaptionTone, string> = {
   [CaptionTone.POETIC]: 'Artistic and metaphorical',
   [CaptionTone.DRAMATIC]: 'Over-the-top intensity',
   [CaptionTone.INSPIRATIONAL]: 'Motivational and uplifting',
-  [CaptionTone.SNARKY]: 'Sharp and biting wit'
+  [CaptionTone.SNARKY]: 'Sharp and biting wit',
 };
