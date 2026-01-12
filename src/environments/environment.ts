@@ -1,10 +1,16 @@
-// This file can be replaced during build by using the `fileReplacements` array.
-// `ng build` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
+// environment.ts
+// This file is for local/development configuration.
+// In production, it should be replaced by environment.prod.ts via file replacement.
 
 export const environment = {
   production: false,
-  // Set your Gemini API key here or configure via build-time replacement
-  // For Angular, use fileReplacements in angular.json to replace this file in production
-  apiKey: '', // TODO: Add your Gemini API key here or configure via build process
+
+  /**
+   * Gemini API key.
+   *
+   * Do NOT hard-code real secrets here for production builds.
+   * For production, configure this value via a separate environment.prod.ts
+   * or an injected configuration mechanism at build/deploy time.
+   */
+  apiKey: '',
 };
