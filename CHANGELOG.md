@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-01-12
+
+### Added
+- **Project Structure**: Re-organized the project into `core`, `features`, and `shared` modules.
+- **ImageService**: Created a dedicated service for image processing and canvas generation.
+- **StorageService**: Created a dedicated service for local storage management.
+- **AiCaptionService**: Renamed `GeminiService` to `AiCaptionService` to better reflect its purpose.
+
+### Changed
+- **MemeEditorComponent**: Refactored the component to delegate logic to the new services.
+- **Code Organization**: Improved code organization and maintainability.
+- **Scalability**: The new project structure is more scalable and easier to navigate.
+
 ## [1.1.0] - 2026-01-11
 
 ### Added
