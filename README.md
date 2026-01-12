@@ -156,25 +156,29 @@ npm run preview
 ```
 ai-meme-generator/
 ├── src/
-│   ├── components/
-│   │   └── meme-editor/
-│   │       ├── meme-editor.component.html    # Main editor template
-│   │       ├── meme-editor.component.scss    # Component styles
-│   │       └── meme-editor.component.ts      # Component logic
-│   ├── models/
-│   │   └── meme.model.ts                     # TypeScript interfaces
-│   ├── services/
-│   │   └── gemini.service.ts                 # AI service layer
-│   ├── app.component.html                    # Root template
-│   └── app.component.ts                      # Root component
-├── index.html                                # HTML entry point
-├── index.tsx                                 # Application bootstrap
-├── angular.json                              # Angular CLI config
-├── tsconfig.json                             # TypeScript config
-├── package.json                              # Dependencies
-├── README.md                                 # This file
-├── Walkthrough.MD                            # Detailed technical guide
-└── Skills.MD                                 # Development skills guide
+│   ├── app/
+│   │   ├── core/
+│   │   │   ├── services/
+│   │   │   │   ├── ai-caption.service.ts     # AI service layer
+│   │   │   │   ├── image.service.ts          # Image manipulation and canvas logic
+│   │   │   │   └── storage.service.ts        # Local storage management
+│   │   │   └── environments/
+│   │   │       └── environment.ts            # API key configuration
+│   │   ├── features/
+│   │   │   └── meme-editor/
+│   │   │       ├── meme-editor.component.html
+│   │   │       ├── meme-editor.component.scss
+│   │   │       └── meme-editor.component.ts
+│   │   ├── shared/
+│   │   │   └── models/
+│   │   │       └── meme.model.ts             # TypeScript interfaces
+│   │   ├── app.component.html
+│   │   └── app.component.ts
+│   ├── index.html
+│   └── index.tsx
+├── angular.json
+├── package.json
+└── README.md
 ```
 
 ---
