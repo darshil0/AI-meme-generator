@@ -5,8 +5,8 @@
   "projects": {
     "app": {
       "projectType": "application",
-      "root": "",
-      "sourceRoot": "src",
+      "root": "src",
+      "sourceRoot": "src/app",
       "prefix": "app",
       "architect": {
         "build": {
@@ -14,14 +14,14 @@
           "options": {
             "outputPath": "dist/app/browser",
             "index": "src/index.html",
-            "main": "src/main.ts",
+            "main": "src/index.tsx",
             "tsConfig": "tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/app/styles.scss"
             ],
             "scripts": []
           },
