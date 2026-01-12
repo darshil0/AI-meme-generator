@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { GoogleGenAI, Type, GenerateContentResponse } from '@google/genai';
 import { CaptionTone } from '../models/meme.model';
-import { environment } from 'src/environments/environment'; // ✅ Uses Angular environment config
+import { environment } from '../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class GeminiService {

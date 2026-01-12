@@ -12,5 +12,6 @@ export const environment = {
    * For production, configure this value via a separate environment.prod.ts
    * or an injected configuration mechanism at build/deploy time.
    */
-  apiKey: '',
+  // TODO: Replace this placeholder with your real Gemini API key for production use.
+  apiKey: 'YOUR_GEMINI_API_KEY_HERE',
 };

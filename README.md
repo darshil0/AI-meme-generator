@@ -120,7 +120,8 @@ Edit `src/environments/environment.ts` and add your Gemini API key:
 ```typescript
 export const environment = {
   production: false,
-  apiKey: 'your_gemini_api_key_here', // Add your API key here
+  // TODO: Replace this placeholder with your real Gemini API key for production use.
+  apiKey: 'YOUR_GEMINI_API_KEY_HERE',
 };
 ```
 
@@ -137,7 +138,7 @@ export const environment = {
 npm run dev
 ```
 
-The application will be available at `http://localhost:3000`
+The application will be available at `http://localhost:4200`
 
 **Production build:**
 ```bash
@@ -149,6 +150,15 @@ npm run build
 npm run preview
 ```
 
+### Linting & Formatting
+
+This project uses ESLint and Prettier for code quality and consistent formatting:
+
+```bash
+npm run lint    # Run ESLint on TypeScript files
+npm run format  # Format the codebase with Prettier
+```
+
 ---
 
 ## 🏗️ Project Structure
@@ -156,26 +166,21 @@ npm run preview
 ```
 ai-meme-generator/
 ├── src/
-│   ├── app/
-│   │   ├── core/
-│   │   │   ├── services/
-│   │   │   │   ├── ai-caption.service.ts     # AI service layer
-│   │   │   │   ├── image.service.ts          # Image manipulation and canvas logic
-│   │   │   │   └── storage.service.ts        # Local storage management
-│   │   │   └── environments/
-│   │   │       └── environment.ts            # API key configuration
-│   │   ├── features/
-│   │   │   └── meme-editor/
-│   │   │       ├── meme-editor.component.html
-│   │   │       ├── meme-editor.component.scss
-│   │   │       └── meme-editor.component.ts
-│   │   ├── shared/
-│   │   │   └── models/
-│   │   │       └── meme.model.ts             # TypeScript interfaces
-│   │   ├── app.component.html
-│   │   └── app.component.ts
-│   ├── index.html
-│   └── index.tsx
+│   ├── components/
+│   │   └── meme-editor/
+│   │       ├── meme-editor.component.html
+│   │       ├── meme-editor.component.scss
+│   │       └── meme-editor.component.tsn173|│   ├── environments/
+│   │   └── environment.ts            # API key configuration
+│   ├── models/
+│   │   └── meme.model.ts             # TypeScript interfaces and enums
+│   ├── services/
+│   │   └── gemini.service.ts         # Gemini AI integration
+│   ├── app.component.html
+│   ├── app.component.ts
+│   └── styles.scss
+├── index.html
+├── index.tsx
 ├── angular.json
 ├── package.json
 └── README.md
@@ -324,6 +329,8 @@ See [CHANGELOG.md](CHANGELOG.md) for a complete list of changes. Recent improvem
 - **Interface Alignment**: Consistent data models across the application
 - **Code Quality**: Removed unsafe non-null assertions and improved null checking
 - **Constants**: Centralized configuration using MEME_CONSTANTS
+- **Tooling**: Added ESLint + Prettier with `npm run lint` / `npm run format`
+- **Angular Config**: Fixed Angular paths and asset wiring to match the actual project layout
 
 ---
 

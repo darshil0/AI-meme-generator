@@ -5,23 +5,23 @@
   "projects": {
     "app": {
       "projectType": "application",
-      "root": "src",
-      "sourceRoot": "src/app",
+      "root": "",
+      "sourceRoot": "src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/app/browser",
-            "index": "src/index.html",
-            "main": "src/index.tsx",
-            "tsConfig": "tsconfig.app.json",
+            "index": "index.html",
+            "main": "index.tsx",
+            "tsConfig": "tsconfig.json",
             "assets": [
               "src/favicon.ico",
               "src/assets"
             ],
             "styles": [
-              "src/app/styles.scss"
+              "src/styles.scss"
             ],
             "scripts": []
           },

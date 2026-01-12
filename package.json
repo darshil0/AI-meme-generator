@@ -7,7 +7,8 @@
     "dev": "ng serve",
     "build": "ng build",
     "preview": "ng serve --configuration=production",
-    "lint": "ng lint"
+    "lint": "eslint . --ext .ts,.tsx --max-warnings=0",
+    "format": "prettier . --write"
   },
   "dependencies": {
     "@angular/animations": "^21.0.0",
@@ -29,9 +30,16 @@
     "@angular/cli": "^21.0.0",
     "@angular/compiler-cli": "^21.0.0",
     "@types/node": "^22.14.0",
-    "tailwindcss": "^3.4.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
     "autoprefixer": "^10.4.19",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-prettier": "^5.0.0",
     "postcss": "^8.4.38",
+    "prettier": "^3.0.0",
+    "tailwindcss": "^3.4.0",
     "typescript": "~5.9.0"
   }
 }

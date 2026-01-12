@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-01-12
+
+### Added
+- **Tooling**: Introduced ESLint and Prettier with `npm run lint` and `npm run format` scripts.
+- **Config Placeholders**: Documented a clear `environment.apiKey` placeholder for Gemini configuration.
+
+### Changed
+- **Angular Configuration**: Updated `angular.json` to match the actual entry points (`index.html`, `index.tsx`), styles, and `tsconfig`.
+- **Template Bindings**: Refined `meme-editor` template bindings to correctly work with Angular signals and avoid invalid `ngModel` assignments.
+
+### Fixed
+- **Import Paths**: Corrected imports in `app.component.ts` and `gemini.service.ts` to use valid relative paths.
+- **Assets**: Added `src/assets/` and a placeholder `src/favicon.ico` to satisfy Angular asset configuration.
+
 ## [1.2.0] - 2026-01-12
 
 ### Added
@@ -85,6 +99,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
+- **1.3.0**: Tooling, Angular configuration, and template binding fixes
+- **1.2.0**: Project structure re-organization and new services
 - **1.1.0**: Code quality improvements, type safety enhancements
 - **1.0.1**: Bug fixes and code cleanup
 - **1.0.0**: Initial release
