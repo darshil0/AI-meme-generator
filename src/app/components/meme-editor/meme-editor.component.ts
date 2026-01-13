@@ -247,12 +247,15 @@ export class MemeEditorComponent {
   }
 
   onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (!input?.files?.[0]) return;
+    const input = event.target as HTMLInputElement | null;
+    const file = input?.files?.[0];
+    if (!file) {
+      return;
+    }
 
-    const file = input.files[0];
-    if (!file.type.startsWith('image/')) {
-      this.error.set('Please select an image file (JPG, PNG, GIF, WebP).');
+    // Validate MIME type against supported list
+    if (!MEME_CONSTANTS.SUPPORTED_MIME_TYPES.includes(file.type as (typeof MEME_CONSTANTS.SUPPORTED_MIME_TYPES)[number])) {
+      this.error.set('Unsupported image type. Please use JPG, PNG, GIF, WebP, BMP, or SVG.');
       return;
     }
 
@@ -362,6 +365,12 @@ export class MemeEditorComponent {
   }
 
   addTextLayer(): void {
+    const currentLayers = this.layers();
+    if (currentLayers.length >= MEME_CONSTANTS.MAX_LAYERS) {
+      this.error.set(`You can only have up to ${MEME_CONSTANTS.MAX_LAYERS} text layers.`);
+      return;
+    }
+
     const dims = this.getImageDimensions();
     const baseFontSize = dims ? Math.max(Math.round(dims.width / 20), 36) : 48;
 
@@ -550,20 +559,28 @@ export class MemeEditorComponent {
   }
 
   async copyMemeToClipboard(): Promise<void> {
-    if (!navigator.clipboard?.write) {
-      this.error.set('Clipboard API not supported. Use download instead.');
+    // Ensure Clipboard API and ClipboardItem are available
+    if (!navigator.clipboard?.write || typeof (window as any).ClipboardItem === 'undefined') {
+      this.error.set('Clipboard image copy is not supported in this browser. Use download instead.');
       return;
     }
 
     const canvas = await this._generateMemeCanvas();
-    if (!canvas) return;
+    if (!canvas) {
+      this.error.set('Cannot copy meme. Please ensure an image is loaded.');
+      return;
+    }
 
     canvas.toBlob(async (blob) => {
-      if (!blob) return;
+      if (!blob) {
+        this.error.set('Failed to copy. Unable to create image blob.');
+        return;
+      }
 
       try {
+        const ClipboardItemCtor = (window as any).ClipboardItem as typeof ClipboardItem;
         await navigator.clipboard.write([
-          new ClipboardItem({ 'image/png': blob })
+          new ClipboardItemCtor({ 'image/png': blob })
         ]);
         this.copyButtonText.set('✅ Copied!');
         setTimeout(() => this.copyButtonText.set('Copy to Clipboard'), 3000);
@@ -630,8 +647,12 @@ export class MemeEditorComponent {
           });
           this.imageDimensions.set(state.selectedImage.dimensions);
         } else {
-          // Old format - try to reconstruct
-          this.selectedImage.set(state.selectedImage as any);
+          // Old format - try to reconstruct without dimensions
+          this.selectedImage.set({
+            url: (state.selectedImage as any).url,
+            data: (state.selectedImage as any).data,
+            mimeType: (state.selectedImage as any).mimeType,
+          });
           // Dimensions will be set when image loads
         }
       } else {

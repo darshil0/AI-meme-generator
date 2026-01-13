@@ -335,6 +335,7 @@ See [CHANGELOG.md](CHANGELOG.md) for a complete list of changes. Recent improvem
 - **Tooling**: Added ESLint + Prettier with `npm run lint` / `npm run format`
 - **Angular Config**: Fixed Angular paths and asset wiring to match the actual project layout
 - **Project Structure**: Consolidated app code under `src/app` for a more idiomatic Angular layout
+- **Validation & Environments**: Added strict image type/size checks, layer limits, hardened clipboard support, and a production `environment.prod.ts` with file replacements
 
 ---
 
