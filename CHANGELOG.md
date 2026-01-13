@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-01-13
+
+### Changed
+- **Project Structure**: Moved core application code under `src/app` (components, models, services) to follow Angular conventions.
+- **Imports & TS Config**: Updated bootstrap entry, service imports, and `tsconfig.json` includes to reflect the new layout.
+
 ## [1.3.0] - 2026-01-12
 
 ### Added
@@ -99,6 +105,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
+- **1.4.0**: Restructured source into `src/app` and aligned tooling/config
 - **1.3.0**: Tooling, Angular configuration, and template binding fixes
 - **1.2.0**: Project structure re-organization and new services
 - **1.1.0**: Code quality improvements, type safety enhancements

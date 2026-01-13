@@ -29,7 +29,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MemeEditorComponent {
-  @ViewChild('imagePreview') imagePreview!: ElementRef<HTMLImageElement>;
+  @ViewChild('imagePreview') imagePreview?: ElementRef<HTMLImageElement>;
 
   private geminiService = inject(GeminiService);
 
@@ -295,8 +295,8 @@ export class MemeEditorComponent {
     }
 
     // Try cache first
-    if (this.templateCache.has(template.url)) {
-      const cached = this.templateCache.get(template.url)!;
+    const cached = this.templateCache.get(template.url);
+    if (cached) {
       const dataUrl = `data:${cached.mimeType};base64,${cached.data}`;
       this._finalizeImageSelection(dataUrl, cached.mimeType);
       return;

@@ -166,18 +166,21 @@ npm run format  # Format the codebase with Prettier
 ```
 ai-meme-generator/
 ├── src/
-│   ├── components/
-│   │   └── meme-editor/
-│   │       ├── meme-editor.component.html
-│   │       ├── meme-editor.component.scss
-│   │       └── meme-editor.component.tsn173|│   ├── environments/
-│   │   └── environment.ts            # API key configuration
-│   ├── models/
-│   │   └── meme.model.ts             # TypeScript interfaces and enums
-│   ├── services/
-│   │   └── gemini.service.ts         # Gemini AI integration
-│   ├── app.component.html
-│   ├── app.component.ts
+│   ├── app/
+│   │   ├── components/
+│   │   │   └── meme-editor/
+│   │   │       ├── meme-editor.component.html
+│   │   │       ├── meme-editor.component.scss
+│   │   │       └── meme-editor.component.ts
+│   │   ├── models/
+│   │   │   └── meme.model.ts             # TypeScript interfaces and enums
+│   │   ├── services/
+│   │   │   └── gemini.service.ts         # Gemini AI integration
+│   │   ├── app.component.html
+│   │   └── app.component.ts
+│   ├── assets/
+│   ├── environments/
+│   │   └── environment.ts                # API key configuration
 │   └── styles.scss
 ├── index.html
 ├── index.tsx
@@ -331,6 +334,7 @@ See [CHANGELOG.md](CHANGELOG.md) for a complete list of changes. Recent improvem
 - **Constants**: Centralized configuration using MEME_CONSTANTS
 - **Tooling**: Added ESLint + Prettier with `npm run lint` / `npm run format`
 - **Angular Config**: Fixed Angular paths and asset wiring to match the actual project layout
+- **Project Structure**: Consolidated app code under `src/app` for a more idiomatic Angular layout
 
 ---
 
