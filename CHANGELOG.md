@@ -11,10 +11,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **Environment Configuration**: Introduced `environment.prod.ts` and wired Angular CLI file replacements for production builds.
+- **Backend Proxy**: Added a small Express server under `server/` that:
+  - Talks to the Google Gemini API using `GEMINI_API_KEY` from environment variables
+  - Exposes `/api/generate-captions-from-image` and `/api/generate-captions-from-text` endpoints
+  - Provides `/api/template-image?url=...` as a CORS-safe proxy for external meme templates
+- **Dev Proxy**: Configured `ng serve` to use `proxy.conf.json` so `/api` calls work transparently in development.
 
 ### Changed
 - **Validation**: Tightened image upload validation (strict MIME types + max file size) and enforced `MEME_CONSTANTS.MAX_LAYERS`.
 - **Clipboard Support**: Hardened `copyMemeToClipboard` for better browser compatibility and clearer error messages.
+- **CORS Handling**: Default meme templates now load via the backend image proxy instead of directly from external hosts.
 
 ## [1.4.0] - 2026-01-13
 
@@ -114,7 +120,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
-- **1.5.0**: Validation hardening and production environment configuration
+- **1.5.0**: Backend proxy, validation hardening, and production environment configuration
 - **1.4.0**: Restructured source into `src/app` and aligned tooling/config
 - **1.3.0**: Tooling, Angular configuration, and template binding fixes
 - **1.2.0**: Project structure re-organization and new services

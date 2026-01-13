@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "ng serve",
+    "dev": "ng serve --proxy-config proxy.conf.json",
     "build": "ng build",
     "preview": "ng serve --configuration=production",
     "lint": "eslint . --ext .ts,.tsx --max-warnings=0",

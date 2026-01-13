@@ -133,12 +133,28 @@ export const environment = {
 
 ### Running the Application
 
-**Development mode:**
+#### 1. Start the backend (Gemini proxy)
+
+The backend service lives in the `server/` directory and is responsible for:
+- Talking to the Google Gemini API (your API key lives **only** on the server)
+- Proxying external meme template images to avoid CORS issues
+
 ```bash
-npm run dev
+cd server
+npm install        # first time only
+$env:GEMINI_API_KEY="YOUR_REAL_GEMINI_KEY"   # PowerShell example; use env vars in prod
+npm run dev        # runs on http://localhost:4000
 ```
 
-The application will be available at `http://localhost:4200`
+#### 2. Start the Angular frontend
+
+```bash
+cd ..
+npm install        # if not already
+npm run dev        # Angular dev server with /api proxy
+```
+
+The application will be available at `http://localhost:4200`, and all `/api` calls are automatically proxied to the backend via `proxy.conf.json`.
 
 **Production build:**
 ```bash
@@ -149,6 +165,23 @@ npm run build
 ```bash
 npm run preview
 ```
+
+### Deployment (overview)
+
+This project is split into a frontend (Angular) and a backend (Express proxy):
+
+1. **Backend (server/)**
+   - Deploy `server/` to your platform of choice (e.g., Render, Railway, Cloud Run, or a Node-compatible host).
+   - Set environment variables:
+     - `GEMINI_API_KEY` – your real Gemini API key (never checked into git).
+     - `ALLOWED_ORIGIN` – your frontend origin (e.g., `https://your-domain.com`).
+   - Expose the backend at a URL like `https://your-backend.example.com`.
+
+2. **Frontend (Angular)**
+   - Build the frontend with `npm run build` and deploy the contents of `dist/` to a static host (Vercel, Netlify, CloudFront, etc.).
+   - Configure the frontend's `/api` base URL to point at your backend host (e.g., via environment-specific configuration or a reverse proxy in front of both services).
+
+In many setups, you can also run the backend and frontend behind a single reverse proxy (e.g., Nginx or a PaaS routing layer) where `/` serves the Angular app and `/api` is forwarded to the Node backend.
 
 ### Linting & Formatting
 
@@ -175,13 +208,20 @@ ai-meme-generator/
 │   │   ├── models/
 │   │   │   └── meme.model.ts             # TypeScript interfaces and enums
 │   │   ├── services/
-│   │   │   └── gemini.service.ts         # Gemini AI integration
+│   │   │   └── gemini.service.ts         # Frontend Gemini proxy client
 │   │   ├── app.component.html
 │   │   └── app.component.ts
 │   ├── assets/
 │   ├── environments/
-│   │   └── environment.ts                # API key configuration
+│   │   └── environment.ts                # Frontend configuration (no real secrets)
 │   └── styles.scss
+├── server/
+│   ├── src/
+│   │   ├── index.ts                      # Express app entrypoint
+│   │   ├── lib/geminiClient.ts          # Server-side Gemini client
+│   │   └── routes/                      # /api routes (captions, image proxy)
+│   ├── package.json
+│   └── tsconfig.json
 ├── index.html
 ├── index.tsx
 ├── angular.json
@@ -247,14 +287,14 @@ Two types of data are persisted:
 
 - API key should **never** be committed to version control
 - Use environment variables or file replacements for all deployments
-- Consider using a backend proxy for production to hide the key
-- The `environment.ts` file includes a TODO reminder to add your API key
+- A small backend proxy (this repo's `server/` app) holds the real Gemini API key and exposes only `/api` endpoints to the frontend
+- Frontend `environment.ts` should **not** contain a real production key; configure secrets via backend env vars instead
 
 ### CORS Handling
 
-- Template images use `crossOrigin = "anonymous"`
-- Canvas conversion for external images
-- Graceful fallback when CORS restrictions apply
+- Template images are loaded via `/api/template-image?url=...`, a server-side proxy that fetches from approved hosts (e.g., `i.imgur.com`) and returns bytes to the browser
+- This avoids direct cross-origin image access from the client and reduces CORS-related failures
+- Canvas conversion is performed on proxied images with graceful fallbacks when fetches fail
 
 ### Type Safety
 
@@ -268,7 +308,7 @@ Two types of data are persisted:
 
 1. **CORS Restrictions**: Some external meme templates may not load due to CORS policies. The app handles this gracefully by still allowing caption generation.
 
-2. **Browser Storage**: Local storage has size limits (~5-10MB). Large custom template collections may hit these limits. The app includes error handling for storage quota exceeded scenarios.
+2. **Browser Storage**: Local storage has size limits (~5-10MB). Large custom template collections may hit these limits. The app includes error handling for storage quota exceeded scenarios and provides UI controls to clear saved work and all custom templates.
 
 3. **Clipboard API**: Copy to clipboard requires a secure context (HTTPS) and may not work in all browsers. The app provides a fallback download option.
 

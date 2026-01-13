@@ -95,6 +95,9 @@ export class MemeEditorComponent {
   private templateCache = new Map<string, { data: string; mimeType: string }>();
   private imageDimensions = signal<{ width: number; height: number } | null>(null);
 
+  // Limits
+  private readonly maxCustomTemplates = MEME_CONSTANTS.MAX_CUSTOM_TEMPLATES;
+
   // Computed Signals
   hasImage = computed(() => !!this.selectedImage());
   isEditing = computed(() => this.hasImage() || this.loadingPreviewUrl() !== null);
@@ -122,19 +125,19 @@ export class MemeEditorComponent {
   });
 
   defaultTemplates: MemeTemplate[] = [
-    { name: 'Surprised Pikachu', url: 'https://i.imgur.com/2N2gM4i.jpg' },
-    { name: 'Doge', url: 'https://i.imgur.com/Vb69B6Y.jpg' },
-    { name: 'Distracted Boyfriend', url: 'https://i.imgur.com/vH12S57.jpg' },
-    { name: 'Woman Yelling at Cat', url: 'https://i.imgur.com/hPqvA8x.jpg' },
-    { name: 'Is This a Pigeon?', url: 'https://i.imgur.com/sSwhLMB.jpg' },
-    { name: 'Two Buttons', url: 'https://i.imgur.com/3sU6n2p.jpg' },
-    { name: '"This is Fine" Dog', url: 'https://i.imgur.com/c4jt321.png' },
-    { name: 'Drake Hotline Bling', url: 'https://i.imgur.com/GfO5UsK.jpg' },
-    { name: 'Hide the Pain Harold', url: 'https://i.imgur.com/p5A2Yv0.jpg' },
-    { name: '"Change My Mind"', url: 'https://i.imgur.com/s15dBTA.jpg' },
-    { name: 'Expanding Brain', url: 'https://i.imgur.com/2JsV43k.jpg' },
-    { name: 'Mocking SpongeBob', url: 'https://i.imgur.com/8z8vX9p.jpg' },
-    { name: 'Success Kid', url: 'https://i.imgur.com/7kJ2z4m.jpg' },
+    { name: 'Surprised Pikachu', url: '/api/template-image?url=https://i.imgur.com/2N2gM4i.jpg' },
+    { name: 'Doge', url: '/api/template-image?url=https://i.imgur.com/Vb69B6Y.jpg' },
+    { name: 'Distracted Boyfriend', url: '/api/template-image?url=https://i.imgur.com/vH12S57.jpg' },
+    { name: 'Woman Yelling at Cat', url: '/api/template-image?url=https://i.imgur.com/hPqvA8x.jpg' },
+    { name: 'Is This a Pigeon?', url: '/api/template-image?url=https://i.imgur.com/sSwhLMB.jpg' },
+    { name: 'Two Buttons', url: '/api/template-image?url=https://i.imgur.com/3sU6n2p.jpg' },
+    { name: '"This is Fine" Dog', url: '/api/template-image?url=https://i.imgur.com/c4jt321.png' },
+    { name: 'Drake Hotline Bling', url: '/api/template-image?url=https://i.imgur.com/GfO5UsK.jpg' },
+    { name: 'Hide the Pain Harold', url: '/api/template-image?url=https://i.imgur.com/p5A2Yv0.jpg' },
+    { name: '"Change My Mind"', url: '/api/template-image?url=https://i.imgur.com/s15dBTA.jpg' },
+    { name: 'Expanding Brain', url: '/api/template-image?url=https://i.imgur.com/2JsV43k.jpg' },
+    { name: 'Mocking SpongeBob', url: '/api/template-image?url=https://i.imgur.com/8z8vX9p.jpg' },
+    { name: 'Success Kid', url: '/api/template-image?url=https://i.imgur.com/7kJ2z4m.jpg' },
   ];
 
   constructor() {
@@ -319,7 +322,7 @@ export class MemeEditorComponent {
       }
     } catch (error) {
       console.warn('Template load failed:', error);
-      this.error.set('Could not load template image. You can still generate captions.');
+      this.error.set('Could not load template image (possibly blocked by CORS). You can still generate captions.');
       this.selectedImage.set({ url: template.url, data: '', mimeType: 'image/png' });
     } finally {
       this.loadingTemplateUrl.set(null);
@@ -684,6 +687,11 @@ export class MemeEditorComponent {
       return;
     }
 
+    if (this.customTemplates().length >= this.maxCustomTemplates) {
+      this.error.set(`You can only save up to ${this.maxCustomTemplates} custom templates. Delete some before adding more.`);
+      return;
+    }
+
     if (this.filteredTemplates().some(t => t.name.toLowerCase() === name.toLowerCase())) {
       this.error.set('Template name already exists.');
       return;
@@ -716,6 +724,23 @@ export class MemeEditorComponent {
     });
 
     if (this.selectedImage()?.url === template.url) {
+      this._resetEditorState();
+    }
+  }
+
+  clearSavedMemeState(): void {
+    localStorage.removeItem('savedMemeState');
+    this.savedStateExists.set(false);
+    this._resetEditorState();
+  }
+
+  clearAllCustomTemplates(): void {
+    localStorage.removeItem('customMemeTemplates');
+    this.customTemplates.set([]);
+
+    const selected = this.selectedImage();
+    if (selected && selected.url.startsWith('data:')) {
+      // Selected image was likely a custom template; reset the editor.
       this._resetEditorState();
     }
   }

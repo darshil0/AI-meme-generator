@@ -110,6 +110,7 @@ export const MEME_CONSTANTS = {
   MAX_FONT_SIZE: 200,
   MIN_FONT_SIZE: 12,
   DEFAULT_QUALITY: 0.92,
+  MAX_CUSTOM_TEMPLATES: 50,
   SUPPORTED_MIME_TYPES: [
     'image/jpeg',
     'image/png',
