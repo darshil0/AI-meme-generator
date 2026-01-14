@@ -372,7 +372,16 @@ export class MemeEditorComponent {
         }
       };
 
-      img.onerror = () => reject(new Error('Image load failed'));
+      img.onerror = () => {
+        // If direct load fails, try via our backend proxy
+        const proxyUrl = `/api/template-image?url=${encodeURIComponent(url)}`;
+        // Prevent infinite retry loop
+        if (img.src.includes('/api/template-image')) {
+          reject(new Error('Image load failed even via proxy'));
+          return;
+        }
+        img.src = proxyUrl;
+      };
       img.src = url;
     });
   }
@@ -623,11 +632,11 @@ export class MemeEditorComponent {
       selectedImage:
         selectedImage && dimensions
           ? {
-              url: selectedImage.url,
-              data: selectedImage.data,
-              mimeType: selectedImage.mimeType,
-              dimensions: dimensions,
-            }
+            url: selectedImage.url,
+            data: selectedImage.data,
+            mimeType: selectedImage.mimeType,
+            dimensions: dimensions,
+          }
           : null,
       layers: this.layers(),
       imageFilter: this.imageFilter(),
