@@ -6,10 +6,7 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { AppComponent } from './src/app/app.component';
 
 bootstrapApplication(AppComponent, {
-  providers: [
-    provideZonelessChangeDetection(),
-    provideHttpClient()
-  ],
+  providers: [provideZonelessChangeDetection(), provideHttpClient()],
 }).catch((err) => console.error(err));
 
 // AI Studio always uses an `index.tsx` file for all project types.

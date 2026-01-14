@@ -16,10 +16,11 @@
     "node-fetch": "^3.3.2"
   },
   "devDependencies": {
-    "@types/express": "^4.17.21",
-    "@types/node": "^22.14.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^4.17.25",
+    "@types/node": "^22.19.6",
+    "nodemon": "^3.1.11",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.0",
-    "nodemon": "^3.0.0"
+    "typescript": "^5.9.3"
   }
 }

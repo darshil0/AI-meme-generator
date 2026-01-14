@@ -101,21 +101,19 @@ export class MemeEditorComponent {
   // Computed Signals
   hasImage = computed(() => !!this.selectedImage());
   isEditing = computed(() => this.hasImage() || this.loadingPreviewUrl() !== null);
-  
+
   filteredTemplates = computed(() => {
     const all = [...this.defaultTemplates, ...this.customTemplates()];
     const query = this.templateSearchQuery().toLowerCase().trim();
     if (!query) return all;
-    return all.filter((template) =>
-      template.name.toLowerCase().includes(query),
-    );
+    return all.filter((template) => template.name.toLowerCase().includes(query));
   });
 
   selectedLayer = computed(() => {
     const index = this.selectedLayerIndex();
     const currentLayers = this.layers();
-    return index !== null && index >= 0 && index < currentLayers.length 
-      ? currentLayers[index] 
+    return index !== null && index >= 0 && index < currentLayers.length
+      ? currentLayers[index]
       : null;
   });
 
@@ -127,13 +125,22 @@ export class MemeEditorComponent {
   defaultTemplates: MemeTemplate[] = [
     { name: 'Surprised Pikachu', url: '/api/template-image?url=https://i.imgur.com/2N2gM4i.jpg' },
     { name: 'Doge', url: '/api/template-image?url=https://i.imgur.com/Vb69B6Y.jpg' },
-    { name: 'Distracted Boyfriend', url: '/api/template-image?url=https://i.imgur.com/vH12S57.jpg' },
-    { name: 'Woman Yelling at Cat', url: '/api/template-image?url=https://i.imgur.com/hPqvA8x.jpg' },
+    {
+      name: 'Distracted Boyfriend',
+      url: '/api/template-image?url=https://i.imgur.com/vH12S57.jpg',
+    },
+    {
+      name: 'Woman Yelling at Cat',
+      url: '/api/template-image?url=https://i.imgur.com/hPqvA8x.jpg',
+    },
     { name: 'Is This a Pigeon?', url: '/api/template-image?url=https://i.imgur.com/sSwhLMB.jpg' },
     { name: 'Two Buttons', url: '/api/template-image?url=https://i.imgur.com/3sU6n2p.jpg' },
     { name: '"This is Fine" Dog', url: '/api/template-image?url=https://i.imgur.com/c4jt321.png' },
     { name: 'Drake Hotline Bling', url: '/api/template-image?url=https://i.imgur.com/GfO5UsK.jpg' },
-    { name: 'Hide the Pain Harold', url: '/api/template-image?url=https://i.imgur.com/p5A2Yv0.jpg' },
+    {
+      name: 'Hide the Pain Harold',
+      url: '/api/template-image?url=https://i.imgur.com/p5A2Yv0.jpg',
+    },
     { name: '"Change My Mind"', url: '/api/template-image?url=https://i.imgur.com/s15dBTA.jpg' },
     { name: 'Expanding Brain', url: '/api/template-image?url=https://i.imgur.com/2JsV43k.jpg' },
     { name: 'Mocking SpongeBob', url: '/api/template-image?url=https://i.imgur.com/8z8vX9p.jpg' },
@@ -151,7 +158,7 @@ export class MemeEditorComponent {
     if (savedTemplates) {
       try {
         const templates = JSON.parse(savedTemplates) as MemeTemplate[];
-        this.customTemplates.set(templates.filter(t => t.isCustom));
+        this.customTemplates.set(templates.filter((t) => t.isCustom));
       } catch (e) {
         console.error('Failed to parse custom templates:', e);
       }
@@ -200,7 +207,7 @@ export class MemeEditorComponent {
       textBlur: 0.5,
       top: padding,
     };
-    this.nextLayerId.update(id => id + 1);
+    this.nextLayerId.update((id) => id + 1);
 
     const bottomLayer: TextLayer = {
       id: this.nextLayerId(),
@@ -211,7 +218,7 @@ export class MemeEditorComponent {
       textBlur: 0.5,
       top: 100 - padding,
     };
-    this.nextLayerId.update(id => id + 1);
+    this.nextLayerId.update((id) => id + 1);
 
     this.layers.set([topLayer, bottomLayer]);
     this.selectedLayerIndex.set(0);
@@ -257,14 +264,20 @@ export class MemeEditorComponent {
     }
 
     // Validate MIME type against supported list
-    if (!MEME_CONSTANTS.SUPPORTED_MIME_TYPES.includes(file.type as (typeof MEME_CONSTANTS.SUPPORTED_MIME_TYPES)[number])) {
+    if (
+      !MEME_CONSTANTS.SUPPORTED_MIME_TYPES.includes(
+        file.type as (typeof MEME_CONSTANTS.SUPPORTED_MIME_TYPES)[number],
+      )
+    ) {
       this.error.set('Unsupported image type. Please use JPG, PNG, GIF, WebP, BMP, or SVG.');
       return;
     }
 
     // Validate file size
     if (file.size > MEME_CONSTANTS.MAX_FILE_SIZE) {
-      this.error.set(`File size must be less than ${MEME_CONSTANTS.MAX_FILE_SIZE / (1024 * 1024)}MB.`);
+      this.error.set(
+        `File size must be less than ${MEME_CONSTANTS.MAX_FILE_SIZE / (1024 * 1024)}MB.`,
+      );
       return;
     }
 
@@ -322,7 +335,9 @@ export class MemeEditorComponent {
       }
     } catch (error) {
       console.warn('Template load failed:', error);
-      this.error.set('Could not load template image (possibly blocked by CORS). You can still generate captions.');
+      this.error.set(
+        'Could not load template image (possibly blocked by CORS). You can still generate captions.',
+      );
       this.selectedImage.set({ url: template.url, data: '', mimeType: 'image/png' });
     } finally {
       this.loadingTemplateUrl.set(null);
@@ -334,7 +349,7 @@ export class MemeEditorComponent {
     return new Promise((resolve, reject) => {
       const img = new Image();
       img.crossOrigin = 'anonymous';
-      
+
       img.onload = () => {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
@@ -386,9 +401,9 @@ export class MemeEditorComponent {
       textBlur: 0,
       top: 50,
     };
-    
-    this.layers.update(layers => [...layers, newLayer]);
-    this.nextLayerId.update(id => id + 1);
+
+    this.layers.update((layers) => [...layers, newLayer]);
+    this.nextLayerId.update((id) => id + 1);
     this.selectedLayerIndex.set(this.layers().length - 1);
   }
 
@@ -396,7 +411,7 @@ export class MemeEditorComponent {
     event?.stopPropagation();
     const currentIndex = this.selectedLayerIndex();
 
-    this.layers.update(layers => layers.filter((_, i) => i !== index));
+    this.layers.update((layers) => layers.filter((_, i) => i !== index));
 
     if (currentIndex === index) {
       this.selectedLayerIndex.set(null);
@@ -408,7 +423,7 @@ export class MemeEditorComponent {
   moveLayer(index: number, direction: 'up' | 'down', event?: Event): void {
     event?.stopPropagation();
     const layers = this.layers();
-    
+
     if (direction === 'up' && index > 0) {
       const newLayers = [...layers];
       [newLayers[index - 1], newLayers[index]] = [newLayers[index], newLayers[index - 1]];
@@ -422,11 +437,14 @@ export class MemeEditorComponent {
     }
   }
 
-  updateSelectedLayerProperty<K extends keyof Omit<TextLayer, 'id'>>(prop: K, value: TextLayer[K]): void {
+  updateSelectedLayerProperty<K extends keyof Omit<TextLayer, 'id'>>(
+    prop: K,
+    value: TextLayer[K],
+  ): void {
     const index = this.selectedLayerIndex();
     if (index === null) return;
 
-    this.layers.update(layers => {
+    this.layers.update((layers) => {
       const newLayers = [...layers];
       newLayers[index] = { ...newLayers[index], [prop]: value };
       return newLayers;
@@ -445,14 +463,14 @@ export class MemeEditorComponent {
 
     try {
       let captions: string[];
-      
+
       const selectedImage = this.selectedImage();
       if (selectedImage?.data) {
         captions = await this.geminiService.generateMemeCaptions(
           selectedImage.data,
           selectedImage.mimeType,
           this.selectedTone(),
-          this.userContext()
+          this.userContext(),
         );
       } else {
         const templateName = this.selectedTemplateName();
@@ -463,7 +481,7 @@ export class MemeEditorComponent {
         captions = await this.geminiService.generateCaptionsFromText(
           templateName,
           this.selectedTone(),
-          this.userContext()
+          this.userContext(),
         );
       }
 
@@ -477,7 +495,7 @@ export class MemeEditorComponent {
 
   applyCaption(caption: string): void {
     const parts = caption.split(/[-|/]\s+|\s+\/\s+|\s+-\s+/i);
-    this.layers.update(layers => {
+    this.layers.update((layers) => {
       if (layers.length === 0) return layers;
 
       const newLayers = [...layers];
@@ -503,7 +521,7 @@ export class MemeEditorComponent {
       img.onload = () => {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-        
+
         canvas.width = img.naturalWidth;
         canvas.height = img.naturalHeight;
 
@@ -519,20 +537,20 @@ export class MemeEditorComponent {
 
         for (const layer of this.layers()) {
           const lineWidth = Math.max(2, Math.round(layer.fontSize / 20));
-          
+
           // Shadow for outline effect
           ctx.save();
           ctx.filter = this.getLayerTextFilter(layer);
-          
+
           ctx.font = `${layer.fontSize}px Impact, Arial Black, sans-serif`;
           ctx.strokeStyle = layer.outlineColor;
           ctx.lineWidth = lineWidth;
           ctx.fillStyle = layer.fontColor;
-          
+
           const y = (layer.top / 100) * canvas.height;
           ctx.strokeText(layer.text, canvas.width / 2, y);
           ctx.fillText(layer.text, canvas.width / 2, y);
-          
+
           ctx.restore();
         }
 
@@ -552,7 +570,7 @@ export class MemeEditorComponent {
 
     const quality = this.downloadQuality();
     const dataUrl = canvas.toDataURL('image/jpeg', quality);
-    
+
     const link = document.createElement('a');
     link.href = dataUrl;
     link.download = `meme-${Date.now()}.jpg`;
@@ -564,7 +582,9 @@ export class MemeEditorComponent {
   async copyMemeToClipboard(): Promise<void> {
     // Ensure Clipboard API and ClipboardItem are available
     if (!navigator.clipboard?.write || typeof (window as any).ClipboardItem === 'undefined') {
-      this.error.set('Clipboard image copy is not supported in this browser. Use download instead.');
+      this.error.set(
+        'Clipboard image copy is not supported in this browser. Use download instead.',
+      );
       return;
     }
 
@@ -582,9 +602,7 @@ export class MemeEditorComponent {
 
       try {
         const ClipboardItemCtor = (window as any).ClipboardItem as typeof ClipboardItem;
-        await navigator.clipboard.write([
-          new ClipboardItemCtor({ 'image/png': blob })
-        ]);
+        await navigator.clipboard.write([new ClipboardItemCtor({ 'image/png': blob })]);
         this.copyButtonText.set('✅ Copied!');
         setTimeout(() => this.copyButtonText.set('Copy to Clipboard'), 3000);
       } catch (error) {
@@ -599,17 +617,18 @@ export class MemeEditorComponent {
 
     const selectedImage = this.selectedImage();
     const dimensions = this.imageDimensions();
-    
+
     const state: SavedMemeState = {
       version: 1,
-      selectedImage: selectedImage && dimensions
-        ? {
-            url: selectedImage.url,
-            data: selectedImage.data,
-            mimeType: selectedImage.mimeType,
-            dimensions: dimensions,
-          }
-        : null,
+      selectedImage:
+        selectedImage && dimensions
+          ? {
+              url: selectedImage.url,
+              data: selectedImage.data,
+              mimeType: selectedImage.mimeType,
+              dimensions: dimensions,
+            }
+          : null,
       layers: this.layers(),
       imageFilter: this.imageFilter(),
       selectedTemplateName: this.selectedTemplateName(),
@@ -625,7 +644,7 @@ export class MemeEditorComponent {
       this.savedStateExists.set(true);
       this.saveButtonText.set('💾 Saved!');
       setTimeout(() => this.saveButtonText.set('Save Work'), 2000);
-    } catch (error) {
+    } catch (_error) {
       this.error.set('Storage quota exceeded. Clear some space or use fewer custom templates.');
     }
   }
@@ -636,9 +655,9 @@ export class MemeEditorComponent {
       if (!saved) throw new Error('No saved state found');
 
       const state: SavedMemeState = JSON.parse(saved);
-      
+
       this._resetEditorState(state.selectedTemplateName !== null);
-      
+
       // Handle migration from old state format (without version/dimensions)
       if (state.selectedImage) {
         if ('dimensions' in state.selectedImage && state.selectedImage.dimensions) {
@@ -661,7 +680,7 @@ export class MemeEditorComponent {
       } else {
         this.selectedImage.set(null);
       }
-      
+
       this.layers.set(state.layers || []);
       this.imageFilter.set(state.imageFilter || ImageFilter.NONE);
       this.selectedTemplateName.set(state.selectedTemplateName);
@@ -671,7 +690,7 @@ export class MemeEditorComponent {
       this.nextLayerId.set(state.nextLayerId || 1);
 
       this.error.set(null);
-    } catch (error) {
+    } catch (_error) {
       this.error.set('Failed to load state. Starting fresh.');
       localStorage.removeItem('savedMemeState');
       this.savedStateExists.set(false);
@@ -688,11 +707,13 @@ export class MemeEditorComponent {
     }
 
     if (this.customTemplates().length >= this.maxCustomTemplates) {
-      this.error.set(`You can only save up to ${this.maxCustomTemplates} custom templates. Delete some before adding more.`);
+      this.error.set(
+        `You can only save up to ${this.maxCustomTemplates} custom templates. Delete some before adding more.`,
+      );
       return;
     }
 
-    if (this.filteredTemplates().some(t => t.name.toLowerCase() === name.toLowerCase())) {
+    if (this.filteredTemplates().some((t) => t.name.toLowerCase() === name.toLowerCase())) {
       this.error.set('Template name already exists.');
       return;
     }
@@ -703,7 +724,7 @@ export class MemeEditorComponent {
       isCustom: true,
     };
 
-    this.customTemplates.update(templates => {
+    this.customTemplates.update((templates) => {
       const updated = [...templates, newTemplate];
       localStorage.setItem('customMemeTemplates', JSON.stringify(updated));
       return updated;
@@ -716,9 +737,9 @@ export class MemeEditorComponent {
 
   deleteCustomTemplate(template: MemeTemplate, event?: Event): void {
     event?.stopPropagation();
-    
-    this.customTemplates.update(templates => {
-      const updated = templates.filter(t => t.url !== template.url);
+
+    this.customTemplates.update((templates) => {
+      const updated = templates.filter((t) => t.url !== template.url);
       localStorage.setItem('customMemeTemplates', JSON.stringify(updated));
       return updated;
     });

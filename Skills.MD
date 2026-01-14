@@ -22,6 +22,7 @@ This document outlines the technical skills, tools, and knowledge required to de
 ### Essential Programming Skills
 
 #### 1. TypeScript (Advanced)
+
 - **Interfaces and Types**: Defining data structures
 - **Generics**: Type-safe utilities
 - **Union Types**: Multiple possible types
@@ -29,6 +30,7 @@ This document outlines the technical skills, tools, and knowledge required to de
 - **Decorators**: Angular's metadata system
 
 **Example from codebase:**
+
 ```typescript
 interface TextLayer {
   id: number;
@@ -44,6 +46,7 @@ type ImageFilter = 'none' | 'grayscale' | 'sepia' | 'invert';
 ```
 
 #### 2. JavaScript (ES2022+)
+
 - **Async/Await**: Handling promises
 - **Arrow Functions**: Concise syntax
 - **Destructuring**: Object and array unpacking
@@ -52,12 +55,14 @@ type ImageFilter = 'none' | 'grayscale' | 'sepia' | 'invert';
 - **Nullish Coalescing**: Default value handling
 
 **Example:**
+
 ```typescript
 const { url, data, mimeType } = this.selectedImage() ?? {};
 const templates = [...this.defaultTemplates, ...this.customTemplates()];
 ```
 
 #### 3. HTML5
+
 - **Semantic Elements**: `<fieldset>`, `<legend>`, `<label>`
 - **Form Controls**: Input types, validation
 - **Canvas API**: Image manipulation
@@ -65,6 +70,7 @@ const templates = [...this.defaultTemplates, ...this.customTemplates()];
 - **Accessibility**: ARIA attributes, roles
 
 #### 4. CSS3
+
 - **Flexbox**: Layout management
 - **Grid**: Two-dimensional layouts
 - **Filters**: Visual effects
@@ -76,6 +82,7 @@ const templates = [...this.defaultTemplates, ...this.customTemplates()];
 ### Angular-Specific Skills
 
 #### 1. Component Architecture
+
 - **Component Creation**: `@Component` decorator
 - **Change Detection**: OnPush strategy
 - **Component Communication**: Inputs/Outputs
@@ -83,6 +90,7 @@ const templates = [...this.defaultTemplates, ...this.customTemplates()];
 - **ViewChild**: Template references
 
 **Example:**
+
 ```typescript
 @Component({
   selector: 'app-meme-editor',
@@ -95,6 +103,7 @@ export class MemeEditorComponent {
 ```
 
 #### 2. Signals API (Angular 16+)
+
 - **Primitive Signals**: `signal()`
 - **Computed Signals**: `computed()`
 - **Effects**: `effect()`
@@ -102,15 +111,17 @@ export class MemeEditorComponent {
 - **Signal Reading**: Call syntax `mySignal()`
 
 **Example:**
+
 ```typescript
 const count = signal(0);
 const doubled = computed(() => count() * 2);
 
-count.set(5);           // Direct set
-count.update(n => n + 1); // Update based on current
+count.set(5); // Direct set
+count.update((n) => n + 1); // Update based on current
 ```
 
 #### 3. Template Syntax
+
 - **Interpolation**: `{{ expression }}`
 - **Property Binding**: `[property]="value"`
 - **Event Binding**: `(event)="handler()"`
@@ -119,23 +130,24 @@ count.update(n => n + 1); // Update based on current
 - **Directives**: Structural and attribute
 
 **Example:**
+
 ```html
 @if (hasImage()) {
-  <img [src]="selectedImage()?.url" [alt]="'Meme preview'">
-}
-
-@for (layer of layers(); track layer.id) {
-  <div [style.top.%]="layer.top">{{ layer.text }}</div>
+<img [src]="selectedImage()?.url" [alt]="'Meme preview'" />
+} @for (layer of layers(); track layer.id) {
+<div [style.top.%]="layer.top">{{ layer.text }}</div>
 }
 ```
 
 #### 4. Services and Dependency Injection
+
 - **Injectable Decorator**: `@Injectable()`
 - **Provider Scopes**: root, component
 - **Constructor Injection**: Dependency resolution
 - **Service Communication**: Cross-component data
 
 **Example:**
+
 ```typescript
 @Injectable({ providedIn: 'root' })
 export class GeminiService {
@@ -148,6 +160,7 @@ export class GeminiService {
 ### AI Integration Skills
 
 #### 1. Google Gemini API
+
 - **API Authentication**: API key management
 - **Model Selection**: gemini-2.5-flash
 - **Content Generation**: Text and vision
@@ -155,18 +168,20 @@ export class GeminiService {
 - **Error Handling**: API failures
 
 **Example:**
+
 ```typescript
 const response = await this.ai.models.generateContent({
   model: 'gemini-2.5-flash',
-  contents: { parts: [{ text: prompt }, { inlineData: { mimeType, data }}] },
+  contents: { parts: [{ text: prompt }, { inlineData: { mimeType, data } }] },
   config: {
     responseMimeType: 'application/json',
-    responseSchema: { type: Type.ARRAY, items: { type: Type.STRING } }
-  }
+    responseSchema: { type: Type.ARRAY, items: { type: Type.STRING } },
+  },
 });
 ```
 
 #### 2. Prompt Engineering
+
 - **Clear Instructions**: Specific, actionable prompts
 - **Context Management**: Providing relevant info
 - **Output Formatting**: Specifying structure
@@ -174,6 +189,7 @@ const response = await this.ai.models.generateContent({
 - **Tone Control**: Adjusting AI personality
 
 **Example:**
+
 ```typescript
 const prompt = `
 Generate 5 short, witty, and funny captions for a meme.
@@ -191,6 +207,7 @@ Return as JSON array of 5 strings.
 ### Web APIs
 
 #### 1. Canvas API
+
 - **Context Methods**: `getContext('2d')`
 - **Drawing Operations**: `drawImage()`, `fillText()`
 - **Styling**: `fillStyle`, `strokeStyle`, `filter`
@@ -198,6 +215,7 @@ Return as JSON array of 5 strings.
 - **Export**: `toDataURL()`, `toBlob()`
 
 **Example:**
+
 ```typescript
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
@@ -207,12 +225,14 @@ const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
 ```
 
 #### 2. File API
+
 - **FileReader**: Reading file contents
 - **Progress Events**: Upload progress
 - **Data URLs**: Base64 encoding
 - **Blob Handling**: Binary data
 
 **Example:**
+
 ```typescript
 const reader = new FileReader();
 reader.onprogress = (e) => {
@@ -225,21 +245,22 @@ reader.readAsDataURL(file);
 ```
 
 #### 3. Clipboard API
+
 - **Write Access**: `navigator.clipboard.write()`
 - **ClipboardItem**: Creating clipboard data
 - **Permissions**: User gesture required
 - **Error Handling**: Permission denied
 
 **Example:**
+
 ```typescript
 canvas.toBlob(async (blob) => {
-  await navigator.clipboard.write([
-    new ClipboardItem({ 'image/png': blob })
-  ]);
+  await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
 }, 'image/png');
 ```
 
 #### 4. Local Storage API
+
 - **setItem**: Storing data
 - **getItem**: Retrieving data
 - **removeItem**: Deleting data
@@ -247,6 +268,7 @@ canvas.toBlob(async (blob) => {
 - **Size Limits**: ~5-10MB per origin
 
 **Example:**
+
 ```typescript
 localStorage.setItem('key', JSON.stringify(data));
 const data = JSON.parse(localStorage.getItem('key') ?? '{}');
@@ -284,6 +306,7 @@ localStorage.removeItem('key');
 ### Core Technologies
 
 #### Angular CLI
+
 ```bash
 # Installation
 npm install -g @angular/cli
@@ -297,6 +320,7 @@ ng test                      # Run tests
 ```
 
 #### Package Management (npm/yarn)
+
 ```bash
 # Install dependencies
 npm install
@@ -314,6 +338,7 @@ npm audit fix
 ```
 
 #### Version Control (Git)
+
 ```bash
 # Basic workflow
 git clone <repo>
@@ -355,6 +380,7 @@ git rebase main
 ### VS Code Configuration
 
 **Recommended settings.json:**
+
 ```json
 {
   "editor.formatOnSave": true,
@@ -367,6 +393,7 @@ git rebase main
 ```
 
 **Recommended extensions:**
+
 - Angular Language Service
 - ESLint
 - Prettier - Code formatter
@@ -385,9 +412,10 @@ git rebase main
 **Why**: Simplifies handling user interactions, API calls, and state changes
 
 **How in this project**: Angular Signals provide reactive state
+
 ```typescript
 // Signal automatically triggers UI update
-this.layers.update(layers => [...layers, newLayer]);
+this.layers.update((layers) => [...layers, newLayer]);
 ```
 
 ### 2. Immutability
@@ -397,12 +425,13 @@ this.layers.update(layers => [...layers, newLayer]);
 **Why**: Predictable state changes, easier debugging
 
 **How**:
+
 ```typescript
 // ❌ Wrong: Mutates array
 this.layers().push(newLayer);
 
 // ✅ Correct: Creates new array
-this.layers.update(layers => [...layers, newLayer]);
+this.layers.update((layers) => [...layers, newLayer]);
 ```
 
 ### 3. Component Composition
@@ -412,10 +441,11 @@ this.layers.update(layers => [...layers, newLayer]);
 **Why**: Maintainability, testability, reusability
 
 **How**:
+
 ```typescript
 // AppComponent composes MemeEditorComponent
 @Component({
-  imports: [MemeEditorComponent]
+  imports: [MemeEditorComponent],
 })
 export class AppComponent {}
 ```
@@ -427,6 +457,7 @@ export class AppComponent {}
 **Why**: Easier to understand, test, and modify
 
 **How**:
+
 - **Components**: UI logic
 - **Services**: Business logic
 - **Models**: Data structures
@@ -438,6 +469,7 @@ export class AppComponent {}
 **Why**: Fewer runtime errors, better IDE support
 
 **How**:
+
 ```typescript
 interface TextLayer {
   id: number;
@@ -487,7 +519,9 @@ const layer: TextLayer = { id: 1 }; // ❌ Error: missing properties
 ### Task 1: Adding a New Text Layer Property
 
 **Steps:**
+
 1. Update `TextLayer` interface in `meme.model.ts`
+
 ```typescript
 interface TextLayer {
   // ... existing properties
@@ -496,41 +530,50 @@ interface TextLayer {
 ```
 
 2. Update `initializeLayers()` to include default value
+
 ```typescript
 const topLayer: TextLayer = {
   // ... existing properties
-  rotation: 0
+  rotation: 0,
 };
 ```
 
 3. Add UI control in template
+
 ```html
-<input type="range" 
+<input
+  type="range"
   [value]="selectedLayer()!.rotation"
-  (input)="updateSelectedLayerProperty('rotation', +$any($event.target).value)">
+  (input)="updateSelectedLayerProperty('rotation', +$any($event.target).value)"
+/>
 ```
 
 4. Apply in canvas rendering
+
 ```typescript
-ctx.rotate(layer.rotation * Math.PI / 180);
+ctx.rotate((layer.rotation * Math.PI) / 180);
 ctx.fillText(layer.text, x, y);
-ctx.rotate(-layer.rotation * Math.PI / 180);
+ctx.rotate((-layer.rotation * Math.PI) / 180);
 ```
 
 ### Task 2: Adding a New Image Filter
 
 **Steps:**
+
 1. Add to type union in `meme.model.ts`
+
 ```typescript
 type ImageFilter = 'none' | 'grayscale' | 'sepia' | 'invert' | 'blur';
 ```
 
 2. Update filters array in component
+
 ```typescript
 filters: ImageFilter[] = ['none', 'grayscale', 'sepia', 'invert', 'blur'];
 ```
 
 3. Add case in `computedImageFilter`
+
 ```typescript
 case 'blur': return 'blur(5px)';
 ```
@@ -540,7 +583,9 @@ case 'blur': return 'blur(5px)';
 ### Task 3: Adding a New Template
 
 **Steps:**
+
 1. Add to `defaultTemplates` array
+
 ```typescript
 defaultTemplates: MemeTemplate[] = [
   // ... existing templates
@@ -553,7 +598,9 @@ defaultTemplates: MemeTemplate[] = [
 ### Task 4: Modifying AI Prompt
 
 **Steps:**
+
 1. Update prompt in `gemini.service.ts`
+
 ```typescript
 let promptText = `
 Generate 5 captions that are:
@@ -576,6 +623,7 @@ Generate 5 captions that are:
 **Symptom**: Red squiggles in IDE, compilation errors
 
 **Solution**:
+
 ```bash
 # Check TypeScript version
 npm list typescript
@@ -593,12 +641,13 @@ Cmd/Ctrl + Shift + P → "TypeScript: Restart TS Server"
 **Symptom**: Change signal value but UI doesn't reflect
 
 **Solution**:
+
 ```typescript
 // ❌ Wrong: Direct mutation
 this.layers().push(newLayer);
 
 // ✅ Correct: Use .update() or .set()
-this.layers.update(layers => [...layers, newLayer]);
+this.layers.update((layers) => [...layers, newLayer]);
 ```
 
 ### Problem: CORS Errors
@@ -606,6 +655,7 @@ this.layers.update(layers => [...layers, newLayer]);
 **Symptom**: "CORS policy" error when loading template
 
 **Solution**:
+
 ```typescript
 // Ensure crossOrigin attribute
 const image = new Image();
@@ -623,6 +673,7 @@ const dataUrl = canvas.toDataURL();
 **Symptom**: "API_KEY environment variable not found"
 
 **Solution**:
+
 1. Check `process.env.API_KEY` is accessible
 2. Verify `.env` file exists and is loaded
 3. Check build configuration includes env vars
@@ -633,6 +684,7 @@ const dataUrl = canvas.toDataURL();
 **Symptom**: Error when downloading or copying meme
 
 **Solution**:
+
 ```typescript
 // Ensure image loaded before canvas operations
 image.onload = () => {
@@ -651,6 +703,7 @@ image.onerror = () => {
 **Symptom**: "QuotaExceededError" when saving
 
 **Solution**:
+
 ```typescript
 try {
   localStorage.setItem(key, value);
@@ -682,7 +735,7 @@ try {
    - Single responsibility principle
 
 3. **Comments**
-   - Explain *why*, not *what*
+   - Explain _why_, not _what_
    - Document complex algorithms
    - Use JSDoc for public APIs
 
@@ -716,6 +769,7 @@ try {
    - Use secrets management in production
 
 2. **Sanitize User Input**
+
    ```typescript
    const sanitized = input.replace(/<[^>]*>/g, '');
    ```
@@ -732,12 +786,14 @@ try {
 ## Career Growth Path
 
 ### Junior Developer
+
 - Master TypeScript fundamentals
 - Build simple Angular components
 - Understand basic API integration
 - Write clean, readable code
 
 ### Mid-Level Developer
+
 - Architect component hierarchies
 - Implement state management
 - Optimize performance
@@ -745,6 +801,7 @@ try {
 - Write comprehensive tests
 
 ### Senior Developer
+
 - Design system architecture
 - Lead technical decisions
 - Mentor junior developers
@@ -758,6 +815,7 @@ try {
 Developing the AI Meme Generator requires a solid foundation in modern web development, with specific expertise in Angular, TypeScript, and AI integration. This guide provides the roadmap for acquiring and deepening these skills.
 
 **Key Takeaways:**
+
 - **TypeScript** is essential for type-safe development
 - **Angular Signals** enable reactive, performant UIs
 - **Canvas API** provides powerful image manipulation
@@ -769,6 +827,7 @@ Keep building, keep learning, and have fun creating memes! 🚀
 ---
 
 **Additional Resources:**
+
 - Join the [Angular Discord](https://discord.gg/angular)
 - Follow [@angular](https://twitter.com/angular) on Twitter
 - Read the [Angular Blog](https://blog.angular.io/)

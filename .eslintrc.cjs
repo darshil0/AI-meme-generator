@@ -26,15 +26,16 @@ module.exports = {
     // Soften some strictness to avoid noisy warnings in this UI-heavy app
     '@typescript-eslint/no-unused-vars': [
       'warn',
-      { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+      {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+        caughtErrorsIgnorePattern: '^_',
+      },
     ],
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
+    'import/no-unresolved': 'off',
+    'import/named': 'off',
   },
-  ignorePatterns: [
-    'dist/',
-    'node_modules/',
-    'package-lock.json',
-    'tailwind.config.js',
-  ],
+  ignorePatterns: ['dist/', 'node_modules/', 'package-lock.json', 'tailwind.config.js'],
 };

@@ -1,8 +1,5 @@
 import { Router } from 'express';
-import {
-  generateCaptionsFromImage,
-  generateCaptionsFromTemplateName,
-} from '../lib/geminiClient';
+import { generateCaptionsFromImage, generateCaptionsFromTemplateName } from '../lib/geminiClient';
 
 const router = Router();
 

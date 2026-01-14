@@ -20,7 +20,7 @@ export class GeminiService {
 
   private sanitizeCaptions(captions: string[]): string[] {
     const tagRegex = /<[^>]*>/g;
-    return captions.map(caption => caption.replace(tagRegex, '').trim());
+    return captions.map((caption) => caption.replace(tagRegex, '').trim());
   }
 
   async generateMemeCaptions(
