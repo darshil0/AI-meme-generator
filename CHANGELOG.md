@@ -16,10 +16,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **Project Refactoring**: Reorganized the frontend codebase into `core` and `features` folders for better separation of concerns and maintainability.
+- **Documentation Overhaul**: Moved technical walkthroughs and development skills to a new `docs/` directory. Added a dedicated `README.md` for the backend server.
 - **Template Externalization**: Moved default meme templates from component state into a dedicated constant file.
 - **Dependency Optimization**: Cleaned up unused frontend dependencies and updated backend dev scripts for better ESM compatibility.
 - **Backend Health Verification**: Integrated a real health check into the startup sequence to verify API connectivity.
 - **Proxy Expansion**: Added more allowed hosts to the image proxy for broader template support.
+- **Assets Organization**: Created the standard `src/assets` directory and updated the project's visual branding in the documentation.
 
 ## [1.7.0] - 2026-01-14
 
@@ -171,7 +173,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
-- **1.8.0**: Organized project structure, fixed ESM issues, upgraded Gemini model, and updated documentation
+- **1.8.0**: Complete project organization, fixed ESM issues, upgraded Gemini model to 1.5-flash, and overhauled documentation including a new backend README.
 - **1.7.0**: Fixed storage limits, improved sharing with Web Share API, and polished mobile experience
 - **1.6.0**: Angular template parsing fixes, ESLint hardening, and backend type safety
 - **1.5.0**: Backend proxy, validation hardening, and production environment configuration
