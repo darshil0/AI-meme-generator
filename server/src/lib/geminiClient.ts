@@ -21,7 +21,7 @@ async function generateCaptions(contents: {
   }
 
   const response: GenerateContentResponse = await ai.models.generateContent({
-    model: 'gemini-2.5-flash',
+    model: 'gemini-1.5-flash',
     contents,
     config: {
       responseMimeType: 'application/json',
@@ -35,8 +35,7 @@ async function generateCaptions(contents: {
     },
   });
 
-  const jsonString =
-    (response as any)?.text ?? response?.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
+  const jsonString = response.text || '';
 
   if (!jsonString) {
     throw new Error('Empty response from Gemini.');

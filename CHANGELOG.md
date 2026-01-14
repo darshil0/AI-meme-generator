@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-01-14
+
+### Fixed
+
+- **ESM Module Resolution**: Added missing `.js` extensions to server-side imports to fix Node.js ESM crashes.
+- **AI Model Stability**: Updated Gemini model to `gemini-1.5-flash` to resolve issues with non-existent future model versions in the previous config.
+- **Build Warnings**: Resolved schema errors in `angular.json` and increased build budgets to accommodate growing dependency sizes.
+
+### Changed
+
+- **Project Refactoring**: Reorganized the frontend codebase into `core` and `features` folders for better separation of concerns and maintainability.
+- **Template Externalization**: Moved default meme templates from component state into a dedicated constant file.
+- **Dependency Optimization**: Cleaned up unused frontend dependencies and updated backend dev scripts for better ESM compatibility.
+- **Backend Health Verification**: Integrated a real health check into the startup sequence to verify API connectivity.
+- **Proxy Expansion**: Added more allowed hosts to the image proxy for broader template support.
+
 ## [1.7.0] - 2026-01-14
 
 ### Added

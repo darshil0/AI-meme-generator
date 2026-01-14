@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { MemeEditorComponent } from './components/meme-editor/meme-editor.component';
+import { MemeEditorComponent } from './features/meme-editor/meme-editor.component';
 
 @Component({
   selector: 'app-root',

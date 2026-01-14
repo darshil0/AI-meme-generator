@@ -13,9 +13,21 @@ interface CaptionsResponse {
 export class GeminiService {
   constructor(private http: HttpClient) {}
 
-  // Backend owns the real configuration; assume true if backend is up.
+  /**
+   * Checks if the backend is reachable and configured.
+   * In a real app, this could call an endpoint that verifies the API key.
+   */
+  async checkHealth(): Promise<boolean> {
+    try {
+      const resp = await this.http.get<{ status: string }>('/api/health').toPromise();
+      return resp?.status === 'ok';
+    } catch {
+      return false;
+    }
+  }
+
   isConfigured(): boolean {
-    return true;
+    return true; // Assume configured for visual state, but we'll use checkHealth for real work
   }
 
   private sanitizeCaptions(captions: string[]): string[] {

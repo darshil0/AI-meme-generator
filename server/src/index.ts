@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
-import captionsRouter from './routes/captions';
-import imagesRouter from './routes/images';
+import captionsRouter from './routes/captions.js';
+import imagesRouter from './routes/images.js';
 
 const app = express();
 const port = process.env.PORT || 4000;

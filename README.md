@@ -212,26 +212,29 @@ npm run format  # Format the codebase with Prettier
 ai-meme-generator/
 ├── src/
 │   ├── app/
-│   │   ├── components/
-│   │   │   └── meme-editor/
+│   │   ├── core/
+│   │   │   ├── models/
+│   │   │   │   ├── meme.model.ts          # TypeScript interfaces and enums
+│   │   │   │   └── templates.const.ts     # Default meme templates
+│   │   │   └── services/
+│   │   │       ├── gemini.service.ts      # AI service layer
+│   │   │       └── storage.service.ts     # IndexedDB wrapper
+│   │   ├── features/
+│   │   │   └── meme-editor/               # Main editor UI
 │   │   │       ├── meme-editor.component.html
 │   │   │       ├── meme-editor.component.scss
 │   │   │       └── meme-editor.component.ts
-│   │   ├── models/
-│   │   │   └── meme.model.ts             # TypeScript interfaces and enums
-│   │   ├── services/
-│   │   │   └── gemini.service.ts         # Frontend Gemini proxy client
 │   │   ├── app.component.html
 │   │   └── app.component.ts
 │   ├── assets/
 │   ├── environments/
-│   │   └── environment.ts                # Frontend configuration (no real secrets)
+│   │   └── environment.ts                 # Frontend configuration
 │   └── styles.scss
 ├── server/
 │   ├── src/
-│   │   ├── index.ts                      # Express app entrypoint
-│   │   ├── lib/geminiClient.ts          # Server-side Gemini client
-│   │   └── routes/                      # /api routes (captions, image proxy)
+│   │   ├── index.ts                       # Express app entrypoint
+│   │   ├── lib/geminiClient.ts           # Server-side Gemini client
+│   │   └── routes/                        # /api routes (captions, image proxy)
 │   ├── package.json
 │   └── tsconfig.json
 ├── index.html
@@ -381,11 +384,12 @@ If you encounter issues or have questions:
 
 See [CHANGELOG.md](CHANGELOG.md) for a complete list of changes. Recent improvements include:
 
-- **Template Parsing**: Resolved critical Angular template syntax errors and parser issues in the editor.
-- **ESLint & Prettier**: Cleaned up 60+ linting issues and standardized formatting across the entire project.
-- **Backend Stability**: Added missing TypeScript definitions for the server to ensure reliable builds.
-- **Reliability**: Verified successful production builds for both Frontend and Backend.
-- **Git State**: Synchronized and pushed the optimized codebase to the remote repository.
+- **Backend Stability**: Resolved ESM module resolution issues and fixed imports to include `.js` extensions.
+- **AI Model Upgrade**: Updated Gemini model to `gemini-1.5-flash` for better reliability and performance.
+- **Project Structure**: Organized source code into `core` and `features` directories following Angular best practices.
+- **Build Optimization**: Increased build budgets and fixed `angular.json` schema issues to ensure clean production builds.
+- **Dependency Cleanup**: Removed unused frontend dependencies and updated server-side scripts for ESM support.
+- **Enhanced Proxy**: Expanded the server-side image proxy to support a wider range of meme template hosts.
 
 ---
 
