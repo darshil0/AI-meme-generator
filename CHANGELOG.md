@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-01-14
+
+### Fixed
+
+- **Angular Template Parsing**: Resolved critical parser errors and syntax issues in `meme-editor.component.html` (including the `@empty` block syntax).
+- **ESLint Config**: Hardened ESLint configuration to correctly handle `@angular` core imports and suppress noisy warnings in the UI-heavy environment.
+- **Backend Build**: Fixed server build failures by adding missing `@types` for `cors`, `express`, and `node`.
+
+### Changed
+
+- **Code Quality**: Cleaned up over 60 linting warnings and errors across the codebase.
+- **Standardization**: Applied Prettier formatting project-wide (Frontend & Server) for consistent code style.
+- **Git Synchronization**: Successfully synchronized local state and pushed the codebase to the remote repository.
+
 ## [1.5.0] - 2026-01-13
 
 ### Added
@@ -135,6 +149,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
+- **1.6.0**: Angular template parsing fixes, ESLint hardening, and backend type safety
 - **1.5.0**: Backend proxy, validation hardening, and production environment configuration
 - **1.4.0**: Restructured source into `src/app` and aligned tooling/config
 - **1.3.0**: Tooling, Angular configuration, and template binding fixes
