@@ -173,6 +173,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
+- **1.8.0**: Organized project structure, fixed ESM issues, upgraded Gemini model, and updated documentation
 - **1.7.0**: Fixed storage limits, improved sharing with Web Share API, and polished mobile experience
 - **1.6.0**: Angular template parsing fixes, ESLint hardening, and backend type safety
 - **1.5.0**: Backend proxy, validation hardening, and production environment configuration
