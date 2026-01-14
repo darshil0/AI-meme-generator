@@ -651,11 +651,11 @@ export class MemeEditorComponent {
       selectedImage:
         selectedImage && dimensions
           ? {
-            url: selectedImage.url,
-            data: selectedImage.data,
-            mimeType: selectedImage.mimeType,
-            dimensions: dimensions,
-          }
+              url: selectedImage.url,
+              data: selectedImage.data,
+              mimeType: selectedImage.mimeType,
+              dimensions: dimensions,
+            }
           : null,
       layers: this.layers(),
       imageFilter: this.imageFilter(),
