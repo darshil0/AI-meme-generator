@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **ESM Module Resolution**: Added missing `.js` extensions to server-side imports to fix Node.js ESM crashes.
-- **AI Model Stability**: Updated Gemini model to `gemini-1.5-flash` to resolve issues with non-existent future model versions in the previous config.
+- **AI Model Stability**: Upgraded to **Gemini 3.0 Flash**, the latest frontier model, offering significantly improved visual reasoning and joke generation.
 - **Build Warnings**: Resolved schema errors in `angular.json` and increased build budgets to accommodate growing dependency sizes.
 
 ### Changed
@@ -173,7 +173,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
-- **1.8.0**: Complete project organization, fixed ESM issues, upgraded Gemini model to 1.5-flash, and overhauled documentation including a new backend README.
+- **1.8.0**: Complete project organization, fixed ESM issues, upgraded Gemini model to **3.0-flash**, and overhauled documentation including a new backend README.
 - **1.7.0**: Fixed storage limits, improved sharing with Web Share API, and polished mobile experience
 - **1.6.0**: Angular template parsing fixes, ESLint hardening, and backend type safety
 - **1.5.0**: Backend proxy, validation hardening, and production environment configuration

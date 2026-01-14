@@ -5,7 +5,7 @@
 This interactive web application allows you to create hilarious memes by combining images with AI-generated captions. Upload your own picture or choose from a library of popular templates, and let the Gemini AI suggest witty and relevant captions tailored to the image.
 
 ![AI Meme Generator](https://img.shields.io/badge/Angular-21.0-red?style=flat-square&logo=angular)
-![Gemini AI](https://img.shields.io/badge/Gemini-1.5--flash-blue?style=flat-square)
+![Gemini AI](https://img.shields.io/badge/Gemini-3.0--flash-blue?style=flat-square)
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.x-38B2AC?style=flat-square&logo=tailwind-css)
 
 ---
@@ -88,7 +88,7 @@ The AI is prompted to return the results in a structured JSON format, which the 
 ## 🛠️ Tech Stack
 
 - **Framework:** [Angular](https://angular.dev/) (v21.0, Zoneless)
-- **AI:** [Google Gemini API](https://ai.google.dev/) via `@google/genai` SDK (v1.35.0)
+- **AI:** [Google Gemini API](https://ai.google.dev/) via `@google/genai` (v1.35.0) using **Gemini 3.0 Flash**
 - **Styling:** [Tailwind CSS](https://tailwindcss.com/) (via CDN)
 - **State Management:** Angular Signals (reactive, fine-grained)
 - **Language:** TypeScript 5.8
@@ -385,7 +385,7 @@ If you encounter issues or have questions:
 See [CHANGELOG.md](CHANGELOG.md) for a complete list of changes. Recent improvements include:
 
 - **Backend Stability**: Resolved ESM module resolution issues and fixed imports to include `.js` extensions.
-- **AI Model Upgrade**: Updated Gemini model to `gemini-1.5-flash` for better reliability and performance.
+- **AI Model Upgrade**: Upgraded to the cutting-edge **Gemini 3.0 Flash** model for superior meme reasoning and faster caption generation.
 - **Project Structure**: Organized source code into `core` and `features` directories following Angular best practices.
 - **Build Optimization**: Increased build budgets and fixed `angular.json` schema issues to ensure clean production builds.
 - **Dependency Cleanup**: Removed unused frontend dependencies and updated server-side scripts for ESM support.
