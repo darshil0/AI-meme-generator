@@ -162,16 +162,16 @@ export class GeminiService {
 #### 1. Google Gemini API
 
 - **API Authentication**: API key management
-- **Model Selection**: gemini-2.5-flash
+- **Model Selection**: gemini-3-flash-preview
 - **Content Generation**: Text and vision
 - **Structured Output**: JSON schema
-- **Error Handling**: API failures
+- **Error Handling**: API failures (Handled on backend)
 
 **Example:**
 
 ```typescript
 const response = await this.ai.models.generateContent({
-  model: 'gemini-2.5-flash',
+  model: 'gemini-3-flash-preview',
   contents: { parts: [{ text: prompt }, { inlineData: { mimeType, data } }] },
   config: {
     responseMimeType: 'application/json',
@@ -520,7 +520,7 @@ const layer: TextLayer = { id: 1 }; // ❌ Error: missing properties
 
 **Steps:**
 
-1. Update `TextLayer` interface in `meme.model.ts`
+1. Update `TextLayer` interface in `src/app/core/models/meme.model.ts`
 
 ```typescript
 interface TextLayer {
@@ -560,7 +560,7 @@ ctx.rotate((-layer.rotation * Math.PI) / 180);
 
 **Steps:**
 
-1. Add to type union in `meme.model.ts`
+1. Add to type union in `src/app/core/models/meme.model.ts`
 
 ```typescript
 type ImageFilter = 'none' | 'grayscale' | 'sepia' | 'invert' | 'blur';
@@ -599,7 +599,7 @@ defaultTemplates: MemeTemplate[] = [
 
 **Steps:**
 
-1. Update prompt in `gemini.service.ts`
+1. Update prompt in `server/src/lib/geminiClient.ts`
 
 ```typescript
 let promptText = `
