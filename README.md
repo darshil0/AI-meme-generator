@@ -318,18 +318,17 @@ Two types of data are persisted:
 
 ## 🐛 Known Limitations
 
-1. **Browser Storage**: Local storage has size limits (~5-10MB). Large custom template collections may hit these limits. The app includes error handling for storage quota exceeded scenarios and provides UI controls to clear saved work and all custom templates.
-
-2. **Clipboard API**: Copy to clipboard requires a secure context (HTTPS) and may not work in all browsers. The app provides a fallback download option.
-
-3. **Mobile Experience**: While responsive, the editor experience is optimized for desktop/tablet use.
+1. **Browser Compatibility**: While we use modern APIs like Web Share and IndexedDB, very old browser versions may have limited functionality.
 
 ---
 
 ### 🛡️ Resolved Limitations
 
-- **CORS Restrictions**: Previously, external meme templates could fail to load. This is now **resolved** via a built-in server-side image proxy (`/api/template-image`) that fetches templates safely.
-- **API Key Security**: The application now uses a dedicated backend server to host the Gemini API key, ensuring it is never exposed to the client-side code.
+- **Browser Storage**: **Resolved** by migrating from `localStorage` to **IndexedDB**, allowing for significantly larger collections of custom templates and saved states.
+- **Clipboard API**: **Resolved** by integrating the **Web Share API** as a primary mobile-friendly sharing method, with hardened fallbacks for desktop.
+- **Mobile Experience**: **Resolved** with a responsive layout including a floating "Preview" button, touch-optimized targets, and dynamic typography.
+- **CORS Restrictions**: **Resolved** via a built-in server-side image proxy (`/api/template-image`) that fetches templates safely.
+- **API Key Security**: **Resolved** by moving the Gemini API key to a dedicated backend server, ensuring it is never exposed to the client.
 
 ---
 

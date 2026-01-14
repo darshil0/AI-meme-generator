@@ -16,6 +16,17 @@
 }
 
 // Custom scrollbar styling
+@media (max-width: 640px) {
+  .meme-font {
+    font-size: clamp(1rem, 5vw, 2.5rem);
+  }
+
+  /* Compact controls on mobile */
+  .fieldset {
+    padding: 0.75rem !important;
+  }
+}
+
 .scrollbar-thin {
   scrollbar-width: thin;
   scrollbar-color: theme('colors.gray.600') transparent;
@@ -207,6 +218,7 @@ input[type='color'] {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -218,12 +230,10 @@ input[type='color'] {
 
   &.indeterminate {
     width: 100%;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      theme('colors.blue.600') 50%,
-      transparent 100%
-    );
+    background: linear-gradient(90deg,
+        transparent 0%,
+        theme('colors.blue.600') 50%,
+        transparent 100%);
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
   }
@@ -233,6 +243,7 @@ input[type='color'] {
   0% {
     background-position: -200% 0;
   }
+
   100% {
     background-position: 200% 0;
   }
@@ -240,10 +251,12 @@ input[type='color'] {
 
 // Pulse animation for selected states
 @keyframes pulse-glow {
+
   0%,
   100% {
     box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
   }
+
   50% {
     box-shadow: 0 0 40px rgba(168, 85, 247, 0.8);
   }
@@ -259,13 +272,16 @@ input[type='color'] {
 }
 
 @keyframes shake {
+
   0%,
   100% {
     transform: translateX(0);
   }
+
   25% {
     transform: translateX(-4px);
   }
+
   75% {
     transform: translateX(4px);
   }
@@ -273,6 +289,7 @@ input[type='color'] {
 
 // Responsive improvements
 @media (max-width: 1024px) {
+
   .lg\:col-span-1,
   .lg\:col-span-2 {
     grid-column: 1 / -1;
@@ -319,6 +336,7 @@ input[type='color'] {
 
 // Reduced motion support
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
@@ -345,7 +363,8 @@ input[type='color'] {
 
   .text-layer {
     -webkit-print-color-adjust: exact;
-    color-adjust: exact;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
   }
 }
 
@@ -368,6 +387,7 @@ input[type='color'] {
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

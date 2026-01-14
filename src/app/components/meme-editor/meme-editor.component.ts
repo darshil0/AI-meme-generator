@@ -10,6 +10,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { GeminiService } from '../../services/gemini.service';
+import { StorageService } from '../../services/storage.service';
 import {
   CaptionTone,
   ImageFilter,
@@ -147,27 +148,35 @@ export class MemeEditorComponent {
     { name: 'Success Kid', url: '/api/template-image?url=https://i.imgur.com/7kJ2z4m.jpg' },
   ];
 
+  private storageService = inject(StorageService);
+
   constructor() {
     this.isApiKeyConfigured.set(this.geminiService.isConfigured());
-    this.loadCustomTemplates();
-    this.checkForSavedState();
+    this.initAsync();
   }
 
-  private loadCustomTemplates(): void {
-    const savedTemplates = localStorage.getItem('customMemeTemplates');
-    if (savedTemplates) {
-      try {
-        const templates = JSON.parse(savedTemplates) as MemeTemplate[];
-        this.customTemplates.set(templates.filter((t) => t.isCustom));
-      } catch (e) {
-        console.error('Failed to parse custom templates:', e);
-      }
+  private async initAsync(): Promise<void> {
+    await this.loadCustomTemplates();
+    await this.checkForSavedState();
+  }
+
+  private async loadCustomTemplates(): Promise<void> {
+    const templates = await this.storageService.get<MemeTemplate[]>('customMemeTemplates');
+    if (templates) {
+      this.customTemplates.set(templates.filter((t) => t.isCustom));
     }
   }
 
-  private checkForSavedState(): void {
-    const savedState = localStorage.getItem('savedMemeState');
+  private async checkForSavedState(): Promise<void> {
+    const savedState = await this.storageService.get('savedMemeState');
     this.savedStateExists.set(!!savedState);
+  }
+
+  scrollToPreview(): void {
+    const element = document.getElementById('meme-preview-section');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
   }
 
   // Layer Style Helpers
@@ -589,46 +598,56 @@ export class MemeEditorComponent {
   }
 
   async copyMemeToClipboard(): Promise<void> {
-    // Ensure Clipboard API and ClipboardItem are available
-    if (!navigator.clipboard?.write || typeof (window as any).ClipboardItem === 'undefined') {
-      this.error.set(
-        'Clipboard image copy is not supported in this browser. Use download instead.',
-      );
-      return;
-    }
+    try {
+      const canvas = await this._generateMemeCanvas();
+      if (!canvas) throw new Error('Canvas generation failed');
 
-    const canvas = await this._generateMemeCanvas();
-    if (!canvas) {
-      this.error.set('Cannot copy meme. Please ensure an image is loaded.');
-      return;
-    }
+      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
+      if (!blob) throw new Error('Blob creation failed');
 
-    canvas.toBlob(async (blob) => {
-      if (!blob) {
-        this.error.set('Failed to copy. Unable to create image blob.');
+      // 1. Try Share API first (Excellent for Mobile)
+      if (
+        navigator.share &&
+        navigator.canShare &&
+        navigator.canShare({ files: [new File([blob], 'meme.png', { type: 'image/png' })] })
+      ) {
+        await navigator.share({
+          files: [new File([blob], 'meme.png', { type: 'image/png' })],
+          title: 'Check out my meme!',
+          text: 'Created with AI Meme Generator',
+        });
         return;
       }
 
-      try {
+      // 2. Try Clipboard API
+      if (navigator.clipboard && navigator.clipboard.write) {
         const ClipboardItemCtor = (window as any).ClipboardItem as typeof ClipboardItem;
-        await navigator.clipboard.write([new ClipboardItemCtor({ 'image/png': blob })]);
+        await navigator.clipboard.write([
+          new ClipboardItemCtor({
+            'image/png': blob,
+          }),
+        ]);
         this.copyButtonText.set('✅ Copied!');
-        setTimeout(() => this.copyButtonText.set('Copy to Clipboard'), 3000);
-      } catch (error) {
-        this.error.set('Failed to copy. Use download button instead.');
-        console.error('Clipboard error:', error);
+        setTimeout(() => this.copyButtonText.set('Copy Meme'), 2000);
+      } else {
+        throw new Error('Clipboard API not supported');
       }
-    }, 'image/png');
+    } catch (err: any) {
+      console.error('Clipboard/Share error:', err);
+      this.error.set(
+        'Quick share/copy not supported in this browser. Please use the Download button or long-press to save.',
+      );
+    }
   }
 
-  saveState(): void {
+  async saveState(): Promise<void> {
     if (!this.isEditing()) return;
 
     const selectedImage = this.selectedImage();
     const dimensions = this.imageDimensions();
 
     const state: SavedMemeState = {
-      version: 1,
+      version: 2,
       selectedImage:
         selectedImage && dimensions
           ? {
@@ -649,21 +668,19 @@ export class MemeEditorComponent {
     };
 
     try {
-      localStorage.setItem('savedMemeState', JSON.stringify(state));
+      await this.storageService.set('savedMemeState', state);
       this.savedStateExists.set(true);
       this.saveButtonText.set('💾 Saved!');
       setTimeout(() => this.saveButtonText.set('Save Work'), 2000);
     } catch (_error) {
-      this.error.set('Storage quota exceeded. Clear some space or use fewer custom templates.');
+      this.error.set('Storage error. Try clearing some space.');
     }
   }
 
-  loadState(): void {
+  async loadState(): Promise<void> {
     try {
-      const saved = localStorage.getItem('savedMemeState');
-      if (!saved) throw new Error('No saved state found');
-
-      const state: SavedMemeState = JSON.parse(saved);
+      const state = await this.storageService.get<SavedMemeState>('savedMemeState');
+      if (!state) throw new Error('No saved state found');
 
       this._resetEditorState(state.selectedTemplateName !== null);
 
@@ -701,12 +718,12 @@ export class MemeEditorComponent {
       this.error.set(null);
     } catch (_error) {
       this.error.set('Failed to load state. Starting fresh.');
-      localStorage.removeItem('savedMemeState');
+      await this.storageService.delete('savedMemeState');
       this.savedStateExists.set(false);
     }
   }
 
-  saveCustomTemplate(): void {
+  async saveCustomTemplate(): Promise<void> {
     const name = this.newTemplateName().trim();
     const image = this.selectedImage();
 
@@ -733,45 +750,53 @@ export class MemeEditorComponent {
       isCustom: true,
     };
 
-    this.customTemplates.update((templates) => {
-      const updated = [...templates, newTemplate];
-      localStorage.setItem('customMemeTemplates', JSON.stringify(updated));
-      return updated;
-    });
+    const updated = [...this.customTemplates(), newTemplate];
+    this.customTemplates.set(updated);
 
-    this.newTemplateName.set('');
-    this.showSaveTemplateInput.set(false);
-    this.error.set(null);
+    try {
+      await this.storageService.set('customMemeTemplates', updated);
+      this.newTemplateName.set('');
+      this.showSaveTemplateInput.set(false);
+      this.error.set(null);
+    } catch (_error) {
+      this.error.set('Failed to save template. Storage might be full.');
+    }
   }
 
-  deleteCustomTemplate(template: MemeTemplate, event?: Event): void {
+  async deleteCustomTemplate(template: MemeTemplate, event?: Event): Promise<void> {
     event?.stopPropagation();
 
-    this.customTemplates.update((templates) => {
-      const updated = templates.filter((t) => t.url !== template.url);
-      localStorage.setItem('customMemeTemplates', JSON.stringify(updated));
-      return updated;
-    });
+    const updated = this.customTemplates().filter((t) => t.url !== template.url);
+    this.customTemplates.set(updated);
+
+    try {
+      await this.storageService.set('customMemeTemplates', updated);
+    } catch (_error) {
+      console.error('Failed to update storage');
+    }
 
     if (this.selectedImage()?.url === template.url) {
       this._resetEditorState();
     }
   }
 
-  clearSavedMemeState(): void {
-    localStorage.removeItem('savedMemeState');
-    this.savedStateExists.set(false);
-    this._resetEditorState();
+  async clearSavedMemeState(): Promise<void> {
+    if (confirm('Are you sure you want to clear your saved progress?')) {
+      await this.storageService.delete('savedMemeState');
+      this.savedStateExists.set(false);
+      this._resetEditorState();
+    }
   }
 
-  clearAllCustomTemplates(): void {
-    localStorage.removeItem('customMemeTemplates');
-    this.customTemplates.set([]);
+  async clearAllCustomTemplates(): Promise<void> {
+    if (confirm('Are you sure you want to delete all your custom templates?')) {
+      await this.storageService.delete('customMemeTemplates');
+      this.customTemplates.set([]);
 
-    const selected = this.selectedImage();
-    if (selected && selected.url.startsWith('data:')) {
-      // Selected image was likely a custom template; reset the editor.
-      this._resetEditorState();
+      const selected = this.selectedImage();
+      if (selected && selected.url.startsWith('data:')) {
+        this._resetEditorState();
+      }
     }
   }
 
