@@ -21,7 +21,7 @@ async function generateCaptions(contents: {
   }
 
   const response: GenerateContentResponse = await ai.models.generateContent({
-    model: 'gemini-3.0-flash',
+    model: 'gemini-3-flash-preview',
     contents,
     config: {
       responseMimeType: 'application/json',
