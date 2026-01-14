@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 import { CaptionTone } from '../models/meme.model';
 
 interface CaptionsResponse {
@@ -11,15 +12,14 @@ interface CaptionsResponse {
 
 @Injectable({ providedIn: 'root' })
 export class GeminiService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   /**
    * Checks if the backend is reachable and configured.
-   * In a real app, this could call an endpoint that verifies the API key.
    */
   async checkHealth(): Promise<boolean> {
     try {
-      const resp = await this.http.get<{ status: string }>('/api/health').toPromise();
+      const resp = await firstValueFrom(this.http.get<{ status: string }>('/api/health'));
       return resp?.status === 'ok';
     } catch {
       return false;
@@ -27,7 +27,7 @@ export class GeminiService {
   }
 
   isConfigured(): boolean {
-    return true; // Assume configured for visual state, but we'll use checkHealth for real work
+    return true; // Config check is now handled by checkHealth() at runtime
   }
 
   private sanitizeCaptions(captions: string[]): string[] {
@@ -41,14 +41,14 @@ export class GeminiService {
     tone: CaptionTone,
     context: string,
   ): Promise<string[]> {
-    const resp = await this.http
-      .post<CaptionsResponse>('/api/generate-captions-from-image', {
+    const resp = await firstValueFrom(
+      this.http.post<CaptionsResponse>('/api/generate-captions-from-image', {
         imageBase64: base64ImageData,
         mimeType,
         tone,
         context,
-      })
-      .toPromise();
+      }),
+    );
 
     if (!resp?.success) {
       throw new Error(resp?.error ?? 'Failed to generate captions.');
@@ -62,13 +62,13 @@ export class GeminiService {
     tone: CaptionTone,
     context: string,
   ): Promise<string[]> {
-    const resp = await this.http
-      .post<CaptionsResponse>('/api/generate-captions-from-text', {
+    const resp = await firstValueFrom(
+      this.http.post<CaptionsResponse>('/api/generate-captions-from-text', {
         templateName,
         tone,
         context,
-      })
-      .toPromise();
+      }),
+    );
 
     if (!resp?.success) {
       throw new Error(resp?.error ?? 'Failed to generate captions.');
