@@ -444,14 +444,19 @@ updateSelectedLayerProperty(prop: keyof TextLayer, value: any): void {
 export class GeminiService {
   constructor(private http: HttpClient) {}
 
-  async generateMemeCaptions(imageBase64: string, mimeType: string, tone: CaptionTone, context: string) {
+  async generateMemeCaptions(
+    imageBase64: string,
+    mimeType: string,
+    tone: CaptionTone,
+    context: string,
+  ) {
     return firstValueFrom(
       this.http.post<CaptionsResponse>('/api/generate-captions-from-image', {
         imageBase64,
         mimeType,
         tone,
         context,
-      })
+      }),
     );
   }
 }

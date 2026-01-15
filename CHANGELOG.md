@@ -5,7 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.8.0] - 2026-01-14
+## [1.8.1] - 2024-07-16
+
+### Changed
+
+- **Backend Refactoring**: Abstracted duplicated route logic in the Express backend into a reusable `handleRequest` utility.
+- **Configuration**: Externalized the `allowedHosts` for the image proxy to be configurable via environment variables.
+
+### Fixed
+
+- **API Error Handling**: Corrected a regression where client-side validation errors (e.g., missing parameters) were incorrectly returning a `500 Internal Server Error` instead of a `400 Bad Request`.
+
+## [1.8.0] - 2024-07-15
 
 ### Fixed
 

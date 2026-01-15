@@ -12,7 +12,7 @@ interface CaptionsResponse {
 
 @Injectable({ providedIn: 'root' })
 export class GeminiService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   /**
    * Checks if the backend is reachable and configured.
