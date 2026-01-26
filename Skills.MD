@@ -26,7 +26,7 @@ This document outlines the technical skills, tools, and knowledge required to de
 - **Generics**: Type-safe utilities
 - **Union Types**: Multiple possible types
 - **Type Guards**: Runtime type checking
-- **Decorators**: Angular's metadata system
+- **Type Inference**: Leveraging automatic typing
 
 **Example from codebase:**
 ```typescript
@@ -53,8 +53,8 @@ type ImageFilter = 'none' | 'grayscale' | 'sepia' | 'invert';
 
 **Example:**
 ```typescript
-const { url, data, mimeType } = this.selectedImage() ?? {};
-const templates = [...this.defaultTemplates, ...this.customTemplates()];
+const { url, data, mimeType } = selectedImage ?? {};
+const templates = [...defaultTemplates, ...customTemplates];
 ```
 
 #### 3. HTML5
@@ -73,74 +73,89 @@ const templates = [...this.defaultTemplates, ...this.customTemplates()];
 
 ---
 
-### Angular-Specific Skills
+### React-Specific Skills
 
 #### 1. Component Architecture
-- **Component Creation**: `@Component` decorator
-- **Change Detection**: OnPush strategy
-- **Component Communication**: Inputs/Outputs
-- **Lifecycle Hooks**: OnInit, OnDestroy
-- **ViewChild**: Template references
+- **Functional Components**: Modern React pattern
+- **Component Composition**: Building UIs from pieces
+- **Props**: Component communication
+- **JSX**: JavaScript XML syntax
+- **Refs**: Direct DOM access
 
 **Example:**
 ```typescript
-@Component({
-  selector: 'app-meme-editor',
-  templateUrl: './meme-editor.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-})
-export class MemeEditorComponent {
-  @ViewChild('imagePreview') imagePreview!: ElementRef<HTMLImageElement>;
+function MemeEditor() {
+  const imagePreviewRef = useRef<HTMLImageElement>(null);
+  
+  return (
+    <div className="meme-editor">
+      <img ref={imagePreviewRef} src={imageUrl} alt="Meme preview" />
+    </div>
+  );
 }
 ```
 
-#### 2. Signals API (Angular 16+)
-- **Primitive Signals**: `signal()`
-- **Computed Signals**: `computed()`
-- **Effects**: `effect()`
-- **Signal Updates**: `.set()`, `.update()`
-- **Signal Reading**: Call syntax `mySignal()`
+#### 2. React Hooks
+- **useState**: State management
+- **useEffect**: Side effects and lifecycle
+- **useMemo**: Memoized values
+- **useCallback**: Memoized functions
+- **useRef**: Mutable references
+- **Custom Hooks**: Reusable logic
 
 **Example:**
 ```typescript
-const count = signal(0);
-const doubled = computed(() => count() * 2);
+const [count, setCount] = useState(0);
+const doubled = useMemo(() => count * 2, [count]);
 
-count.set(5);           // Direct set
-count.update(n => n + 1); // Update based on current
+useEffect(() => {
+  // Run on mount or when count changes
+  console.log('Count changed:', count);
+}, [count]);
+
+const increment = useCallback(() => {
+  setCount(prev => prev + 1);
+}, []);
 ```
 
-#### 3. Template Syntax
-- **Interpolation**: `{{ expression }}`
-- **Property Binding**: `[property]="value"`
-- **Event Binding**: `(event)="handler()"`
-- **Two-Way Binding**: `[(ngModel)]="value"`
-- **Control Flow**: `@if`, `@for`, `@switch`
-- **Directives**: Structural and attribute
+#### 3. JSX Syntax
+- **Expressions**: `{expression}`
+- **Props**: `prop={value}`
+- **Event Handlers**: `onClick={handler}`
+- **Conditional Rendering**: `{condition && <Component />}`
+- **Lists**: `.map()` for rendering arrays
+- **Fragments**: `<>...</>`
 
 **Example:**
-```html
-@if (hasImage()) {
-  <img [src]="selectedImage()?.url" [alt]="'Meme preview'">
-}
+```tsx
+{hasImage && (
+  <img src={selectedImage?.url} alt="Meme preview" />
+)}
 
-@for (layer of layers(); track layer.id) {
-  <div [style.top.%]="layer.top">{{ layer.text }}</div>
-}
+{layers.map(layer => (
+  <div key={layer.id} style={{ top: `${layer.top}%` }}>
+    {layer.text}
+  </div>
+))}
 ```
 
-#### 4. Services and Dependency Injection
-- **Injectable Decorator**: `@Injectable()`
-- **Provider Scopes**: root, component
-- **Constructor Injection**: Dependency resolution
-- **Service Communication**: Cross-component data
+#### 4. State Management Patterns
+- **Local State**: Component-level with useState
+- **Derived State**: Computed with useMemo
+- **State Updates**: Functional updates
+- **State Lifting**: Moving state up
+- **Context API**: Global state (optional)
 
 **Example:**
 ```typescript
-@Injectable({ providedIn: 'root' })
-export class GeminiService {
-  constructor(private http: HttpClient) {}
-}
+// Local state
+const [layers, setLayers] = useState<TextLayer[]>([]);
+
+// Derived state
+const hasLayers = useMemo(() => layers.length > 0, [layers]);
+
+// Functional update
+setLayers(prev => [...prev, newLayer]);
 ```
 
 ---
@@ -156,13 +171,16 @@ export class GeminiService {
 
 **Example:**
 ```typescript
-const response = await this.ai.models.generateContent({
-  model: 'gemini-2.5-flash',
-  contents: { parts: [{ text: prompt }, { inlineData: { mimeType, data }}] },
-  config: {
-    responseMimeType: 'application/json',
-    responseSchema: { type: Type.ARRAY, items: { type: Type.STRING } }
-  }
+const response = await fetch('https://api.anthropic.com/v1/messages', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': apiKey,
+  },
+  body: JSON.stringify({
+    model: 'gemini-2.5-flash',
+    messages: [{ role: 'user', content: prompt }],
+  }),
 });
 ```
 
@@ -200,7 +218,7 @@ Return as JSON array of 5 strings.
 **Example:**
 ```typescript
 const canvas = document.createElement('canvas');
-const ctx = canvas.getContext('2d');
+const ctx = canvas.getContext('2d')!;
 ctx.filter = 'grayscale(100%)';
 ctx.drawImage(image, 0, 0);
 const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
@@ -216,10 +234,11 @@ const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
 ```typescript
 const reader = new FileReader();
 reader.onprogress = (e) => {
-  this.uploadProgress.set((e.loaded / e.total) * 100);
+  setUploadProgress((e.loaded / e.total) * 100);
 };
 reader.onload = () => {
   const dataUrl = reader.result as string;
+  setImageData(dataUrl);
 };
 reader.readAsDataURL(file);
 ```
@@ -233,9 +252,11 @@ reader.readAsDataURL(file);
 **Example:**
 ```typescript
 canvas.toBlob(async (blob) => {
-  await navigator.clipboard.write([
-    new ClipboardItem({ 'image/png': blob })
-  ]);
+  if (blob) {
+    await navigator.clipboard.write([
+      new ClipboardItem({ 'image/png': blob })
+    ]);
+  }
 }, 'image/png');
 ```
 
@@ -260,7 +281,7 @@ localStorage.removeItem('key');
 ### Ideal Background
 
 - **2+ years** with modern JavaScript frameworks
-- **1+ year** with Angular specifically
+- **1+ year** with React specifically
 - **Experience with** TypeScript in production
 - **Familiarity with** REST APIs and async operations
 - **Basic understanding** of AI/ML concepts
@@ -271,9 +292,9 @@ localStorage.removeItem('key');
 
 - Canvas/WebGL graphics programming
 - Image processing algorithms
-- State management patterns (NgRx, Akita)
-- Testing frameworks (Jest, Cypress)
-- Build optimization (Webpack, Vite)
+- State management libraries (Redux, Zustand)
+- Testing frameworks (Jest, React Testing Library)
+- Build optimization (Vite, Webpack)
 - Progressive Web Apps (PWA)
 - Accessibility (WCAG standards)
 
@@ -283,17 +304,15 @@ localStorage.removeItem('key');
 
 ### Core Technologies
 
-#### Angular CLI
+#### Vite
 ```bash
 # Installation
-npm install -g @angular/cli
+npm create vite@latest project-name -- --template react-ts
 
 # Common commands
-ng new project-name          # Create project
-ng generate component name   # Generate component
-ng serve                     # Dev server
-ng build                     # Production build
-ng test                      # Run tests
+npm run dev              # Dev server
+npm run build            # Production build
+npm run preview          # Preview production build
 ```
 
 #### Package Management (npm/yarn)
@@ -338,15 +357,15 @@ git rebase main
    - Verify: `node --version`
 
 2. **Code Editor** (Recommended: VS Code)
-   - Angular Language Service extension
+   - ES7+ React/Redux/React-Native snippets
    - ESLint extension
    - Prettier extension
    - TypeScript extension
 
 3. **Browser DevTools**
    - Chrome DevTools
-   - Angular DevTools extension
-   - React DevTools (for comparison)
+   - React DevTools extension
+   - Network tab for API debugging
 
 4. **Terminal/Shell**
    - Bash, Zsh, PowerShell
@@ -362,17 +381,21 @@ git rebase main
     "source.fixAll.eslint": true
   },
   "typescript.preferences.importModuleSpecifier": "relative",
-  "files.autoSave": "onFocusChange"
+  "files.autoSave": "onFocusChange",
+  "emmet.includeLanguages": {
+    "typescript": "typescriptreact"
+  }
 }
 ```
 
 **Recommended extensions:**
-- Angular Language Service
+- ES7+ React/Redux/React-Native snippets
 - ESLint
 - Prettier - Code formatter
 - Auto Import
 - GitLens
 - Error Lens
+- Tailwind CSS IntelliSense
 
 ---
 
@@ -380,29 +403,29 @@ git rebase main
 
 ### 1. Reactive Programming
 
-**What**: Programming with asynchronous data streams
+**What**: Programming with data that changes over time
 
 **Why**: Simplifies handling user interactions, API calls, and state changes
 
-**How in this project**: Angular Signals provide reactive state
+**How in this project**: React hooks provide reactive state
 ```typescript
-// Signal automatically triggers UI update
-this.layers.update(layers => [...layers, newLayer]);
+// State automatically triggers UI update
+setLayers(prev => [...prev, newLayer]);
 ```
 
 ### 2. Immutability
 
 **What**: Never mutating data directly, always creating new copies
 
-**Why**: Predictable state changes, easier debugging
+**Why**: Predictable state changes, easier debugging, prevents bugs
 
 **How**:
 ```typescript
 // ❌ Wrong: Mutates array
-this.layers().push(newLayer);
+layers.push(newLayer);
 
 // ✅ Correct: Creates new array
-this.layers.update(layers => [...layers, newLayer]);
+setLayers(prev => [...prev, newLayer]);
 ```
 
 ### 3. Component Composition
@@ -413,11 +436,16 @@ this.layers.update(layers => [...layers, newLayer]);
 
 **How**:
 ```typescript
-// AppComponent composes MemeEditorComponent
-@Component({
-  imports: [MemeEditorComponent]
-})
-export class AppComponent {}
+// App composes MemeEditor
+function App() {
+  return (
+    <div>
+      <Header />
+      <MemeEditor />
+      <Footer />
+    </div>
+  );
+}
 ```
 
 ### 4. Separation of Concerns
@@ -428,14 +456,14 @@ export class AppComponent {}
 
 **How**:
 - **Components**: UI logic
-- **Services**: Business logic
+- **Services/Hooks**: Business logic
 - **Models**: Data structures
 
 ### 5. Type Safety
 
 **What**: Using TypeScript's type system to catch errors at compile-time
 
-**Why**: Fewer runtime errors, better IDE support
+**Why**: Fewer runtime errors, better IDE support, self-documenting code
 
 **How**:
 ```typescript
@@ -455,30 +483,32 @@ const layer: TextLayer = { id: 1 }; // ❌ Error: missing properties
 
 ### Official Documentation
 
-- [Angular Docs](https://angular.dev/) - Official Angular documentation
+- [React Docs](https://react.dev/) - Official React documentation
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/) - TypeScript guide
 - [MDN Web Docs](https://developer.mozilla.org/) - Web APIs reference
 - [Google AI Docs](https://ai.google.dev/docs) - Gemini API documentation
 - [Tailwind CSS](https://tailwindcss.com/docs) - Utility classes reference
+- [Vite Guide](https://vitejs.dev/guide/) - Vite build tool docs
 
 ### Video Tutorials
 
-- **Angular University** - Comprehensive Angular courses
+- **Web Dev Simplified** - Clear React tutorials
 - **Fireship** - Quick, concise web dev tutorials
 - **Traversy Media** - Full-stack development
-- **Academind** - Angular deep dives
+- **Jack Herrington** - Advanced React patterns
+- **Theo - t3.gg** - Modern web development
 
 ### Books
 
-- **"Pro Angular"** by Adam Freeman
+- **"Learning React"** by Alex Banks & Eve Porcello
 - **"Programming TypeScript"** by Boris Cherny
 - **"You Don't Know JS"** series by Kyle Simpson
 
 ### Interactive Learning
 
-- [StackBlitz](https://stackblitz.com/) - Online Angular IDE
+- [CodeSandbox](https://codesandbox.io/) - Online React IDE
 - [TypeScript Playground](https://www.typescriptlang.org/play) - Try TypeScript
-- [Angular Challenges](https://angular-challenges.vercel.app/) - Practice problems
+- [React Challenges](https://reactchallenges.live/) - Practice problems
 
 ---
 
@@ -503,11 +533,13 @@ const topLayer: TextLayer = {
 };
 ```
 
-3. Add UI control in template
-```html
-<input type="range" 
-  [value]="selectedLayer()!.rotation"
-  (input)="updateSelectedLayerProperty('rotation', +$any($event.target).value)">
+3. Add UI control in component
+```tsx
+<input 
+  type="range" 
+  value={selectedLayer?.rotation ?? 0}
+  onChange={(e) => updateLayerProperty('rotation', +e.target.value)}
+/>
 ```
 
 4. Apply in canvas rendering
@@ -527,35 +559,40 @@ type ImageFilter = 'none' | 'grayscale' | 'sepia' | 'invert' | 'blur';
 
 2. Update filters array in component
 ```typescript
-filters: ImageFilter[] = ['none', 'grayscale', 'sepia', 'invert', 'blur'];
+const filters: ImageFilter[] = ['none', 'grayscale', 'sepia', 'invert', 'blur'];
 ```
 
-3. Add case in `computedImageFilter`
+3. Add case in filter computation
 ```typescript
-case 'blur': return 'blur(5px)';
+const computedFilter = useMemo(() => {
+  switch (imageFilter) {
+    case 'blur': return 'blur(5px)';
+    // ... other cases
+  }
+}, [imageFilter]);
 ```
 
-4. UI automatically updates due to reactive binding!
+4. UI automatically updates due to reactive state!
 
 ### Task 3: Adding a New Template
 
 **Steps:**
 1. Add to `defaultTemplates` array
 ```typescript
-defaultTemplates: MemeTemplate[] = [
+const defaultTemplates: MemeTemplate[] = [
   // ... existing templates
   { name: 'Stonks', url: 'https://i.imgur.com/xyz123.jpg' }
 ];
 ```
 
-2. Template automatically appears in grid (reactive computed signal)
+2. Template automatically appears in grid (reactive rendering)
 
 ### Task 4: Modifying AI Prompt
 
 **Steps:**
 1. Update prompt in `gemini.service.ts`
 ```typescript
-let promptText = `
+const promptText = `
 Generate 5 captions that are:
 - Short (under 50 characters)
 - Witty and clever
@@ -588,17 +625,17 @@ npm install
 Cmd/Ctrl + Shift + P → "TypeScript: Restart TS Server"
 ```
 
-### Problem: Signal Not Updating UI
+### Problem: State Not Updating UI
 
-**Symptom**: Change signal value but UI doesn't reflect
+**Symptom**: Change state but UI doesn't reflect
 
 **Solution**:
 ```typescript
 // ❌ Wrong: Direct mutation
-this.layers().push(newLayer);
+layers.push(newLayer);
 
-// ✅ Correct: Use .update() or .set()
-this.layers.update(layers => [...layers, newLayer]);
+// ✅ Correct: Use setState with new reference
+setLayers(prev => [...prev, newLayer]);
 ```
 
 ### Problem: CORS Errors
@@ -623,9 +660,9 @@ const dataUrl = canvas.toDataURL();
 **Symptom**: "API_KEY environment variable not found"
 
 **Solution**:
-1. Check `process.env.API_KEY` is accessible
-2. Verify `.env` file exists and is loaded
-3. Check build configuration includes env vars
+1. Create `.env` file in project root
+2. Add: `VITE_GEMINI_API_KEY=your_key_here`
+3. Access in code: `import.meta.env.VITE_GEMINI_API_KEY`
 4. Restart dev server after adding `.env`
 
 ### Problem: Canvas Export Fails
@@ -636,13 +673,13 @@ const dataUrl = canvas.toDataURL();
 ```typescript
 // Ensure image loaded before canvas operations
 image.onload = () => {
-  const canvas = this._generateMemeCanvas();
+  const canvas = generateMemeCanvas();
   // Now safe to use canvas
 };
 
 // Handle CORS errors
 image.onerror = () => {
-  this.error.set('Image loading failed. Try uploading your own.');
+  setError('Image loading failed. Try uploading your own.');
 };
 ```
 
@@ -657,7 +694,7 @@ try {
 } catch (e) {
   if (e instanceof DOMException && e.code === 22) {
     // Quota exceeded
-    this.error.set('Storage full. Clear old templates.');
+    setError('Storage full. Clear old templates.');
     // Optionally clear old data
     localStorage.clear();
   }
@@ -671,14 +708,14 @@ try {
 ### Code Style
 
 1. **Naming Conventions**
-   - Components: PascalCase (`MemeEditorComponent`)
+   - Components: PascalCase (`MemeEditor`)
    - Variables/functions: camelCase (`selectedImage`)
    - Constants: UPPER_SNAKE_CASE (`API_KEY`)
-   - Files: kebab-case (`meme-editor.component.ts`)
+   - Files: kebab-case or PascalCase (`MemeEditor.tsx`)
 
 2. **Function Size**
    - Keep functions under 30 lines
-   - Extract complex logic to private methods
+   - Extract complex logic to custom hooks
    - Single responsibility principle
 
 3. **Comments**
@@ -689,9 +726,9 @@ try {
 ### Performance Tips
 
 1. **Avoid Unnecessary Re-renders**
-   - Use `ChangeDetectionStrategy.OnPush`
-   - Leverage computed signals
-   - Memoize expensive calculations
+   - Use `useMemo` for expensive calculations
+   - Use `useCallback` for event handlers
+   - Memoize components with `React.memo()`
 
 2. **Optimize Images**
    - Compress before upload
@@ -700,18 +737,16 @@ try {
 
 3. **Debounce User Input**
    ```typescript
-   // For search input
-   searchQuery = signal('');
-   debouncedSearch = computed(() => {
-     const query = this.searchQuery();
-     // Debounce logic here
-   });
+   const [searchQuery, setSearchQuery] = useState('');
+   const debouncedQuery = useMemo(() => {
+     // Debounce logic
+   }, [searchQuery]);
    ```
 
 ### Security
 
 1. **Never Commit API Keys**
-   - Use environment variables
+   - Use environment variables (`VITE_`)
    - Add `.env` to `.gitignore`
    - Use secrets management in production
 
@@ -733,13 +768,13 @@ try {
 
 ### Junior Developer
 - Master TypeScript fundamentals
-- Build simple Angular components
+- Build simple React components
 - Understand basic API integration
 - Write clean, readable code
 
 ### Mid-Level Developer
 - Architect component hierarchies
-- Implement state management
+- Implement custom hooks
 - Optimize performance
 - Handle complex async operations
 - Write comprehensive tests
@@ -749,17 +784,17 @@ try {
 - Lead technical decisions
 - Mentor junior developers
 - Optimize for scalability
-- Contribute to framework discussions
+- Contribute to open source
 
 ---
 
 ## Conclusion
 
-Developing the AI Meme Generator requires a solid foundation in modern web development, with specific expertise in Angular, TypeScript, and AI integration. This guide provides the roadmap for acquiring and deepening these skills.
+Developing the AI Meme Generator requires a solid foundation in modern web development, with specific expertise in React, TypeScript, and AI integration. This guide provides the roadmap for acquiring and deepening these skills.
 
 **Key Takeaways:**
 - **TypeScript** is essential for type-safe development
-- **Angular Signals** enable reactive, performant UIs
+- **React Hooks** enable reactive, performant UIs
 - **Canvas API** provides powerful image manipulation
 - **AI Integration** opens new creative possibilities
 - **Continuous Learning** is crucial in web development
@@ -769,7 +804,7 @@ Keep building, keep learning, and have fun creating memes! 🚀
 ---
 
 **Additional Resources:**
-- Join the [Angular Discord](https://discord.gg/angular)
-- Follow [@angular](https://twitter.com/angular) on Twitter
-- Read the [Angular Blog](https://blog.angular.io/)
-- Contribute to [Angular on GitHub](https://github.com/angular/angular)
+- Join the [Reactiflux Discord](https://www.reactiflux.com/)
+- Follow [@reactjs](https://twitter.com/reactjs) on Twitter
+- Read the [React Blog](https://react.dev/blog)
+- Contribute to [React on GitHub](https://github.com/facebook/react)
