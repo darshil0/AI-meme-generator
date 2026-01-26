@@ -1,4 +1,4 @@
-﻿# Changelog
+# Changelog
 
 All notable changes to this project will be documented in this file.
 
@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - **Configuration Check**: Added a new `/api/config-status` endpoint to the backend to securely report if the Gemini API key is configured.
 - **Startup Validation**: The frontend now verifies backend configuration on initialization and updates the UI accordingly.
-- **Updated Dependencies**: Updated the Dependencies to the latest Versions.
+- **Updated Dependencies**: Updated dependencies to the latest versions.
 
 ### Changed
 - **Security Hardening**: Removed insecure `apiKey` placeholders from `environment.ts` and `environment.prod.ts`.
@@ -24,12 +24,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.5.0] - 2026-01-13
 
 ### Added
-- **Environment Configuration**: Introduced `environment.prod.ts` and wired Angular CLI file replacements for production builds.
+- **Environment Configuration**: Introduced `environment.prod.ts` and wired build tool file replacements for production builds.
 - **Backend Proxy**: Added a small Express server under `server/` that:
   - Talks to the Google Gemini API using `GEMINI_API_KEY` from environment variables
   - Exposes `/api/generate-captions-from-image` and `/api/generate-captions-from-text` endpoints
   - Provides `/api/template-image?url=...` as a CORS-safe proxy for external meme templates
-- **Dev Proxy**: Configured `ng serve` to use `proxy.conf.json` so `/api` calls work transparently in development.
+- **Dev Proxy**: Configured development server to use `proxy.conf.json` so `/api` calls work transparently in development.
 
 ### Changed
 - **Validation**: Tightened image upload validation (strict MIME types + max file size) and enforced `MEME_CONSTANTS.MAX_LAYERS`.
@@ -39,7 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.4.0] - 2026-01-13
 
 ### Changed
-- **Project Structure**: Moved core application code under `src/app` (components, models, services) to follow Angular conventions.
+- **Project Structure**: Moved core application code under `src/app` (components, models, services) to follow standard conventions.
 - **Imports & TS Config**: Updated bootstrap entry, service imports, and `tsconfig.json` includes to reflect the new layout.
 
 ## [1.3.0] - 2026-01-12
@@ -49,12 +49,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Config Placeholders**: Documented a clear `environment.apiKey` placeholder for Gemini configuration.
 
 ### Changed
-- **Angular Configuration**: Updated `angular.json` to match the actual entry points (`index.html`, `index.tsx`), styles, and `tsconfig`.
-- **Template Bindings**: Refined `meme-editor` template bindings to correctly work with Angular signals and avoid invalid `ngModel` assignments.
+- **Build Configuration**: Updated build configuration to match the actual entry points (`index.html`, `index.tsx`), styles, and `tsconfig`.
+- **Template Bindings**: Refined `meme-editor` template bindings to correctly work with reactive state management and avoid invalid model assignments.
 
 ### Fixed
 - **Import Paths**: Corrected imports in `app.component.ts` and `gemini.service.ts` to use valid relative paths.
-- **Assets**: Added `src/assets/` and a placeholder `src/favicon.ico` to satisfy Angular asset configuration.
+- **Assets**: Added `src/assets/` and a placeholder `src/favicon.ico` to satisfy asset configuration.
 
 ## [1.2.0] - 2026-01-12
 
@@ -80,7 +80,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - **Type Safety**: All service methods now use proper TypeScript types instead of `any`
-- **Template Binding**: Replaced `$any()` with proper type casting in templates
+- **Template Binding**: Replaced type workarounds with proper type casting in templates
 - **Null Safety**: Removed all non-null assertions (`!`) and added proper null checks
 - **Environment Configuration**: Updated environment.ts with clearer API key configuration comments
 - **File Size Validation**: Now uses `MEME_CONSTANTS.MAX_FILE_SIZE` instead of hardcoded values
@@ -123,7 +123,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Local storage persistence
 
 ### Technical Features
-- Angular 21 with Signals-based state management
+- React 18 with hooks-based state management
 - TypeScript 5.8 with strict type checking
 - Canvas-based meme rendering
 - CORS-safe image processing
@@ -137,7 +137,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **1.6.0**: Security hardening and backend configuration verification
 - **1.5.0**: Backend proxy, validation hardening, and production environment configuration
 - **1.4.0**: Restructured source into `src/app` and aligned tooling/config
-- **1.3.0**: Tooling, Angular configuration, and template binding fixes
+- **1.3.0**: Tooling, build configuration, and template binding fixes
 - **1.2.0**: Project structure re-organization and new services
 - **1.1.0**: Code quality improvements, type safety enhancements
 - **1.0.1**: Bug fixes and code cleanup
