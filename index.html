@@ -5,7 +5,7 @@
   <title>AI Meme Generator</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
-
+  
   <!-- Fonts (kept here instead of @import in CSS for better performance) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -13,13 +13,12 @@
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Impact&display=swap"
     rel="stylesheet"
   />
-
-  <!-- Global styles built by Angular (includes Tailwind from styles.scss) -->
-  <link rel="stylesheet" href="styles.css" />
-
+  
   <style>
     body {
       font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
     }
     .meme-font {
       font-family: 'Impact', sans-serif;
@@ -37,27 +36,9 @@
       border-width: 0;
     }
   </style>
-
-  <script type="importmap">
-    {
-      "imports": {
-        "rxjs": "https://esm.sh/rxjs@^7.8.2?conditions=es2015",
-        "rxjs/operators": "https://esm.sh/rxjs@^7.8.2/operators?conditions=es2015",
-        "rxjs/ajax": "https://esm.sh/rxjs@^7.8.2/ajax?conditions=es2015",
-        "rxjs/webSocket": "https://esm.sh/rxjs@^7.8.2/webSocket?conditions=es2015",
-        "rxjs/testing": "https://esm.sh/rxjs@^7.8.2/testing?conditions=es2015",
-        "rxjs/fetch": "https://esm.sh/rxjs@^7.8.2/fetch?conditions=es2015",
-        "@google/genai": "https://esm.sh/@google/genai@^1.35.0?external=rxjs",
-        "@angular/core": "https://esm.sh/@angular/core@^21.0.8?external=rxjs",
-        "@angular/compiler": "https://esm.sh/@angular/compiler@^21.0.8?external=rxjs",
-        "@angular/platform-browser": "https://esm.sh/@angular/platform-browser@^21.0.8?external=rxjs",
-        "@angular/common": "https://esm.sh/@angular/common@^21.0.8?external=rxjs",
-        "@angular/common/http": "https://esm.sh/@angular/common@^21.0.8/http?external=rxjs"
-      }
-    }
-  </script>
 </head>
 <body class="bg-gray-900">
-  <app-root></app-root>
+  <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
 </body>
 </html>
