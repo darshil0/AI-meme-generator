@@ -146,7 +146,7 @@ The backend service lives in the server/ directory and is responsible for:
 `ash
 cd server
 npm install        # first time only
-$env:GEMINI_API_KEY=""YOUR_REAL_GEMINI_KEY""   # PowerShell example; use env vars in prod
+export GEMINI_API_KEY="YOUR_REAL_GEMINI_KEY"   # Bash example; use env vars in prod
 npm run dev        # runs on http://localhost:4000
 `
 
@@ -243,7 +243,7 @@ ai-meme-generator/
 The application uses Angular Signals for reactive state management:
 
 - **Primitive Signals**: selectedImage, layers, isLoading, error
-- **Computed Signals**: hasImage, selectedLayer, computedImageFilter, 	emplates
+- **Computed Signals**: hasImage, selectedLayer, computedImageFilter, templates
 - **Benefits**: Fine-grained reactivity, no Zone.js overhead, automatic UI updates
 
 ### Canvas-Based Rendering
@@ -372,7 +372,7 @@ If you encounter issues or have questions:
 
 See [CHANGELOG.md](CHANGELOG.md) for a complete list of changes. Recent improvements include:
 
-- **Type Safety**: Full TypeScript type safety with no ny types
+- **Type Safety**: Full TypeScript type safety with no any types
 - **Error Handling**: Improved error handling with proper type guards
 - **Interface Alignment**: Consistent data models across the application
 - **Code Quality**: Removed unsafe non-null assertions and improved null checking
