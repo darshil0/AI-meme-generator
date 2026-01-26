@@ -104,15 +104,15 @@ The AI is prompted to return the results in a structured JSON format, which the 
 ### Installation
 
 1. Clone the repository:
-`ash
+```bash
 git clone <repository-url>
 cd ai-meme-generator
-`
+```
 
 2. Install dependencies:
-`ash
+```bash
 npm install
-`
+```
 
 3. Configure your API key:
 
@@ -122,14 +122,14 @@ The application uses a backend server to securely handle API requests. You need 
 Set the environment variable in your terminal before starting the server.
 
 *PowerShell:*
-`powershell
-$env:GEMINI_API_KEY=""YOUR_REAL_GEMINI_KEY""
-`
+```powershell
+$env:GEMINI_API_KEY="YOUR_REAL_GEMINI_KEY"
+```
 
 *Bash:*
-`ash
-export GEMINI_API_KEY=""YOUR_REAL_GEMINI_KEY""
-`
+```bash
+export GEMINI_API_KEY="YOUR_REAL_GEMINI_KEY"
+```
 
 **Important**: Never commit your API key to version control.
 
@@ -143,32 +143,32 @@ The backend service lives in the server/ directory and is responsible for:
 - Talking to the Google Gemini API (your API key lives **only** on the server)
 - Proxying external meme template images to avoid CORS issues
 
-`ash
+```bash
 cd server
 npm install        # first time only
 export GEMINI_API_KEY="YOUR_REAL_GEMINI_KEY"   # Bash example; use env vars in prod
 npm run dev        # runs on http://localhost:4000
-`
+```
 
 #### 2. Start the Angular frontend
 
-`ash
+```bash
 cd ..
 npm install        # if not already
 npm run dev        # Angular dev server with /api proxy
-`
+```
 
 The application will be available at http://localhost:4200, and all /api calls are automatically proxied to the backend via proxy.conf.json.
 
 **Production build:**
-`ash
+```bash
 npm run build
-`
+```
 
 **Preview production build:**
-`ash
+```bash
 npm run preview
-`
+```
 
 ### Deployment (overview)
 
@@ -182,8 +182,7 @@ This project is split into a frontend (Angular) and a backend (Express proxy):
    - Expose the backend at a URL like https://your-backend.example.com.
 
 2. **Frontend (Angular)**
-   - Build the frontend with 
-pm run build and deploy the contents of dist/ to a static host (Vercel, Netlify, CloudFront, etc.).
+   - Build the frontend with `npm run build` and deploy the contents of dist/ to a static host (Vercel, Netlify, CloudFront, etc.).
    - Configure the frontend's /api base URL to point at your backend host (e.g., via environment-specific configuration or a reverse proxy in front of both services).
 
 In many setups, you can also run the backend and frontend behind a single reverse proxy (e.g., Nginx or a PaaS routing layer) where / serves the Angular app and /api is forwarded to the Node backend.
@@ -192,16 +191,16 @@ In many setups, you can also run the backend and frontend behind a single revers
 
 This project uses ESLint and Prettier for code quality and consistent formatting:
 
-`ash
+```bash
 npm run lint    # Run ESLint on TypeScript files
 npm run format  # Format the codebase with Prettier
-`
+```
 
 ---
 
 ## 🏗️ Project Structure
 
-`
+```
 ai-meme-generator/
 ├── src/
 │   ├── app/
@@ -232,7 +231,7 @@ ai-meme-generator/
 ├── angular.json
 ├── package.json
 └── README.md
-`
+```
 
 ---
 
@@ -328,9 +327,9 @@ Two types of data are persisted:
 Contributions are welcome! Please follow these guidelines:
 
 1. Fork the repository
-2. Create a feature branch (git checkout -b feature/amazing-feature)
-3. Commit your changes (git commit -m 'Add amazing feature')
-4. Push to the branch (git push origin feature/amazing-feature)
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
 ### Development Guidelines
@@ -377,9 +376,7 @@ See [CHANGELOG.md](CHANGELOG.md) for a complete list of changes. Recent improvem
 - **Interface Alignment**: Consistent data models across the application
 - **Code Quality**: Removed unsafe non-null assertions and improved null checking
 - **Constants**: Centralized configuration using MEME_CONSTANTS
-- **Tooling**: Added ESLint + Prettier with 
-pm run lint / 
-pm run format
+- **Tooling**: Added ESLint + Prettier with `npm run lint` / `npm run format`
 - **Angular Config**: Fixed Angular paths and asset wiring to match the actual project layout
 - **Project Structure**: Consolidated app code under src/app for a more idiomatic Angular layout
 - **Validation & Environments**: Added strict image type/size checks, layer limits, hardened clipboard support, and a production environment.prod.ts with file replacements
