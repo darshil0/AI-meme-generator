@@ -1,0 +1,488 @@
+<div class="container mx-auto p-4 sm:p-6 lg:p-8">
+  @if (!isApiKeyConfigured()) {
+    <div class="bg-red-800 border-l-4 border-red-500 text-red-100 p-4 rounded-md mb-6" role="alert">
+      <p class="font-bold">Configuration Error</p>
+      <p>Google Gemini API key is not configured. The AI features will not be available.</p>
+    </div>
+  }
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Left Column: All Controls -->
+    <div class="lg:col-span-1 bg-gray-900 p-6 rounded-lg shadow-2xl flex flex-col gap-8 h-fit">
+      
+      <fieldset class="border border-gray-700 p-4 rounded-lg">
+        <legend class="text-xl font-bold px-2 text-purple-300">1. Choose Image</legend>
+        <div class="flex flex-col gap-4 pt-2">
+          
+          <div class="flex gap-2 items-center">
+            @if (savedStateExists()) {
+              <button (click)="loadState()" 
+                      class="flex-1 bg-teal-600 text-white font-semibold py-2 px-3 rounded-lg hover:bg-teal-700 transition-colors flex items-center justify-center gap-2 text-sm"
+                      type="button">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
+                </svg>
+                Load Work
+              </button>
+            }
+            @if (isEditing()) {
+              <button (click)="saveState()" 
+                      class="flex-1 bg-indigo-600 text-white font-semibold py-2 px-3 rounded-lg hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2 text-sm"
+                      type="button">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V4zm3 2v4h4V6H8zm-1 6a1 1 0 011-1h4a1 1 0 110 2H8a1 1 0 01-1-1z" clip-rule="evenodd" />
+                </svg>
+                {{ saveButtonText() }}
+              </button>
+            }
+            @if (savedStateExists()) {
+              <button (click)="clearSavedMemeState()"
+                      type="button"
+                      class="text-xs text-gray-400 hover:text-red-300 underline-offset-2 hover:underline whitespace-nowrap">
+                Clear saved work
+              </button>
+            }
+          </div>
+          
+          @if (isEditing() || savedStateExists()) {
+            <div class="relative">
+              <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                <div class="w-full border-t border-gray-600"></div>
+              </div>
+              <div class="relative flex justify-center">
+                <span class="bg-gray-900 px-2 text-sm text-gray-400">Or Start New</span>
+              </div>
+            </div>
+          }
+
+          <label for="file-upload" 
+                 class="w-full cursor-pointer bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+                 tabindex="0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+            </svg>
+            Upload Your Own
+          </label>
+          <input id="file-upload" 
+                 type="file" 
+                 class="hidden" 
+                 (change)="onFileSelected($event)" 
+                 accept="image/*"
+                 aria-describedby="file-upload-help">
+          <p id="file-upload-help" class="sr-only">Upload an image file to start creating a meme</p>
+          
+          @if (uploadProgress() !== null) {
+            <div class="w-full bg-gray-700 rounded-full h-2.5">
+              <div class="bg-blue-600 h-2.5 rounded-full transition-all duration-300 ease-in-out" 
+                   [style.width.%]="uploadProgress() || 0">
+              </div>
+            </div>
+          }
+
+          <div>
+            <p class="text-sm text-gray-400 mb-2">Or select a template:</p>
+            <div class="mb-4">
+              <label for="template-search" class="sr-only">Search templates</label>
+              <input id="template-search" 
+                     type="text" 
+                     placeholder="Search templates..." 
+                     [value]="templateSearchQuery()"
+                     (input)="templateSearchQuery.set(($event.target as HTMLInputElement)?.value ?? '')" 
+                     class="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+            </div>
+            <div class="grid grid-cols-4 gap-2 max-h-52 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
+              @for (template of filteredTemplates(); track template.url) {
+                <div class="relative group aspect-square">
+                  <button (click)="selectTemplate(template)" 
+                          [attr.aria-label]="'Select template: ' + template.name" 
+                          class="w-full h-full p-0 border-0 bg-transparent rounded-md overflow-hidden ring-2 ring-transparent hover:ring-purple-500 focus:outline-none focus:ring-4 focus:ring-purple-500/50 transition-all"
+                          type="button">
+                    <img [src]="template.url" 
+                         [alt]="template.name" 
+                         class="w-full h-full object-cover group-hover:opacity-75 transition-opacity"
+                         loading="lazy">
+                    <div class="absolute bottom-0 left-0 right-0 p-1 text-center bg-black/60 backdrop-blur-sm">
+                      <p class="text-white text-xs truncate">{{ template.name }}</p>
+                    </div>
+                  </button>
+                  @if (loadingTemplateUrl() === template.url) {
+                    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center pointer-events-none">
+                      <svg class="animate-spin h-8 w-8 text-white" 
+                           xmlns="http://www.w3.org/2000/svg" 
+                           fill="none" 
+                           viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                    </div>
+                  }
+                  @if (template.isCustom) {
+                    <button (click)="deleteCustomTemplate(template, $event)" 
+                            [attr.aria-label]="'Delete template ' + template.name" 
+                            class="absolute top-1 right-1 bg-red-600 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs font-bold opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity z-10 hover:bg-red-700"
+                            type="button">
+                      ×
+                    </button>
+                  }
+                </div>
+              }
+              @empty filteredTemplates() {
+                <div class="col-span-4 text-center py-8 text-gray-400">
+                  No templates found
+                </div>
+              }
+            </div>
+            @if (customTemplates().length > 0) {
+              <button (click)="clearAllCustomTemplates()"
+                      type="button"
+                      class="mt-2 text-xs text-gray-400 hover:text-red-300 underline-offset-2 hover:underline">
+                Clear all custom templates
+              </button>
+            }
+          </div>
+        </div>
+      </fieldset>
+
+      @if (isEditing()) {
+        <fieldset class="border border-gray-700 p-4 rounded-lg">
+          <legend class="text-xl font-bold px-2 text-purple-300">2. AI Captions</legend>
+          <div class="flex flex-col gap-4 pt-2">
+            <div>
+              <h3 class="text-lg font-semibold mb-2 text-purple-400">Select a Tone</h3>
+              <div class="flex flex-wrap gap-2">
+                @for (tone of tones; track tone; let i = $index) {
+                  <button (click)="selectTone(tone)" 
+                          type="button"
+                          [attr.aria-pressed]="selectedTone() === tone"
+                          class="px-3 py-1 rounded-md text-sm font-medium hover:bg-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors capitalize first:rounded-l-md last:rounded-r-md"
+                          [class.bg-purple-600]="selectedTone() === tone"
+                          [class.bg-gray-700]="selectedTone() !== tone">
+                    {{ tone }}
+                  </button>
+                }
+              </div>
+            </div>
+            <div>
+              <label for="user-context" class="text-lg font-semibold mb-2 text-purple-400 block">Add context (optional)</label>
+              <textarea id="user-context" 
+                        [ngModel]="userContext()"
+                        (ngModelChange)="userContext.set($event)"
+                        placeholder="e.g., 'My cat hates Mondays'" 
+                        class="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 resize-vertical"
+                        rows="2"
+                        [attr.aria-describedby]="error() ? 'context-error' : null">
+              </textarea>
+            </div>
+            <button (click)="generateCaptions()" 
+                    type="button"
+                    [disabled]="isLoading() || !isApiKeyConfigured()"
+                    class="w-full bg-purple-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-purple-700 disabled:bg-gray-600 disabled:cursor-not-allowed flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-purple-500">
+              <svg *ngIf="isLoading()" class="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Magic Captions
+            </button>
+            <div aria-live="polite">
+              @if (isLoading()) { 
+                <div class="flex items-center justify-center text-gray-300 py-2">
+                  <span>Generating captions...</span>
+                </div> 
+              }
+              @if (error()) { 
+                <div class="bg-red-900 border border-red-700 text-red-200 px-4 py-3 rounded-lg" 
+                     role="alert"
+                     id="context-error">
+                  <strong class="font-bold">Error:</strong>
+                  <span class="block sm:inline ml-2">{{ error() }}</span>
+                </div> 
+              }
+            </div>
+            @if (captions().length > 0) {
+              <div class="space-y-2">
+                <h3 class="font-semibold text-gray-300 mb-2">Suggestions:</h3>
+                @for (caption of captions(); track caption; let i = $index) { 
+                  <button (click)="applyCaption(caption)" 
+                          type="button"
+                          [attr.aria-label]="'Apply caption: ' + caption" 
+                          class="w-full text-left bg-gray-700 p-2 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors text-sm">
+                    {{ caption }}
+                  </button> 
+                }
+              </div>
+            }
+          </div>
+        </fieldset>
+
+        <fieldset class="border border-gray-700 p-4 rounded-lg">
+          <legend class="text-xl font-bold px-2 text-purple-300">3. Text Layers</legend>
+          <div class="flex flex-col gap-4 pt-2">
+            <button (click)="addTextLayer()" 
+                    type="button"
+                    class="w-full bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-green-500">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+              </svg>
+              Add Text Layer
+            </button>
+            <div class="space-y-2 max-h-48 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
+              @for (layer of layers(); track layer.id; let i = $index) {
+                <div (click)="selectLayer(i)" 
+                     class="flex items-center gap-2 p-3 rounded-lg cursor-pointer transition-colors border-2 hover:bg-gray-800 focus-within:bg-gray-700 focus-within:ring-2 focus-within:ring-purple-500"
+                     [class.bg-purple-700]="selectedLayerIndex() === i"
+                     [class.border-purple-500]="selectedLayerIndex() === i"
+                     [class.bg-gray-700]="selectedLayerIndex() !== i"
+                     [class.border-gray-600]="selectedLayerIndex() !== i"
+                     role="button"
+                     tabindex="0"
+                     [attr.aria-selected]="selectedLayerIndex() === i"
+                     [attr.aria-label]="'Select layer: ' + (layer.text || 'Empty')">
+                  <span class="flex-grow truncate text-white font-medium">{{ layer.text || 'Empty Layer' }}</span>
+                  <div class="flex items-center gap-1 flex-shrink-0">
+                    <button (click)="moveLayer(i, 'up', $event); $event.stopPropagation()" 
+                            [disabled]="i === 0" 
+                            [attr.aria-label]="'Move layer up'" 
+                            class="p-1.5 rounded-lg hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                            type="button">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
+                      </svg>
+                    </button>
+                    <button (click)="moveLayer(i, 'down', $event); $event.stopPropagation()" 
+                            [disabled]="i === layers().length - 1" 
+                            [attr.aria-label]="'Move layer down'" 
+                            class="p-1.5 rounded-lg hover:bg-gray-600 disabled:opacity-30 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                            type="button">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                      </svg>
+                    </button>
+                    <button (click)="deleteLayer(i, $event); $event.stopPropagation()" 
+                            [attr.aria-label]="'Delete layer'" 
+                            class="p-1.5 rounded-lg text-red-400 hover:bg-red-800 hover:text-red-300 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors"
+                            type="button">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </fieldset>
+
+        @if (selectedLayer()) {
+          <fieldset class="border border-gray-700 p-4 rounded-lg">
+            <legend class="text-xl font-bold px-2 text-purple-300 max-w-full">
+              Style: <span class="text-purple-400 font-semibold truncate inline-block max-w-[200px]">{{ selectedLayer()?.text || 'No Layer Selected' }}</span>
+            </legend>
+            <div class="pt-2 space-y-4">
+              <div>
+                <label for="layer-text" class="block mb-1 text-sm font-medium text-gray-300">Layer Text</label>
+                <input id="layer-text" 
+                       type="text" 
+                       [ngModel]="selectedLayer()?.text ?? ''"
+                       (ngModelChange)="updateSelectedLayerProperty('text', $event)"
+                       placeholder="Enter text for this layer" 
+                       class="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+              </div>
+              
+              <div>
+                <label for="font-size" class="block mb-1 text-sm font-medium text-gray-300">
+                  Font Size: <span class="font-bold text-purple-400">{{ selectedLayer()?.fontSize }}px</span>
+                </label>
+                <input id="font-size" 
+                       type="range" 
+                       [ngModel]="selectedLayer()?.fontSize ?? 48"
+                       (ngModelChange)="updateSelectedLayerProperty('fontSize', +$event)"
+                       min="10" 
+                       max="200" 
+                       class="w-full h-2 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500">
+              </div>
+              
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label for="font-color" class="block mb-1 text-sm font-medium text-gray-300">Font Color</label>
+                  <input id="font-color" 
+                         type="color" 
+                         [ngModel]="selectedLayer()?.fontColor ?? '#FFFFFF'"
+                         (ngModelChange)="updateSelectedLayerProperty('fontColor', $event)"
+                         class="w-full h-12 p-1 bg-gray-800 border border-gray-600 rounded-lg cursor-pointer focus:outline-none focus:ring-2 focus:ring-purple-500">
+                </div>
+                <div>
+                  <label for="outline-color" class="block mb-1 text-sm font-medium text-gray-300">Outline Color</label>
+                  <input id="outline-color" 
+                         type="color" 
+                         [ngModel]="selectedLayer()?.outlineColor ?? '#000000'"
+                         (ngModelChange)="updateSelectedLayerProperty('outlineColor', $event)"
+                         class="w-full h-12 p-1 bg-gray-800 border border-gray-600 rounded-lg cursor-pointer focus:outline-none focus:ring-2 focus:ring-purple-500">
+                </div>
+              </div>
+              
+              <div>
+                <label for="text-blur" class="block mb-1 text-sm font-medium text-gray-300">
+                  Text Blur: <span class="font-bold text-purple-400">{{ selectedLayer()?.textBlur }}px</span>
+                </label>
+                <input id="text-blur" 
+                       type="range" 
+                       [ngModel]="selectedLayer()?.textBlur ?? 0"
+                       (ngModelChange)="updateSelectedLayerProperty('textBlur', +$event)"
+                       min="0" 
+                       max="10" 
+                       step="0.5"
+                       class="w-full h-2 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500">
+              </div>
+              
+              <div>
+                <label for="layer-top" class="block mb-1 text-sm font-medium text-gray-300">
+                  Vertical Position: <span class="font-bold text-purple-400">{{ selectedLayer()?.top }}%</span>
+                </label>
+                <input id="layer-top" 
+                       type="range" 
+                       [ngModel]="selectedLayer()?.top ?? 50"
+                       (ngModelChange)="updateSelectedLayerProperty('top', +$event)"
+                       min="0" 
+                       max="100"
+                       class="w-full h-2 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500">
+              </div>
+            </div>
+          </fieldset>
+        }
+
+        <fieldset class="border border-gray-700 p-4 rounded-lg">
+          <legend class="text-xl font-bold px-2 text-purple-300">Image Filters</legend>
+          <div class="flex flex-wrap gap-2 pt-2">
+            @for (filter of filters; track filter; let i = $index) { 
+              <button (click)="applyFilter(filter)" 
+                      type="button"
+                      [attr.aria-pressed]="imageFilter() === filter"
+                      class="px-3 py-1 rounded-md text-sm font-medium hover:bg-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors capitalize first:rounded-l-md last:rounded-r-md"
+                      [class.bg-purple-600]="imageFilter() === filter"
+                      [class.bg-gray-700]="imageFilter() !== filter">
+                {{ filter }}
+              </button> 
+            }
+          </div>
+        </fieldset>
+      }
+    </div>
+
+    <!-- Right Column: Editor & Preview -->
+    <div class="lg:col-span-2 bg-gray-900 p-6 rounded-lg shadow-2xl">
+      @if (isEditing()) {
+        <div class="flex flex-col gap-6">
+          <div class="flex justify-between items-center">
+            <h2 class="text-2xl font-bold text-purple-300">Canvas Preview</h2>
+            @if (selectedImage()?.data) { 
+              <button (click)="showSaveTemplateInput.set(!showSaveTemplateInput())" 
+                      type="button"
+                      class="text-sm text-blue-400 hover:text-blue-300 font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">
+                {{ showSaveTemplateInput() ? 'Cancel' : 'Save as Template' }}
+              </button> 
+            }
+          </div>
+          
+          @if (showSaveTemplateInput()) {
+            <div class="flex flex-col gap-2 p-4 bg-gray-800 rounded-lg border border-gray-700">
+              <label for="new-template-name" class="text-sm font-medium text-gray-300">Template Name</label>
+              <input id="new-template-name" 
+                     type="text" 
+                     [ngModel]="newTemplateName()"
+                     (ngModelChange)="newTemplateName.set($event)"
+                     placeholder="Enter a name for your template..." 
+                     class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500">
+              <button (click)="saveCustomTemplate()" 
+                      type="button"
+                      [disabled]="!newTemplateName().trim()"
+                      class="w-full bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors">
+                Save Template
+              </button>
+            </div>
+          }
+          
+          <div class="relative w-full bg-black rounded-xl overflow-hidden flex items-center justify-center min-h-[400px] lg:min-h-[600px] border-4 border-gray-800">
+            @if (hasImage()) { 
+              <img #imagePreview 
+                   [src]="selectedImage()?.url" 
+                   [alt]="'Meme preview of ' + (selectedTemplateName() || 'uploaded image')"
+                   class="max-w-full max-h-[70vh] object-contain mx-auto transition-all duration-300" 
+                   [style.filter]="computedImageFilter()"
+                   loading="lazy"> 
+            } @else if (loadingPreviewUrl()) { 
+              <img [src]="loadingPreviewUrl()" 
+                   alt="Loading meme template..." 
+                   class="max-w-full max-h-[70vh] object-contain mx-auto filter blur-md opacity-70"> 
+            }
+            
+            @if (loadingPreviewUrl()) { 
+              <div class="absolute inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center">
+                <svg class="animate-spin h-12 w-12 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              </div> 
+            }
+
+            @for (layer of layers(); track layer.id) {
+              <div class="absolute w-full text-center meme-font px-2 break-words pointer-events-none select-none z-10"
+                   [style.top.%]="layer.top"
+                   [style.transform]="'translateY(-50%)'"
+                   [style.color]="layer.fontColor"
+                   [style.font-size.px]="layer.fontSize"
+                   [style.text-shadow]="getLayerTextShadow(layer)"
+                   [style.filter]="getLayerTextFilter(layer)">
+                {{ layer.text }}
+              </div>
+            }
+          </div>
+          
+          <div class="flex flex-col sm:flex-row gap-4">
+            <div class="flex flex-col sm:flex-row gap-4 w-full">
+              <button (click)="downloadMeme()" 
+                      type="button"
+                      [disabled]="!hasImage()"
+                      class="flex-1 bg-green-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2 disabled:bg-gray-600 disabled:cursor-not-allowed text-lg focus:outline-none focus:ring-4 focus:ring-green-500 focus:ring-opacity-50">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+                Download JPEG
+              </button>
+              <div class="flex-shrink-0 flex items-center">
+                <label for="quality-select" class="sr-only">Download Quality</label>
+                <select id="quality-select" 
+                        [ngModel]="downloadQuality()"
+                        (ngModelChange)="downloadQuality.set(+$event)"
+                        [disabled]="!hasImage()"
+                        class="h-12 bg-gray-700 border border-gray-600 rounded-lg px-4 text-white font-medium focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed">
+                  @for (quality of downloadQualities; track quality.value) {
+                    <option [value]="quality.value">{{ quality.label }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+            <button (click)="copyMemeToClipboard()" 
+                    type="button"
+                    [disabled]="!hasImage()"
+                    class="w-full sm:w-auto bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 disabled:bg-gray-600 disabled:cursor-not-allowed text-lg focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M7 9a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2H9a2 2 0 01-2-2V9z" />
+                <path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2H4z" />
+              </svg>
+              {{ copyButtonText() }}
+            </button>
+          </div>
+        </div>
+      } @else {
+        <div class="h-[450px] sm:h-[600px] flex flex-col items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg p-6 sm:p-12 text-center border-2 border-dashed border-gray-700">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 text-gray-500 mb-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <h3 class="text-2xl font-bold text-gray-300 mb-2">Your Meme Canvas</h3>
+          <p class="text-gray-400 text-lg max-w-md">Upload an image or choose from our template library to start creating memes.</p>
+          <p class="text-sm text-gray-500 mt-2">Get ready to make something hilarious!</p>
+        </div>
+      }
+    </div>
+  </div>
+</div>
