@@ -1,4 +1,4 @@
-/* styles.scss - Complete Tailwind + Custom Styles for AI Meme Generator */
+/* styles.css - Complete Tailwind + Custom Styles for AI Meme Generator */
 
 @tailwind base;
 @tailwind components;
@@ -43,9 +43,9 @@
   
   .hero-gradient {
     background: linear-gradient(135deg, 
-      theme('colors.gray.900') 0%, 
-      theme('colors.gray.800') 50%, 
-      theme('colors.slate.900') 100%);
+      #111827 0%, 
+      #1f2937 50%, 
+      #0f172a 100%);
   }
 }
 
@@ -55,7 +55,7 @@
 @layer utilities {
   .scrollbar-thin {
     scrollbar-width: thin;
-    scrollbar-color: theme('colors.gray.600') theme('colors.gray.900');
+    scrollbar-color: #4b5563 #111827;
   }
   
   .scrollbar-thin::-webkit-scrollbar {
@@ -78,35 +78,51 @@
   /* Custom Range Inputs */
   input[type='range'] {
     @apply w-full h-3 bg-gray-700 rounded-lg cursor-pointer appearance-none relative;
-    
-    &::-webkit-slider-thumb {
-      @apply appearance-none w-6 h-6 bg-gradient-to-r from-purple-500 to-pink-500 
-             rounded-full shadow-lg cursor-pointer hover:shadow-purple-500/50 
-             active:scale-95 transition-all duration-200 border-4 border-white/20;
-    }
-    
-    &::-moz-range-thumb {
-      @apply w-6 h-6 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full 
-             shadow-lg border-4 border-white/20 appearance-none cursor-pointer;
-    }
+  }
+  
+  input[type='range']::-webkit-slider-thumb {
+    @apply appearance-none w-6 h-6 bg-gradient-to-r from-purple-500 to-pink-500 
+           rounded-full shadow-lg cursor-pointer border-4 border-white/20;
+    transition: all 0.2s;
+  }
+  
+  input[type='range']::-webkit-slider-thumb:hover {
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+  }
+  
+  input[type='range']::-webkit-slider-thumb:active {
+    transform: scale(0.95);
+  }
+  
+  input[type='range']::-moz-range-thumb {
+    @apply w-6 h-6 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full 
+           shadow-lg border-4 border-white/20 appearance-none cursor-pointer;
   }
   
   /* Color Inputs */
   input[type='color'] {
-    @apply w-full h-14 p-1 rounded-xl border-2 border-gray-600 hover:border-gray-500 
-           focus:border-purple-500 focus:ring-4 focus:ring-purple-500/30 transition-all 
-           cursor-pointer shadow-lg hover:shadow-xl;
-    
-    &:focus {
-      transform: scale(1.05);
-    }
+    @apply w-full h-14 p-1 rounded-xl border-2 border-gray-600 cursor-pointer shadow-lg;
+    transition: all 0.3s;
+  }
+  
+  input[type='color']:hover {
+    @apply border-gray-500 shadow-xl;
+  }
+  
+  input[type='color']:focus {
+    @apply border-purple-500 outline-none;
+    box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.3);
+    transform: scale(1.05);
   }
   
   /* Glass Form Controls */
   .form-glass {
     @apply bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl px-4 py-3 
-           focus-within:border-purple-500/50 focus-within:bg-white/10 transition-all 
-           placeholder-gray-400 text-white resize-vertical;
+           placeholder-gray-400 text-white resize-vertical transition-all;
+  }
+  
+  .form-glass:focus-within {
+    @apply border-purple-500/50 bg-white/10;
   }
 }
 
@@ -167,32 +183,34 @@
 .canvas-container {
   @apply relative bg-gradient-to-br from-black via-gray-900 to-black rounded-3xl 
          overflow-hidden border-4 border-gray-800/50 shadow-2xl;
-  
-  &::before {
-    content: '';
-    @apply absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent 
-           pointer-events-none opacity-50;
-  }
+}
+
+.canvas-container::before {
+  content: '';
+  @apply absolute inset-0 pointer-events-none opacity-50;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent, transparent);
 }
 
 .text-layer {
-  @apply select-none pointer-events-none will-change-transform;
+  @apply select-none pointer-events-none;
   backface-visibility: hidden;
   transform: translateZ(0);
+  will-change: transform;
 }
 
 .layer-hover {
   @apply relative;
-  
-  &::after {
-    content: attr(data-text);
-    @apply absolute inset-0 bg-black/80 text-white text-center p-2 rounded opacity-0 
-           transition-opacity duration-200 pointer-events-none;
-  }
-  
-  &:hover::after {
-    opacity: 1;
-  }
+}
+
+.layer-hover::after {
+  content: attr(data-text);
+  @apply absolute inset-0 bg-black/80 text-white text-center p-2 rounded 
+         pointer-events-none transition-opacity duration-200;
+  opacity: 0;
+}
+
+.layer-hover:hover::after {
+  opacity: 1;
 }
 
 /* ==========================================================================
@@ -201,25 +219,48 @@
 @layer components {
   .btn-primary {
     @apply bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 
-           hover:from-purple-700 hover:via-pink-700 hover:to-blue-700 
            text-white font-bold py-4 px-8 rounded-2xl shadow-2xl 
-           hover:shadow-3xl hover:shadow-purple-500/50 hover:scale-105 
-           active:scale-100 border border-purple-500/30 backdrop-blur-md 
-           transition-all duration-300 uppercase tracking-wider text-sm;
+           border border-purple-500/30 backdrop-blur-md 
+           uppercase tracking-wider text-sm transition-all duration-300;
+  }
+  
+  .btn-primary:hover {
+    @apply from-purple-700 via-pink-700 to-blue-700 scale-105;
+    box-shadow: 0 25px 50px -12px rgba(168, 85, 247, 0.5);
+  }
+  
+  .btn-primary:active {
+    @apply scale-100;
   }
   
   .btn-secondary {
-    @apply bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 
-           text-white font-semibold py-3 px-6 rounded-xl hover:scale-105 
-           active:scale-95 transition-all duration-300 shadow-lg 
-           hover:shadow-xl hover:shadow-purple-500/25;
+    @apply bg-white/10 backdrop-blur-md border border-white/20 
+           text-white font-semibold py-3 px-6 rounded-xl 
+           shadow-lg transition-all duration-300;
+  }
+  
+  .btn-secondary:hover {
+    @apply bg-white/20 scale-105;
+    box-shadow: 0 20px 25px -5px rgba(168, 85, 247, 0.25);
+  }
+  
+  .btn-secondary:active {
+    @apply scale-95;
   }
   
   .btn-danger {
-    @apply bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 
-           text-white font-semibold py-2 px-4 rounded-lg hover:scale-105 
-           active:scale-95 transition-all duration-200 shadow-lg 
-           hover:shadow-red-500/25 border border-red-500/30;
+    @apply bg-gradient-to-r from-red-600 to-red-700 
+           text-white font-semibold py-2 px-4 rounded-lg 
+           shadow-lg border border-red-500/30 transition-all duration-200;
+  }
+  
+  .btn-danger:hover {
+    @apply from-red-700 to-red-800 scale-105;
+    box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.25);
+  }
+  
+  .btn-danger:active {
+    @apply scale-95;
   }
 }
 
@@ -229,13 +270,23 @@
 @layer components {
   .card-glass {
     @apply bg-gradient-to-b from-white/5 to-white/2 backdrop-blur-xl 
-           border border-white/10 rounded-3xl p-8 shadow-2xl shadow-black/30 
-           hover:shadow-3xl hover:shadow-purple-500/20 transition-all duration-500;
+           border border-white/10 rounded-3xl p-8 shadow-2xl 
+           transition-all duration-500;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+  }
+  
+  .card-glass:hover {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3), 
+                0 0 50px rgba(168, 85, 247, 0.2);
   }
   
   .card-stat {
-    @apply text-center p-8 rounded-2xl border-2 backdrop-blur-xl transition-all 
-           duration-300 hover:scale-105 hover:shadow-2xl cursor-default group;
+    @apply text-center p-8 rounded-2xl border-2 backdrop-blur-xl 
+           cursor-default group transition-all duration-300;
+  }
+  
+  .card-stat:hover {
+    @apply scale-105 shadow-2xl;
   }
 }
 
@@ -269,16 +320,13 @@
 }
 
 .progress-fill {
-  @apply bg-gradient-to-r from-blue-500 to-purple-600 h-3 rounded-full transition-all 
-         duration-1000 ease-in-out shadow-lg;
+  @apply bg-gradient-to-r from-blue-500 to-purple-600 h-3 rounded-full shadow-lg 
+         transition-all duration-1000 ease-in-out;
 }
 
 /* ==========================================================================
    RESPONSIVE UTILITIES
    ========================================================================== */
-/* Tailwind v3 generates responsive variants automatically; use standard classes
-   or media queries instead of @responsive. */
-/* Example helpers if you want custom names: */
 @layer utilities {
   .text-hero {
     font-size: clamp(2.5rem, 8vw, 6rem);
@@ -327,7 +375,11 @@
    ========================================================================== */
 .dark .glass-panel,
 .dark .glass-button {
-  @apply border-white/20 bg-white/10 hover:bg-white/25;
+  @apply border-white/20 bg-white/10;
+}
+
+.dark .glass-button:hover {
+  @apply bg-white/25;
 }
 
 /* ==========================================================================
