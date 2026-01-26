@@ -10,17 +10,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.6.0] - 2026-01-25
 
 ### Added
-- **Configuration Check**: Added a new /api/config-status endpoint to the backend to securely report if the Gemini API key is configured.
+- **Configuration Check**: Added a new `/api/config-status` endpoint to the backend to securely report if the Gemini API key is configured.
 - **Startup Validation**: The frontend now verifies backend configuration on initialization and updates the UI accordingly.
 
 ### Changed
-- **Security Hardening**: Removed insecure piKey placeholders from environment.ts and environment.prod.ts.
-- **Documentation**: Updated README.md with secure instructions for providing the API key via the GEMINI_API_KEY environment variable.
+- **Security Hardening**: Removed insecure `apiKey` placeholders from `environment.ts` and `environment.prod.ts`.
+- **Documentation**: Updated `README.md` with secure instructions for providing the API key via the `GEMINI_API_KEY` environment variable.
 
 ### Fixed
 - **Configuration Flow**: Eliminated the need for hardcoding API keys in frontend code, preventing accidental exposure of secrets.
-
-
 
 ## [1.5.0] - 2026-01-13
 
@@ -143,4 +141,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **1.1.0**: Code quality improvements, type safety enhancements
 - **1.0.1**: Bug fixes and code cleanup
 - **1.0.0**: Initial release
-
