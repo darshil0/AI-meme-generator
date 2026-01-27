@@ -1,65 +1,67 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-import path from 'path';
-
-// https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [react()],
-  
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-      '@app': path.resolve(__dirname, './src/app'),
-      '@components': path.resolve(__dirname, './src/app/components'),
-      '@services': path.resolve(__dirname, './src/app/services'),
-      '@models': path.resolve(__dirname, './src/app/models'),
-      '@environments': path.resolve(__dirname, './src/environments'),
-    },
-  },
-
-  build: {
-    outDir: 'dist',
-    sourcemap: true,
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          'react-vendor': ['react', 'react-dom'],
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "",
+  "projects": {
+    "app": {
+      "projectType": "application",
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/app/browser",
+            "index": "index.html",
+            "main": "index.tsx",
+            "tsConfig": "tsconfig.json",
+            "assets": ["src/favicon.ico", "src/assets"],
+            "styles": ["src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "1mb",
+                  "maximumError": "2mb"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
         },
-      },
-    },
-    chunkSizeWarningLimit: 1000,
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "app:build:production"
+            },
+            "development": {
+              "buildTarget": "app:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        }
+      }
+    }
   },
-
-  server: {
-    port: 4200,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:3000',
-        changeOrigin: true,
-        secure: false,
-      },
-    },
-  },
-
-  preview: {
-    port: 4200,
-  },
-
-  define: {
-    'import.meta.env.VITE_GEMINI_API_KEY': JSON.stringify(
-      process.env.VITE_GEMINI_API_KEY || ''
-    ),
-  },
-
-  css: {
-    preprocessorOptions: {
-      scss: {
-        additionalData: '@import "@/styles/variables.scss";',
-      },
-    },
-  },
-
-  optimizeDeps: {
-    include: ['react', 'react-dom'],
-  },
-});
+  "defaultProject": "app",
+  "cli": {
+    "analytics": false
+  }
+}

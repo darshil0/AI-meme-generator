@@ -1,16 +1,12 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './styles.css';
-import App from './src/app/App';
+import '@angular/compiler';
+import { bootstrapApplication } from '@angular/platform-browser';
+import { provideHttpClient } from '@angular/common/http';
+import { provideZonelessChangeDetection } from '@angular/core';
 
-const root = document.getElementById('root');
+import { AppComponent } from './src/app/app.component';
 
-if (!root) {
-  throw new Error('Root element not found');
-}
+bootstrapApplication(AppComponent, {
+  providers: [provideZonelessChangeDetection(), provideHttpClient()],
+}).catch((err) => console.error(err));
 
-ReactDOM.createRoot(root).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+// AI Studio always uses an `index.tsx` file for all project types.
