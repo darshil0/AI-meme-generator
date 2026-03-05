@@ -7,9 +7,11 @@ import { isGeminiConfigured } from './lib/geminiClient';
 const app = express();
 const port = process.env.PORT || 4000;
 
-app.use(cors({
-  origin: process.env.ALLOWED_ORIGIN || '*',
-}));
+app.use(
+  cors({
+    origin: process.env.ALLOWED_ORIGIN || '*',
+  }),
+);
 
 app.use(express.json({ limit: '10mb' }));
 
@@ -25,5 +27,5 @@ app.get('/api/config-status', (_req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(Backend listening on port );
+  console.log(`Backend listening on port ${port}`);
 });

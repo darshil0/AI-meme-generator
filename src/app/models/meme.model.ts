@@ -46,21 +46,8 @@ export enum ImageFilter {
   OPACITY = 'opacity',
 }
 
-/**
- * AI Caption generation tones/styles.
- */
-export enum CaptionTone {
-  HUMOROUS = 'humorous',
-  SARCASTIC = 'sarcastic',
-  WHOLESOME = 'wholesome',
-  ABSURD = 'absurd',
-  DARK = 'dark',
-  PROFESSIONAL = 'professional',
-  POETIC = 'poetic',
-  DRAMATIC = 'dramatic',
-  INSPIRATIONAL = 'inspirational',
-  SNARKY = 'snarky',
-}
+import { CaptionTone } from './api-types';
+export { CaptionTone };
 
 /**
  * Download quality presets.
@@ -91,15 +78,8 @@ export interface SavedMemeState {
   timestamp: string; // ISO timestamp
 }
 
-/**
- * API Response types.
- */
-export interface GeneratedCaptionsResponse {
-  captions: string[];
-  tone: CaptionTone;
-  success: boolean;
-  error?: string;
-}
+import { GeneratedCaptionsResponse } from './api-types';
+export type { GeneratedCaptionsResponse };
 
 /**
  * Validation utilities.
