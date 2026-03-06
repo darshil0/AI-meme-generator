@@ -21,11 +21,22 @@ import {
   MEME_CONSTANTS,
 } from '../../models/meme.model';
 import { CanvasUtils } from '../../utils/canvas-utils';
+import { TemplateGridComponent } from '../template-grid/template-grid.component';
+import { AiCaptionsComponent } from '../ai-captions/ai-captions.component';
+import { LayerControlsComponent } from '../layer-controls/layer-controls.component';
+import { FilterControlsComponent } from '../filter-controls/filter-controls.component';
 
 @Component({
   selector: 'app-meme-editor',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    TemplateGridComponent,
+    AiCaptionsComponent,
+    LayerControlsComponent,
+    FilterControlsComponent,
+  ],
   templateUrl: './meme-editor.component.html',
   styleUrls: ['./meme-editor.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -436,18 +447,19 @@ export class MemeEditorComponent {
     }
   }
 
-  updateSelectedLayerProperty<K extends keyof Omit<TextLayer, 'id'>>(
-    prop: K,
-    value: TextLayer[K],
-  ): void {
+  updateSelectedLayerProperty(property: string, value: any) {
     const index = this.selectedLayerIndex();
     if (index === null) return;
 
     this.layers.update((layers) => {
       const newLayers = [...layers];
-      newLayers[index] = { ...newLayers[index], [prop]: value };
+      newLayers[index] = { ...newLayers[index], [property]: value };
       return newLayers;
     });
+  }
+
+  handleLayerUpdate(event: { property: string; value: any }) {
+    this.updateSelectedLayerProperty(event.property, event.value);
   }
 
   async generateCaptions(): Promise<void> {
@@ -591,11 +603,11 @@ export class MemeEditorComponent {
       selectedImage:
         selectedImage && dimensions
           ? {
-              url: selectedImage.url,
-              data: selectedImage.data,
-              mimeType: selectedImage.mimeType,
-              dimensions: dimensions,
-            }
+            url: selectedImage.url,
+            data: selectedImage.data,
+            mimeType: selectedImage.mimeType,
+            dimensions: dimensions,
+          }
           : null,
       layers: this.layers(),
       imageFilter: this.imageFilter(),

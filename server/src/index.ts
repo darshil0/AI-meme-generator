@@ -3,6 +3,8 @@ import cors from 'cors';
 import captionsRouter from './routes/captions';
 import imagesRouter from './routes/images';
 import { isGeminiConfigured } from './lib/geminiClient';
+import { logger } from './middleware/logger';
+import { errorHandler } from './middleware/error';
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -14,6 +16,7 @@ app.use(
 );
 
 app.use(express.json({ limit: '10mb' }));
+app.use(logger);
 
 app.use('/api', captionsRouter);
 app.use('/api', imagesRouter);
@@ -25,6 +28,8 @@ app.get('/api/health', (_req, res) => {
 app.get('/api/config-status', (_req, res) => {
   res.json({ configured: isGeminiConfigured() });
 });
+
+app.use(errorHandler);
 
 app.listen(port, () => {
   console.log(`Backend listening on port ${port}`);
