@@ -1,0 +1,379 @@
+// meme-editor.component.scss
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+// Meme font - Impact font stack with fallbacks
+.meme-font {
+  font-family: 'Impact', 'Arial Black', 'Arial Bold', Arial, sans-serif;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  line-height: 0.9;
+}
+
+// Custom scrollbar styling
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: theme('colors.gray.600') transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: theme('colors.gray.800');
+  border-radius: 3px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: theme('colors.gray.600');
+  border-radius: 3px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: theme('colors.gray.500');
+}
+
+// Layer list hover and selection states
+.layer-item {
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateX(4px);
+  }
+
+  &.selected {
+    box-shadow: 0 0 0 3px theme('colors.purple.500');
+    transform: scale(1.02);
+  }
+}
+
+// Template grid hover effects
+.template-grid {
+  .group {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow:
+        0 20px 25px -5px rgba(0, 0, 0, 0.3),
+        0 10px 10px -5px rgba(0, 0, 0, 0.2);
+    }
+
+    .template-overlay {
+      opacity: 0;
+      transition: opacity 0.2s ease-in-out;
+    }
+
+    &:hover .template-overlay {
+      opacity: 1;
+    }
+  }
+}
+
+// Canvas preview enhancements
+.canvas-container {
+  position: relative;
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+      radial-gradient(circle at 25% 25%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 75% 75%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  img {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+      transform: scale(1.02);
+    }
+  }
+}
+
+// Text layer rendering optimizations
+.text-layer {
+  will-change: transform, color, text-shadow, filter;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+
+  &.editing {
+    outline: 2px solid theme('colors.purple.400');
+    outline-offset: 4px;
+  }
+}
+
+// Filter preview transitions
+.image-filter {
+  transition: filter 0.6s ease-in-out;
+}
+
+// Button press animations
+.btn-press {
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:active {
+    transform: scale(0.98);
+    transition-duration: 0.05s;
+  }
+}
+
+// Range input custom styling
+input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  background: theme('colors.gray.700');
+  border-radius: 4px;
+  outline: none;
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: theme('colors.purple.500');
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(168, 85, 247, 0.4);
+
+    &:hover {
+      background: theme('colors.purple.400');
+      box-shadow: 0 4px 12px rgba(168, 85, 247, 0.6);
+    }
+  }
+
+  &::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: theme('colors.purple.500');
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 8px rgba(168, 85, 247, 0.4);
+  }
+
+  &::-ms-thumb {
+    width: 20px;
+    height: 20px;
+    background: theme('colors.purple.500');
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+  }
+}
+
+// Color input enhancements
+input[type='color'] {
+  border: 2px solid theme('colors.gray.600');
+  transition: all 0.2s ease;
+
+  &:focus {
+    border-color: theme('colors.purple.500');
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
+    transform: scale(1.05);
+  }
+
+  &:hover {
+    border-color: theme('colors.gray.500');
+  }
+}
+
+// Loading overlay
+.loading-overlay {
+  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.6);
+
+  .spinner {
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Progress bar animation
+.progress-fill {
+  transition: width 0.3s ease;
+
+  &.indeterminate {
+    width: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      theme('colors.blue.600') 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+// Pulse animation for selected states
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(168, 85, 247, 0.8);
+  }
+}
+
+.selected-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+// Template deletion confirmation
+.delete-confirm {
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-4px);
+  }
+  75% {
+    transform: translateX(4px);
+  }
+}
+
+// Responsive improvements
+@media (max-width: 1024px) {
+  .lg\:col-span-1,
+  .lg\:col-span-2 {
+    grid-column: 1 / -1;
+  }
+
+  .canvas-container {
+    min-height: 400px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem !important;
+  }
+
+  .fieldset {
+    margin-bottom: 1rem;
+  }
+
+  .template-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  input[type='range'] {
+    height: 6px;
+  }
+
+  input[type='range']::-webkit-slider-thumb {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+  .border-gray-600 {
+    border-color: #4b5563 !important;
+  }
+
+  .bg-gray-700 {
+    background-color: #374151 !important;
+  }
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .group:hover {
+    transform: none !important;
+  }
+}
+
+// Print styles
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .canvas-container {
+    border: 1px solid #000 !important;
+    background: white !important;
+  }
+
+  .text-layer {
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
+}
+
+// Dark mode enhancements (if using Tailwind dark mode)
+@media (prefers-color-scheme: dark) {
+  :host {
+    color-scheme: dark;
+  }
+}
+
+// Focus visible improvements for keyboard navigation
+.focus-visible {
+  outline: 2px solid theme('colors.purple.500');
+  outline-offset: 2px;
+}
+
+// Success/error state animations
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.alert {
+  animation: slideDown 0.3s ease-out;
+}
