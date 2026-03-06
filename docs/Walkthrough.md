@@ -78,7 +78,9 @@ ai-meme-generator/
 │   │   ├── components/         # UI Components
 │   │   ├── models/             # Data models & Shared API types
 │   │   └── services/           # API Services
-│   └── environments/           # Environment configuration
+│   ├── environments/           # Environment configuration
+│   ├── index.html              # Web entry page
+│   └── main.ts                 # Angular bootstrap
 │
 ├── server/                     # Backend (Express)
 │   ├── src/
@@ -86,10 +88,13 @@ ai-meme-generator/
 │   │   ├── routes/             # API Endpoints
 │   │   └── models/             # Shared types (mirrored from src)
 │
-├── e2e/                        # End-to-End Tests (Playwright)
+├── docs/                       # Project Documentation
+│   ├── Walkthrough.md          # Technical overview
+│   ├── Skills.md               # Developer guide
+│   └── Fixes.md                # Maintenance log
+│
 ├── eslint.config.js            # Modern Flat ESLint Configuration
-├── Walkthrough.MD              # This file
-└── Skills.MD                   # Developer guide
+└── tailwind.config.js          # Styling configuration
 ```
 
 ---
