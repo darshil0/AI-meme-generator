@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.0] - 2026-03-05
+
+### Added
+- **Export Service**: Modularized download and clipboard logic into a dedicated `ExportService`.
+- **UX Polish**: Added glass-premium entry animations (`fade-in-up`) for better user engagement.
+- **Context Controls**: Added "Clear Context" button in the AI Suggestions panel.
+
+### Changed
+- **UI Architecture**: Restored and optimized `MemeEditorComponent` template with high-performance v1.7.0 styling patterns.
+
+### Fixed
+- **Security Hardening**: Implemented strict MIME type validation in the backend image proxy to prevent non-image resource fetching.
+
 ## [1.7.0] - 2026-03-05
 
 ### Added

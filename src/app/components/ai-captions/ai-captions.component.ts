@@ -4,10 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { CaptionTone } from '../../models/meme.model';
 
 @Component({
-    selector: 'app-ai-captions',
-    standalone: true,
-    imports: [CommonModule, FormsModule],
-    template: `
+  selector: 'app-ai-captions',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  template: `
     <fieldset class="border border-white/10 p-6 rounded-3xl glass-panel">
       <legend class="text-xl font-extrabold px-3 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
         2. AI Captions
@@ -33,33 +33,45 @@ import { CaptionTone } from '../../models/meme.model';
             }
           </div>
         </div>
-        <div>
-          <label for="user-context" class="text-sm font-bold uppercase tracking-wider text-gray-400 mb-3 block">
-            Add context (optional)
-          </label>
+        <!-- Context and Generate Section -->
+      <div class="space-y-4">
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center justify-between">
+            <label for="userContext" class="text-sm font-medium text-white/70">Context (Optional)</label>
+            @if (userContext) {
+              <button 
+                (click)="onClearContext()" 
+                class="text-xs text-secondary-300 hover:text-secondary-100 transition-colors"
+                title="Clear context"
+              >
+                Clear
+              </button>
+            }
+          </div>
           <textarea
-            id="user-context"
+            id="userContext"
             [ngModel]="userContext"
-            (ngModelChange)="userContextChange.emit($event)"
-            placeholder="e.g., 'My cat hates Mondays'"
-            class="w-full form-glass focus:ring-2 focus:ring-purple-500/50 outline-none"
+            (ngModelChange)="onContextChange($event)"
             rows="2"
+            class="form-glass w-full rounded-lg p-3 text-sm text-white placeholder-white/30 resize-y"
+            placeholder="e.g., programming struggle, Monday morning, cats..."
           ></textarea>
         </div>
+
         <button
           (click)="onGenerate()"
-          type="button"
           [disabled]="isLoading || !isApiKeyConfigured"
-          class="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 flex items-center justify-center gap-2"
+          class="btn-primary flex w-full items-center justify-center gap-2 rounded-xl py-3 font-semibold shadow-lg transition-all"
+          [class.animate-pulse]="isLoading"
         >
           @if (isLoading) {
-            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
+            <span class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"></span>
+            Thinking...
+          } @else {
+            <span class="text-lg">✨</span> Magic Captions
           }
-          Magic Captions
         </button>
+      </div>
         <div aria-live="polite">
           @if (error) {
             <div class="bg-red-500/20 border border-red-500/50 text-red-200 px-4 py-3 rounded-2xl backdrop-blur-md" role="alert">
@@ -85,27 +97,35 @@ import { CaptionTone } from '../../models/meme.model';
       </div>
     </fieldset>
   `,
-    styles: []
+  styles: []
 })
 export class AiCaptionsComponent {
-    @Input() tones: CaptionTone[] = [];
-    @Input() selectedTone: CaptionTone | null = null;
-    @Input() userContext: string = '';
-    @Input() isLoading: boolean = false;
-    @Input() isApiKeyConfigured: boolean = true;
-    @Input() error: string | null = null;
-    @Input() captions: string[] = [];
+  @Input() tones: CaptionTone[] = [];
+  @Input() selectedTone: CaptionTone | null = null;
+  @Input() userContext: string = '';
+  @Input() isLoading: boolean = false;
+  @Input() isApiKeyConfigured: boolean = true;
+  @Input() error: string | null = null;
+  @Input() captions: string[] = [];
 
-    @Output() selectTone = new EventEmitter<CaptionTone>();
-    @Output() userContextChange = new EventEmitter<string>();
-    @Output() generateCaptions = new EventEmitter<void>();
-    @Output() applyCaption = new EventEmitter<string>();
+  @Output() selectTone = new EventEmitter<CaptionTone>();
+  @Output() userContextChange = new EventEmitter<string>();
+  @Output() generateCaptions = new EventEmitter<void>();
+  @Output() applyCaption = new EventEmitter<string>();
 
-    onToneSelect(tone: CaptionTone) {
-        this.selectTone.emit(tone);
-    }
+  onToneSelect(tone: CaptionTone) {
+    this.selectTone.emit(tone);
+  }
 
-    onGenerate() {
-        this.generateCaptions.emit();
-    }
+  onContextChange(value: string) {
+    this.userContextChange.emit(value);
+  }
+
+  onClearContext() {
+    this.userContextChange.emit('');
+  }
+
+  onGenerate() {
+    this.generateCaptions.emit();
+  }
 }

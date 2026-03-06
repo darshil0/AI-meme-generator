@@ -28,10 +28,14 @@ router.get('/template-image', async (req, res) => {
 
     const upstream = await fetch(url);
     if (!upstream.ok || !upstream.body) {
-      return res.status(502).send('Failed to fetch image');
+      return res.status(502).send('Failed to fetch image from upstream');
     }
 
-    const contentType = upstream.headers.get('content-type') || 'image/jpeg';
+    const contentType = upstream.headers.get('content-type') || '';
+    if (!contentType.startsWith('image/')) {
+      return res.status(400).send('URL did not resolve to a valid image');
+    }
+
     res.setHeader('Content-Type', contentType);
     res.setHeader('Cache-Control', 'public, max-age=86400');
 

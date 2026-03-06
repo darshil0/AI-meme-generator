@@ -220,7 +220,7 @@ For architectural details, security practices, and contribution guidelines, see 
 ## 🤝 Support & Contributing
 
 *   **Bugs/Features**: Open an issue on GitHub.
-*   **Updates**: See [CHANGELOG.md](CHANGELOG.md) for version history.
+*   **Updates**: See [CHANGELOG.md](docs/CHANGELOG.md) for version history.
 
 ---
 

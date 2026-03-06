@@ -63,4 +63,4 @@ All canvas rendering logic is decoupled from Angular components into `src/app/ut
 
 ---
 
-*For project initialization and quick-start, refer to the [README.md](../README.md).*
+*For project initialization and quick-start, refer to the [README.md](../README.md). For version history, see [CHANGELOG.md](CHANGELOG.md).*

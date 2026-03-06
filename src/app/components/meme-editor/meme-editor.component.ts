@@ -25,6 +25,7 @@ import { TemplateGridComponent } from '../template-grid/template-grid.component'
 import { AiCaptionsComponent } from '../ai-captions/ai-captions.component';
 import { LayerControlsComponent } from '../layer-controls/layer-controls.component';
 import { FilterControlsComponent } from '../filter-controls/filter-controls.component';
+import { ExportService } from '../../services/export.service';
 
 @Component({
   selector: 'app-meme-editor',
@@ -46,6 +47,7 @@ export class MemeEditorComponent {
 
   private geminiService = inject(GeminiService);
   private storageService = inject(StorageService);
+  exportService = inject(ExportService);
 
   // State Signals
   selectedImage = signal<{ url: string; data: string; mimeType: string } | null>(null);
@@ -57,7 +59,6 @@ export class MemeEditorComponent {
   uploadProgress = signal<number | null>(null);
   selectedTemplateName = signal<string | null>(null);
   loadingPreviewUrl = signal<string | null>(null);
-  copyButtonText = signal('Copy to Clipboard');
   saveButtonText = signal('Save Work');
   savedStateExists = signal(false);
   downloadQuality = signal<number>(0.92);
@@ -538,26 +539,10 @@ export class MemeEditorComponent {
       return;
     }
 
-    const quality = this.downloadQuality();
-    const dataUrl = CanvasUtils.canvasToDataUrl(canvas, quality);
-
-    const link = document.createElement('a');
-    link.href = dataUrl;
-    link.download = `meme-${Date.now()}.jpg`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    await this.exportService.downloadMeme(canvas, this.downloadQuality());
   }
 
   async copyMemeToClipboard(): Promise<void> {
-    // Ensure Clipboard API and ClipboardItem are available
-    if (!navigator.clipboard?.write || typeof (window as any).ClipboardItem === 'undefined') {
-      this.error.set(
-        'Clipboard image copy is not supported in this browser. Use download instead.',
-      );
-      return;
-    }
-
     const preview = this.imagePreview?.nativeElement;
     if (!preview?.src) {
       this.error.set('Cannot copy meme. Please ensure an image is loaded.');
@@ -575,20 +560,9 @@ export class MemeEditorComponent {
       return;
     }
 
-    const blob = await CanvasUtils.canvasToBlob(canvas, 'image/png');
-    if (!blob) {
-      this.error.set('Failed to copy. Unable to create image blob.');
-      return;
-    }
-
-    try {
-      const ClipboardItemCtor = (window as any).ClipboardItem as typeof ClipboardItem;
-      await navigator.clipboard.write([new ClipboardItemCtor({ 'image/png': blob })]);
-      this.copyButtonText.set('✅ Copied!');
-      setTimeout(() => this.copyButtonText.set('Copy to Clipboard'), 3000);
-    } catch (error) {
-      this.error.set('Failed to copy. Use download button instead.');
-      console.error('Clipboard error:', error);
+    const success = await this.exportService.copyToClipboard(canvas);
+    if (!success) {
+      this.error.set('Failed to copy. Try downloading instead.');
     }
   }
 
