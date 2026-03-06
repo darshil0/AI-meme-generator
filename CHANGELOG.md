@@ -5,7 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.7.0] - 2026-03-05
+
+### Added
+- **Canvas Utility**: Extracted meme rendering logic into a standalone `CanvasUtils` for better modularity and testability.
+- **Architectural Refactor**: Fully integrated `StorageService` (IndexedDB) across the `MemeEditorComponent` with asynchronous patterns.
+
+### Changed
+- **Gemini Integration**: Updated server-side model to `gemini-2.0-flash` for improved stability.
+- **Code Quality**: Removed deprecated methods from `GeminiService` and improved backend error reporting for AI generations.
+
+### Fixed
+- **Testing**: Updated unit test suite to support asynchronous storage and service mocks.
+- **Linting**: Resolved formatting and unused variable warnings across the codebase.
 
 ## [1.6.0] - 2026-03-05
 
