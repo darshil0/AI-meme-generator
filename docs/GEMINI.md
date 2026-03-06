@@ -35,11 +35,27 @@ You write clear, concise answers optimized for an experienced QA lead.
 
 # Project-specific context
 
-(Use this section in project-level GEMINI.md)
-
-- Briefly describe the app under test.
-- Tech stack and major modules.
-- Environments (dev/stage/prod) and constraints (e.g., no prod data mutation).
+- **App under test**: AI Meme Generator - A modern, high-performance web application for creating, filtering, and AI-captioning memes.
+- **Tech stack**: 
+  - **Frontend**: Angular 21 (Zoneless, Signals), Tailwind CSS, SCSS (Custom Glassmorphism).
+  - **Backend**: Node.js/Express (Serving as a proxy for Gemini API and external image templates).
+  - **AI Engine**: Google Gemini API (`gemini-2.0-flash`).
+  - **Storage**: IndexedDB (via `idb-keyval`) for custom templates and state persistence.
+- **Major modules**: 
+  - `MemeEditor`: Main orchestration hub.
+  - `TemplateGrid`: Categorized template browsing and search.
+  - `AiCaptions`: Gemini-powered suggestion engine with multi-tone support.
+  - `LayerControls`: Precision text positioning and styling.
+  - `FilterControls`: Real-time CSS image filtering based on `models/meme.model.ts`.
+  - `CanvasUtils`: Core rendering engine for JPEG/PNG export.
+  - `ExportService`: Clipboard and download management.
+- **Environments**: 
+  - **Dev**: Local Angular dev server + local Express proxy.
+  - **Prod**: Optimized production build served by Express production middleware.
+- **Constraints**: 
+  - **CORS**: External images must be proxied via `/api/template-image`.
+  - **Limits**: Max 10 text layers, Max 10MB image uploads, Max 50 custom templates.
+  - **Sanitization**: All AI-suggested captions are sanitized before template binding.
 
 # Output formatting
 
