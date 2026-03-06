@@ -5,9 +5,8 @@ import { CaptionTone, GeneratedCaptionsResponse } from '../models/api-types';
 const router = Router();
 
 router.post('/generate-captions-from-image', async (req, res) => {
+  const { imageBase64, mimeType, tone, context } = req.body ?? {};
   try {
-    const { imageBase64, mimeType, tone, context } = req.body ?? {};
-
     if (!imageBase64 || !mimeType) {
       return res.status(400).json({ error: 'imageBase64 and mimeType are required.' });
     }
@@ -27,17 +26,22 @@ router.post('/generate-captions-from-image', async (req, res) => {
     };
     res.json(response);
   } catch (err: any) {
-    console.error('Error in /generate-captions-from-image:', err);
+    const errorMessage = err?.message || 'Unknown error during image caption generation';
+    console.error(`[Captions Route] API Error (Image): ${errorMessage}`, {
+      stack: err?.stack,
+      body: { mimeType, tone, contextLength: context?.length },
+    });
+
     res.status(500).json({
       success: false,
-      error: err?.message ?? 'Failed to generate captions from image.',
+      error: `Gemini API Error: ${errorMessage}`,
     });
   }
 });
 
 router.post('/generate-captions-from-text', async (req, res) => {
+  const { templateName, tone, context } = req.body ?? {};
   try {
-    const { templateName, tone, context } = req.body ?? {};
     if (!templateName) {
       return res.status(400).json({ error: 'templateName is required.' });
     }
@@ -52,10 +56,15 @@ router.post('/generate-captions-from-text', async (req, res) => {
     };
     res.json(response);
   } catch (err: any) {
-    console.error('Error in /generate-captions-from-text:', err);
+    const errorMessage = err?.message || 'Unknown error during text caption generation';
+    console.error(`[Captions Route] API Error (Text): ${errorMessage}`, {
+      stack: err?.stack,
+      body: { templateName, tone, contextLength: context?.length },
+    });
+
     res.status(500).json({
       success: false,
-      error: err?.message ?? 'Failed to generate captions from template name.',
+      error: `Gemini API Error: ${errorMessage}`,
     });
   }
 });

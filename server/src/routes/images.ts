@@ -10,7 +10,17 @@ router.get('/template-image', async (req, res) => {
       return res.status(400).send('Missing url parameter');
     }
 
-    const allowedHosts = ['i.imgur.com'];
+    const allowedHosts = [
+      'i.imgur.com',
+      'imgflip.com',
+      'i.imgflip.com',
+      'memegen.link',
+      'i.redd.it',
+      'giphy.com',
+      'media.giphy.com',
+      'unsplash.com',
+      'images.unsplash.com',
+    ];
     const parsed = new URL(url);
     if (!allowedHosts.includes(parsed.hostname)) {
       return res.status(400).send('Host not allowed');

@@ -28,14 +28,24 @@ const mockGeminiService = {
   generateCaptionsFromText: vi.fn(),
 };
 
+// Mock StorageService
+const mockStorageService = {
+  getItem: vi.fn().mockResolvedValue(null),
+  setItem: vi.fn().mockResolvedValue(undefined),
+  removeItem: vi.fn().mockResolvedValue(undefined),
+  migrateFromLocalStorage: vi.fn().mockResolvedValue(undefined),
+};
+
 // Mock inject
 vi.mock('@angular/core', async (importOriginal) => {
   const actual = await importOriginal<any>();
   return {
     ...actual,
     inject: vi.fn().mockImplementation((token) => {
-      if (token && typeof token === 'function' && token.name === 'GeminiService')
-        return mockGeminiService;
+      if (token && typeof token === 'function') {
+        if (token.name === 'GeminiService') return mockGeminiService;
+        if (token.name === 'StorageService') return mockStorageService;
+      }
       return null;
     }),
   };

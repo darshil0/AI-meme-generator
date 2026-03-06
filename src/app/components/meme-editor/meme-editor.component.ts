@@ -10,6 +10,7 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { GeminiService } from '../../services/gemini.service';
+import { StorageService } from '../../services/storage.service';
 import {
   CaptionTone,
   ImageFilter,
@@ -19,6 +20,7 @@ import {
   SavedMemeState,
   MEME_CONSTANTS,
 } from '../../models/meme.model';
+import { CanvasUtils } from '../../utils/canvas-utils';
 
 @Component({
   selector: 'app-meme-editor',
@@ -32,6 +34,7 @@ export class MemeEditorComponent {
   @ViewChild('imagePreview') imagePreview?: ElementRef<HTMLImageElement>;
 
   private geminiService = inject(GeminiService);
+  private storageService = inject(StorageService);
 
   // State Signals
   selectedImage = signal<{ url: string; data: string; mimeType: string } | null>(null);
@@ -154,43 +157,34 @@ export class MemeEditorComponent {
       this.isApiKeyConfigured.set(configured);
     });
 
-    this.loadCustomTemplates();
-    this.checkForSavedState();
+    this.initializeStorage();
   }
 
-  private loadCustomTemplates(): void {
-    const savedTemplates = localStorage.getItem('customMemeTemplates');
-    if (savedTemplates) {
-      try {
-        const templates = JSON.parse(savedTemplates) as MemeTemplate[];
-        this.customTemplates.set(templates.filter((t) => t.isCustom));
-      } catch (e) {
-        console.error('Failed to parse custom templates:', e);
-      }
+  private async initializeStorage(): Promise<void> {
+    await this.storageService.migrateFromLocalStorage(['customMemeTemplates', 'savedMemeState']);
+    await this.loadCustomTemplates();
+    await this.checkForSavedState();
+  }
+
+  private async loadCustomTemplates(): Promise<void> {
+    const templates = await this.storageService.getItem<MemeTemplate[]>('customMemeTemplates');
+    if (templates) {
+      this.customTemplates.set(templates.filter((t) => t.isCustom));
     }
   }
 
-  private checkForSavedState(): void {
-    const savedState = localStorage.getItem('savedMemeState');
+  private async checkForSavedState(): Promise<void> {
+    const savedState = await this.storageService.getItem<SavedMemeState>('savedMemeState');
     this.savedStateExists.set(!!savedState);
   }
 
   // Layer Style Helpers
   getLayerTextShadow(layer: TextLayer): string {
-    const color = layer.outlineColor;
-    const width = Math.max(1, Math.round(layer.fontSize / 24));
-    const shadows = [
-      `-${width}px -${width}px 0 ${color}`,
-      `${width}px -${width}px 0 ${color}`,
-      `-${width}px ${width}px 0 ${color}`,
-      `${width}px ${width}px 0 ${color}`,
-      `0 0 ${width * 2}px rgba(0,0,0,0.5)`,
-    ];
-    return shadows.join(', ');
+    return CanvasUtils.getLayerTextShadow(layer);
   }
 
   getLayerTextFilter(layer: TextLayer): string {
-    return layer.textBlur > 0 ? `blur(${layer.textBlur}px)` : 'none';
+    return CanvasUtils.getLayerTextFilter(layer);
   }
 
   private getImageDimensions(): { width: number; height: number } | null {
@@ -514,67 +508,26 @@ export class MemeEditorComponent {
     });
   }
 
-  private async _generateMemeCanvas(): Promise<HTMLCanvasElement | null> {
-    const preview = this.imagePreview?.nativeElement;
-    if (!preview?.src) return null;
-
-    return new Promise((resolve) => {
-      const img = new Image();
-      img.crossOrigin = 'anonymous';
-      img.src = preview.src;
-
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
-
-        canvas.width = img.naturalWidth;
-        canvas.height = img.naturalHeight;
-
-        // Apply image filter
-        ctx.filter = this.computedImageFilter();
-        ctx.drawImage(img, 0, 0);
-        ctx.filter = 'none';
-
-        // Draw text layers (back to front)
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.imageSmoothingEnabled = true;
-
-        for (const layer of this.layers()) {
-          const lineWidth = Math.max(2, Math.round(layer.fontSize / 20));
-
-          // Shadow for outline effect
-          ctx.save();
-          ctx.filter = this.getLayerTextFilter(layer);
-
-          ctx.font = `${layer.fontSize}px Impact, Arial Black, sans-serif`;
-          ctx.strokeStyle = layer.outlineColor;
-          ctx.lineWidth = lineWidth;
-          ctx.fillStyle = layer.fontColor;
-
-          const y = (layer.top / 100) * canvas.height;
-          ctx.strokeText(layer.text, canvas.width / 2, y);
-          ctx.fillText(layer.text, canvas.width / 2, y);
-
-          ctx.restore();
-        }
-
-        resolve(canvas);
-      };
-
-      img.onerror = () => resolve(null);
-    });
-  }
-
   async downloadMeme(): Promise<void> {
-    const canvas = await this._generateMemeCanvas();
-    if (!canvas) {
+    const preview = this.imagePreview?.nativeElement;
+    if (!preview?.src) {
       this.error.set('Cannot generate meme. Please ensure an image is loaded.');
       return;
     }
 
+    const canvas = await CanvasUtils.generateMemeCanvas(
+      preview.src,
+      this.layers(),
+      this.imageFilter(),
+    );
+
+    if (!canvas) {
+      this.error.set('Failed to generate meme canvas.');
+      return;
+    }
+
     const quality = this.downloadQuality();
-    const dataUrl = canvas.toDataURL('image/jpeg', quality);
+    const dataUrl = CanvasUtils.canvasToDataUrl(canvas, quality);
 
     const link = document.createElement('a');
     link.href = dataUrl;
@@ -593,31 +546,41 @@ export class MemeEditorComponent {
       return;
     }
 
-    const canvas = await this._generateMemeCanvas();
-    if (!canvas) {
+    const preview = this.imagePreview?.nativeElement;
+    if (!preview?.src) {
       this.error.set('Cannot copy meme. Please ensure an image is loaded.');
       return;
     }
 
-    canvas.toBlob(async (blob) => {
-      if (!blob) {
-        this.error.set('Failed to copy. Unable to create image blob.');
-        return;
-      }
+    const canvas = await CanvasUtils.generateMemeCanvas(
+      preview.src,
+      this.layers(),
+      this.imageFilter(),
+    );
 
-      try {
-        const ClipboardItemCtor = (window as any).ClipboardItem as typeof ClipboardItem;
-        await navigator.clipboard.write([new ClipboardItemCtor({ 'image/png': blob })]);
-        this.copyButtonText.set('✅ Copied!');
-        setTimeout(() => this.copyButtonText.set('Copy to Clipboard'), 3000);
-      } catch (error) {
-        this.error.set('Failed to copy. Use download button instead.');
-        console.error('Clipboard error:', error);
-      }
-    }, 'image/png');
+    if (!canvas) {
+      this.error.set('Failed to generate meme canvas.');
+      return;
+    }
+
+    const blob = await CanvasUtils.canvasToBlob(canvas, 'image/png');
+    if (!blob) {
+      this.error.set('Failed to copy. Unable to create image blob.');
+      return;
+    }
+
+    try {
+      const ClipboardItemCtor = (window as any).ClipboardItem as typeof ClipboardItem;
+      await navigator.clipboard.write([new ClipboardItemCtor({ 'image/png': blob })]);
+      this.copyButtonText.set('✅ Copied!');
+      setTimeout(() => this.copyButtonText.set('Copy to Clipboard'), 3000);
+    } catch (error) {
+      this.error.set('Failed to copy. Use download button instead.');
+      console.error('Clipboard error:', error);
+    }
   }
 
-  saveState(): void {
+  async saveState(): Promise<void> {
     if (!this.isEditing()) return;
 
     const selectedImage = this.selectedImage();
@@ -645,21 +608,19 @@ export class MemeEditorComponent {
     };
 
     try {
-      localStorage.setItem('savedMemeState', JSON.stringify(state));
+      await this.storageService.setItem('savedMemeState', state);
       this.savedStateExists.set(true);
       this.saveButtonText.set('💾 Saved!');
       setTimeout(() => this.saveButtonText.set('Save Work'), 2000);
     } catch (error) {
-      this.error.set('Storage quota exceeded. Clear some space or use fewer custom templates.');
+      this.error.set('Failed to save state. Storage might be full.');
     }
   }
 
-  loadState(): void {
+  async loadState(): Promise<void> {
     try {
-      const saved = localStorage.getItem('savedMemeState');
-      if (!saved) throw new Error('No saved state found');
-
-      const state: SavedMemeState = JSON.parse(saved);
+      const state = await this.storageService.getItem<SavedMemeState>('savedMemeState');
+      if (!state) throw new Error('No saved state found');
 
       this._resetEditorState(state.selectedTemplateName !== null);
 
@@ -695,14 +656,14 @@ export class MemeEditorComponent {
       this.nextLayerId.set(state.nextLayerId || 1);
 
       this.error.set(null);
-    } catch (error) {
+    } catch {
       this.error.set('Failed to load state. Starting fresh.');
-      localStorage.removeItem('savedMemeState');
+      await this.storageService.removeItem('savedMemeState');
       this.savedStateExists.set(false);
     }
   }
 
-  saveCustomTemplate(): void {
+  async saveCustomTemplate(): Promise<void> {
     const name = this.newTemplateName().trim();
     const image = this.selectedImage();
 
@@ -729,39 +690,35 @@ export class MemeEditorComponent {
       isCustom: true,
     };
 
-    this.customTemplates.update((templates) => {
-      const updated = [...templates, newTemplate];
-      localStorage.setItem('customMemeTemplates', JSON.stringify(updated));
-      return updated;
-    });
+    const updated = [...this.customTemplates(), newTemplate];
+    await this.storageService.setItem('customMemeTemplates', updated);
+    this.customTemplates.set(updated);
 
     this.newTemplateName.set('');
     this.showSaveTemplateInput.set(false);
     this.error.set(null);
   }
 
-  deleteCustomTemplate(template: MemeTemplate, event?: Event): void {
+  async deleteCustomTemplate(template: MemeTemplate, event?: Event): Promise<void> {
     event?.stopPropagation();
 
-    this.customTemplates.update((templates) => {
-      const updated = templates.filter((t) => t.url !== template.url);
-      localStorage.setItem('customMemeTemplates', JSON.stringify(updated));
-      return updated;
-    });
+    const updated = this.customTemplates().filter((t) => t.url !== template.url);
+    await this.storageService.setItem('customMemeTemplates', updated);
+    this.customTemplates.set(updated);
 
     if (this.selectedImage()?.url === template.url) {
       this._resetEditorState();
     }
   }
 
-  clearSavedMemeState(): void {
-    localStorage.removeItem('savedMemeState');
+  async clearSavedMemeState(): Promise<void> {
+    await this.storageService.removeItem('savedMemeState');
     this.savedStateExists.set(false);
     this._resetEditorState();
   }
 
-  clearAllCustomTemplates(): void {
-    localStorage.removeItem('customMemeTemplates');
+  async clearAllCustomTemplates(): Promise<void> {
+    await this.storageService.removeItem('customMemeTemplates');
     this.customTemplates.set([]);
 
     const selected = this.selectedImage();

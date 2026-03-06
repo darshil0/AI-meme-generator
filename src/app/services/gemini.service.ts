@@ -13,6 +13,7 @@ interface CaptionsResponse {
 export class GeminiService {
   constructor(private http: HttpClient) {}
 
+  // Check if API key is configured on the backend
   async checkConfiguration(): Promise<boolean> {
     try {
       const resp = await this.http.get<{ configured: boolean }>('/api/config-status').toPromise();
@@ -21,11 +22,6 @@ export class GeminiService {
       console.warn('Failed to check backend configuration:', e);
       return false;
     }
-  }
-
-  // Deprecated: usage should be replaced by async checkConfiguration
-  isConfigured(): boolean {
-    return true;
   }
 
   private sanitizeCaptions(captions: string[]): string[] {
