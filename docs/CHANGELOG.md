@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0] - 2026-03-05
+
+### Added
+- **Premium Fonts**: Integrated Google Font **Anton** for professional-grade meme rendering across all platforms.
+- **Service Verification**: Added a comprehensive unit test suite for the `ExportService` (Clipboard & Download logic).
+- **HSL-Tailored Design**: Refactored the glass styling system to use HSL-derived accent colors for more vibrant, tailored visual effects.
+
+### Changed
+- **Canvas Rendering**: Optimized font stacking in `CanvasUtils` to prioritize high-quality fallback paths.
+
 ## [1.8.0] - 2026-03-05
 
 ### Added

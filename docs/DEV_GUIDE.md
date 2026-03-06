@@ -1,4 +1,4 @@
-# AI Meme Generator - Developer's Guide (v1.7.0)
+# AI Meme Generator - Developer's Guide (v1.9.0)
 
 This guide provides technical deep-dives into the architecture, design patterns, and development workflows of the AI Meme Generator.
 
