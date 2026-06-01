@@ -108,6 +108,7 @@ The AI is prompted to return the results in a structured JSON format, which the 
 - Node.js (v18 or higher)
 - npm or yarn
 - Google Gemini API key
+- **Cairo** (System dependency for `canvas` package - required for testing)
 
 ### Installation
 
@@ -213,6 +214,7 @@ npm run format  # Format the codebase with Prettier
 For architectural details, security practices, and contribution guidelines, see our [Developer's Guide](docs/DEV_GUIDE.md).
 
 ### Quick Start
+
 1. `npm install`
 2. Configure `GEMINI_API_KEY` in `server/.env`
 3. `npm run dev`
@@ -221,8 +223,8 @@ For architectural details, security practices, and contribution guidelines, see 
 
 ## 🤝 Support & Contributing
 
-*   **Bugs/Features**: Open an issue on GitHub.
-*   **Updates**: See [CHANGELOG.md](docs/CHANGELOG.md) for version history.
+- **Bugs/Features**: Open an issue on GitHub.
+- **Updates**: See [CHANGELOG.md](docs/CHANGELOG.md) for version history.
 
 ---
 

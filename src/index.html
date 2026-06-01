@@ -1,45 +1,46 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>AI Meme Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
 
-<head>
-  <meta charset="utf-8" />
-  <title>AI Meme Generator</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <!-- Fonts (kept here instead of @import in CSS for better performance) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
 
-  <!-- Fonts (kept here instead of @import in CSS for better performance) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet" />
+    <!-- Global styles built by Angular (includes Tailwind from styles.scss) -->
+    <link rel="stylesheet" href="styles.css" />
 
-  <!-- Global styles built by Angular (includes Tailwind from styles.scss) -->
-  <link rel="stylesheet" href="styles.css" />
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+      }
 
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-    }
+      .meme-font {
+        font-family: 'Impact', sans-serif;
+        text-transform: uppercase;
+      }
 
-    .meme-font {
-      font-family: 'Impact', sans-serif;
-      text-transform: uppercase;
-    }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+      }
+    </style>
 
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border-width: 0;
-    }
-  </style>
-
-  <script type="importmap">
+    <script type="importmap">
       {
         "imports": {
           "rxjs": "https://esm.sh/rxjs@^7.8.2?conditions=es2015",
@@ -57,10 +58,9 @@
         }
       }
     </script>
-</head>
+  </head>
 
-<body class="bg-gray-900">
-  <app-root></app-root>
-</body>
-
+  <body class="bg-gray-900">
+    <app-root></app-root>
+  </body>
 </html>

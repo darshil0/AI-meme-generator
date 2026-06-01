@@ -577,11 +577,11 @@ export class MemeEditorComponent {
       selectedImage:
         selectedImage && dimensions
           ? {
-            url: selectedImage.url,
-            data: selectedImage.data,
-            mimeType: selectedImage.mimeType,
-            dimensions: dimensions,
-          }
+              url: selectedImage.url,
+              data: selectedImage.data,
+              mimeType: selectedImage.mimeType,
+              dimensions: dimensions,
+            }
           : null,
       layers: this.layers(),
       imageFilter: this.imageFilter(),
@@ -598,7 +598,7 @@ export class MemeEditorComponent {
       this.savedStateExists.set(true);
       this.saveButtonText.set('💾 Saved!');
       setTimeout(() => this.saveButtonText.set('Save Work'), 2000);
-    } catch (error) {
+    } catch {
       this.error.set('Failed to save state. Storage might be full.');
     }
   }

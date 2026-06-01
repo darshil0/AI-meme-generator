@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { ImageFilter } from '../../models/meme.model';
 
 @Component({
-    selector: 'app-filter-controls',
-    standalone: true,
-    imports: [CommonModule],
-    template: `
+  selector: 'app-filter-controls',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
     <fieldset class="border border-white/10 p-4 rounded-2xl glass-panel">
       <legend class="text-xl font-bold px-2 text-purple-300">Image Filters</legend>
       <div class="flex flex-wrap gap-2 pt-2">
@@ -29,10 +29,10 @@ import { ImageFilter } from '../../models/meme.model';
       </div>
     </fieldset>
   `,
-    styles: []
+  styles: [],
 })
 export class FilterControlsComponent {
-    @Input() filters: ImageFilter[] = [];
-    @Input() selectedFilter: ImageFilter = ImageFilter.NONE;
-    @Output() applyFilter = new EventEmitter<ImageFilter>();
+  @Input() filters: ImageFilter[] = [];
+  @Input() selectedFilter: ImageFilter = ImageFilter.NONE;
+  @Output() applyFilter = new EventEmitter<ImageFilter>();
 }
