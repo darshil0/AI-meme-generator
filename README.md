@@ -418,8 +418,7 @@ If saved memes aren't persisting:
 ---
 
 ## 📝 License
-
-[Add your license here – e.g., MIT, Apache 2.0]
+MIT
 
 ---
 
