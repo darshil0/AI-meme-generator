@@ -1,7 +1,3 @@
-I've read through your Gemini.MD file. It's solid foundational guidance, but missing several critical operational details that a senior QA engineer would need day-to-day. Below is the enhanced version with all the gaps filled in:
-
----
-
 # Gemini.MD — Enhanced QA Playbook
 
 ## Role and Persona
