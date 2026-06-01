@@ -5,40 +5,58 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.1] - 2026-05-31
+
+### Changed
+- **Dependency Upgrades**: Updated all frontend and backend dependencies to their latest stable MINOR and PATCH versions.
+- **Testing Configuration**: Introduced `vitest.config.ts` to properly scope frontend tests and exclude the backend directory.
+
+### Fixed
+- **Linting & Formatting**: Applied project-wide formatting and resolved all ESLint warnings (unused variables, etc.).
+- **Test Environment**: Resolved `HTMLCanvasElement.toDataURL()` implementation warning in tests by adding the `canvas` dependency.
+
 ## [1.9.0] - 2026-03-05
 
 ### Added
+
 - **Premium Fonts**: Integrated Google Font **Anton** for professional-grade meme rendering across all platforms.
 - **Service Verification**: Added a comprehensive unit test suite for the `ExportService` (Clipboard & Download logic).
 - **HSL-Tailored Design**: Refactored the glass styling system to use HSL-derived accent colors for more vibrant, tailored visual effects.
 
 ### Changed
+
 - **Canvas Rendering**: Optimized font stacking in `CanvasUtils` to prioritize high-quality fallback paths.
 
 ## [1.8.0] - 2026-03-05
 
 ### Added
+
 - **Export Service**: Modularized download and clipboard logic into a dedicated `ExportService`.
 - **UX Polish**: Added glass-premium entry animations (`fade-in-up`) for better user engagement.
 - **Context Controls**: Added "Clear Context" button in the AI Suggestions panel.
 
 ### Changed
+
 - **UI Architecture**: Restored and optimized `MemeEditorComponent` template with high-performance v1.7.0 styling patterns.
 
 ### Fixed
+
 - **Security Hardening**: Implemented strict MIME type validation in the backend image proxy to prevent non-image resource fetching.
 
 ## [1.7.0] - 2026-03-05
 
 ### Added
+
 - **Canvas Utility**: Extracted meme rendering logic into a standalone `CanvasUtils` for better modularity and testability.
 - **Architectural Refactor**: Fully integrated `StorageService` (IndexedDB) across the `MemeEditorComponent` with asynchronous patterns.
 
 ### Changed
+
 - **Gemini Integration**: Updated server-side model to `gemini-2.0-flash` for improved stability.
 - **Code Quality**: Removed deprecated methods from `GeminiService` and improved backend error reporting for AI generations.
 
 ### Fixed
+
 - **Testing**: Updated unit test suite to support asynchronous storage and service mocks.
 - **Linting**: Resolved formatting and unused variable warnings across the codebase.
 

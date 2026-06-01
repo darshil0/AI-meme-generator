@@ -1,16 +1,18 @@
-import { Component, Input, Output, EventEmitter, Signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MemeTemplate } from '../../models/meme.model';
 
 @Component({
-    selector: 'app-template-grid',
-    standalone: true,
-    imports: [CommonModule, FormsModule],
-    template: `
+  selector: 'app-template-grid',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  template: `
     <div class="flex flex-col gap-6">
       <div class="glass-panel p-6 rounded-3xl border border-white/10">
-        <p class="text-sm font-bold uppercase tracking-wider text-gray-400 mb-4">Select a Template</p>
+        <p class="text-sm font-bold uppercase tracking-wider text-gray-400 mb-4">
+          Select a Template
+        </p>
         <div class="mb-6">
           <label for="template-search" class="sr-only">Search templates</label>
           <input
@@ -42,7 +44,9 @@ import { MemeTemplate } from '../../models/meme.model';
                 <div
                   class="absolute bottom-0 left-0 right-0 p-2 text-center bg-black/80 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity"
                 >
-                  <p class="text-white text-[10px] font-bold uppercase truncate">{{ template.name }}</p>
+                  <p class="text-white text-[10px] font-bold uppercase truncate">
+                    {{ template.name }}
+                  </p>
                 </div>
               </button>
               @if (loadingUrl === template.url) {
@@ -83,7 +87,9 @@ import { MemeTemplate } from '../../models/meme.model';
               }
             </div>
           } @empty {
-            <div class="col-span-full text-center py-12 text-gray-400 italic">No templates found</div>
+            <div class="col-span-full text-center py-12 text-gray-400 italic">
+              No templates found
+            </div>
           }
         </div>
         @if (hasCustomTemplates) {
@@ -98,20 +104,23 @@ import { MemeTemplate } from '../../models/meme.model';
       </div>
     </div>
   `,
-    styles: []
+  styles: [],
 })
 export class TemplateGridComponent {
-    @Input() templates: MemeTemplate[] = [];
-    @Input() loadingUrl: string | null = null;
-    @Input() searchQuery: string = '';
-    @Input() hasCustomTemplates: boolean = false;
+  @Input() templates: MemeTemplate[] = [];
+  @Input() loadingUrl: string | null = null;
+  @Input() searchQuery: string = '';
+  @Input() hasCustomTemplates: boolean = false;
 
-    @Output() selectTemplate = new EventEmitter<MemeTemplate>();
-    @Output() deleteCustomTemplate = new EventEmitter<{ template: MemeTemplate, event: MouseEvent }>();
-    @Output() clearAllCustomTemplates = new EventEmitter<void>();
-    @Output() searchQueryChange = new EventEmitter<string>();
+  @Output() selectTemplate = new EventEmitter<MemeTemplate>();
+  @Output() deleteCustomTemplate = new EventEmitter<{
+    template: MemeTemplate;
+    event: MouseEvent;
+  }>();
+  @Output() clearAllCustomTemplates = new EventEmitter<void>();
+  @Output() searchQueryChange = new EventEmitter<string>();
 
-    onSearchChange(value: string) {
-        this.searchQueryChange.emit(value);
-    }
+  onSearchChange(value: string) {
+    this.searchQueryChange.emit(value);
+  }
 }

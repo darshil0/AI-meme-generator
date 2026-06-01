@@ -36,12 +36,12 @@ You write clear, concise answers optimized for an experienced QA lead.
 # Project-specific context
 
 - **App under test**: AI Meme Generator - A modern, high-performance web application for creating, filtering, and AI-captioning memes.
-- **Tech stack**: 
+- **Tech stack**:
   - **Frontend**: Angular 21 (Zoneless, Signals), Tailwind CSS, SCSS (Custom Glassmorphism).
   - **Backend**: Node.js/Express (Serving as a proxy for Gemini API and external image templates).
   - **AI Engine**: Google Gemini API (`gemini-2.0-flash`).
   - **Storage**: IndexedDB (via `idb-keyval`) for custom templates and state persistence.
-- **Major modules**: 
+- **Major modules**:
   - `MemeEditor`: Main orchestration hub.
   - `TemplateGrid`: Categorized template browsing and search.
   - `AiCaptions`: Gemini-powered suggestion engine with multi-tone support.
@@ -49,10 +49,10 @@ You write clear, concise answers optimized for an experienced QA lead.
   - `FilterControls`: Real-time CSS image filtering based on `models/meme.model.ts`.
   - `CanvasUtils`: Core rendering engine for JPEG/PNG export.
   - `ExportService`: Clipboard and download management.
-- **Environments**: 
+- **Environments**:
   - **Dev**: Local Angular dev server + local Express proxy.
   - **Prod**: Optimized production build served by Express production middleware.
-- **Constraints**: 
+- **Constraints**:
   - **CORS**: External images must be proxied via `/api/template-image`.
   - **Limits**: Max 10 text layers, Max 10MB image uploads, Max 50 custom templates.
   - **Sanitization**: All AI-suggested captions are sanitized before template binding.

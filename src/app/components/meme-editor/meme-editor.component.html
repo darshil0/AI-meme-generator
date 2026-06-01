@@ -1,190 +1,289 @@
 <div class="container mx-auto p-4 sm:p-6 lg:p-8">
   @if (!isApiKeyConfigured()) {
-  <div class="bg-red-800 border-l-4 border-red-500 text-red-100 p-4 rounded-md mb-6" role="alert">
-    <p class="font-bold">Configuration Error</p>
-    <p>Google Gemini API key is not configured. The AI features will not be available.</p>
-  </div>
+    <div class="bg-red-800 border-l-4 border-red-500 text-red-100 p-4 rounded-md mb-6" role="alert">
+      <p class="font-bold">Configuration Error</p>
+      <p>Google Gemini API key is not configured. The AI features will not be available.</p>
+    </div>
   }
 
   <!-- Selection Stage -->
   @if (!isEditing()) {
-  <div class="flex flex-col items-center justify-center space-y-8 py-12 animate-fade-in-up">
-    <div class="text-center space-y-4">
-      <h1 class="text-5xl font-extrabold tracking-tight text-white lg:text-6xl">
-        AI Meme <span class="text-primary-400">Generator</span>
-      </h1>
-      <p class="text-xl text-white/60 max-w-2xl mx-auto">
-        Create viral-worthy memes in seconds with the power of generative AI.
-      </p>
-    </div>
+    <div class="flex flex-col items-center justify-center space-y-8 py-12 animate-fade-in-up">
+      <div class="text-center space-y-4">
+        <h1 class="text-5xl font-extrabold tracking-tight text-white lg:text-6xl">
+          AI Meme <span class="text-primary-400">Generator</span>
+        </h1>
+        <p class="text-xl text-white/60 max-w-2xl mx-auto">
+          Create viral-worthy memes in seconds with the power of generative AI.
+        </p>
+      </div>
 
-    <div class="grid w-full max-w-4xl grid-cols-1 gap-6 md:grid-cols-2">
-      <!-- Upload Card -->
-      <label for="file-upload"
-        class="group glass-panel relative flex cursor-pointer flex-col items-center justify-center space-y-4 rounded-3xl p-8 transition-all hover:bg-white/10 hover:shadow-2xl">
-        <div
-          class="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-500/20 text-primary-400 transition-transform group-hover:scale-110">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-          </svg>
-        </div>
-        <div class="text-center">
-          <span class="block text-xl font-bold text-white">Upload Image</span>
-          <span class="text-sm text-white/50">PNG, JPG, WEBP (Max 10MB)</span>
-        </div>
-        <input id="file-upload" type="file" class="hidden" (change)="onFileSelected($event)" accept="image/*" />
-      </label>
+      <div class="grid w-full max-w-4xl grid-cols-1 gap-6 md:grid-cols-2">
+        <!-- Upload Card -->
+        <label
+          for="file-upload"
+          class="group glass-panel relative flex cursor-pointer flex-col items-center justify-center space-y-4 rounded-3xl p-8 transition-all hover:bg-white/10 hover:shadow-2xl"
+        >
+          <div
+            class="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-500/20 text-primary-400 transition-transform group-hover:scale-110"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-8 w-8"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+          </div>
+          <div class="text-center">
+            <span class="block text-xl font-bold text-white">Upload Image</span>
+            <span class="text-sm text-white/50">PNG, JPG, WEBP (Max 10MB)</span>
+          </div>
+          <input
+            id="file-upload"
+            type="file"
+            class="hidden"
+            (change)="onFileSelected($event)"
+            accept="image/*"
+          />
+        </label>
 
-      <!-- Load Work Card -->
-      @if (savedStateExists()) {
-      <button (click)="loadState()"
-        class="group glass-panel flex flex-col items-center justify-center space-y-4 rounded-3xl p-8 transition-all hover:bg-white/10 hover:shadow-2xl">
-        <div
-          class="flex h-16 w-16 items-center justify-center rounded-2xl bg-secondary-500/20 text-secondary-400 transition-transform group-hover:scale-110">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        </div>
-        <div class="text-center">
-          <span class="block text-xl font-bold text-white">Resume Work</span>
-          <span class="text-sm text-white/50">Load your last saved meme</span>
-        </div>
-      </button>
-      }
+        <!-- Load Work Card -->
+        @if (savedStateExists()) {
+          <button
+            (click)="loadState()"
+            class="group glass-panel flex flex-col items-center justify-center space-y-4 rounded-3xl p-8 transition-all hover:bg-white/10 hover:shadow-2xl"
+          >
+            <div
+              class="flex h-16 w-16 items-center justify-center rounded-2xl bg-secondary-500/20 text-secondary-400 transition-transform group-hover:scale-110"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-8 w-8"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <div class="text-center">
+              <span class="block text-xl font-bold text-white">Resume Work</span>
+              <span class="text-sm text-white/50">Load your last saved meme</span>
+            </div>
+          </button>
+        }
 
-      <!-- Templates Section -->
-      <div class="glass-panel col-span-1 rounded-3xl p-6 md:col-span-2">
-        <app-template-grid [templates]="filteredTemplates()" [loadingUrl]="loadingTemplateUrl()"
-          [searchQuery]="templateSearchQuery()" [hasCustomTemplates]="customTemplates().length > 0"
-          (selectTemplate)="selectTemplate($event)"
-          (deleteCustomTemplate)="deleteCustomTemplate($event.template, $event.event)"
-          (clearAllCustomTemplates)="clearAllCustomTemplates()"
-          (searchQueryChange)="templateSearchQuery.set($event)"></app-template-grid>
+        <!-- Templates Section -->
+        <div class="glass-panel col-span-1 rounded-3xl p-6 md:col-span-2">
+          <app-template-grid
+            [templates]="filteredTemplates()"
+            [loadingUrl]="loadingTemplateUrl()"
+            [searchQuery]="templateSearchQuery()"
+            [hasCustomTemplates]="customTemplates().length > 0"
+            (selectTemplate)="selectTemplate($event)"
+            (deleteCustomTemplate)="deleteCustomTemplate($event.template, $event.event)"
+            (clearAllCustomTemplates)="clearAllCustomTemplates()"
+            (searchQueryChange)="templateSearchQuery.set($event)"
+          ></app-template-grid>
+        </div>
       </div>
     </div>
-  </div>
   }
 
   <!-- Editor Main View -->
-  <div *ngIf="isEditing()" class="animate-fade-in-up grid grid-cols-1 gap-8 lg:grid-cols-12 xl:gap-12">
+  <div
+    *ngIf="isEditing()"
+    class="animate-fade-in-up grid grid-cols-1 gap-8 lg:grid-cols-12 xl:gap-12"
+  >
     <!-- Left Column: Controls (4 columns) -->
     <div class="space-y-6 lg:col-span-4">
       <!-- AI Captions Component -->
-      <app-ai-captions [isLoading]="isLoading()" [isApiKeyConfigured]="isApiKeyConfigured()" [error]="error()"
-        [captions]="captions()" [userContext]="userContext()" (userContextChange)="userContext.set($event)"
-        (selectTone)="selectTone($event)" (generateCaptions)="generateCaptions()" (applyCaption)="applyCaption($event)"
-        class="block animate-fade-in-up" style="animation-delay: 0.1s"></app-ai-captions>
+      <app-ai-captions
+        [isLoading]="isLoading()"
+        [isApiKeyConfigured]="isApiKeyConfigured()"
+        [error]="error()"
+        [captions]="captions()"
+        [userContext]="userContext()"
+        (userContextChange)="userContext.set($event)"
+        (selectTone)="selectTone($event)"
+        (generateCaptions)="generateCaptions()"
+        (applyCaption)="applyCaption($event)"
+        class="block animate-fade-in-up"
+        style="animation-delay: 0.1s"
+      ></app-ai-captions>
 
       <!-- Layer Controls Component -->
-      <app-layer-controls [layers]="layers()" [selectedLayerIndex]="selectedLayerIndex()"
-        (selectLayer)="selectLayer($event)" (addLayer)="addTextLayer()"
+      <app-layer-controls
+        [layers]="layers()"
+        [selectedLayerIndex]="selectedLayerIndex()"
+        (selectLayer)="selectLayer($event)"
+        (addLayer)="addTextLayer()"
         (deleteLayer)="deleteLayer($event.index, $event.event)"
         (moveLayer)="moveLayer($event.index, $event.direction, $event.event)"
-        (updateProperty)="handleLayerUpdate($event)" class="block animate-fade-in-up"
-        style="animation-delay: 0.2s"></app-layer-controls>
+        (updateProperty)="handleLayerUpdate($event)"
+        class="block animate-fade-in-up"
+        style="animation-delay: 0.2s"
+      ></app-layer-controls>
 
       <!-- Filter Controls Component -->
-      <app-filter-controls [currentFilter]="imageFilter()" (selectFilter)="applyFilter($event)"
-        class="block animate-fade-in-up" style="animation-delay: 0.3s"></app-filter-controls>
+      <app-filter-controls
+        [currentFilter]="imageFilter()"
+        (selectFilter)="applyFilter($event)"
+        class="block animate-fade-in-up"
+        style="animation-delay: 0.3s"
+      ></app-filter-controls>
     </div>
 
     <!-- Right Column: Preview (8 columns) -->
     <div class="lg:col-span-8">
-      <div class="glass-panel overflow-hidden rounded-3xl p-4 sm:p-6 lg:p-8 animate-fade-in-up"
-        style="animation-delay: 0.2s">
+      <div
+        class="glass-panel overflow-hidden rounded-3xl p-4 sm:p-6 lg:p-8 animate-fade-in-up"
+        style="animation-delay: 0.2s"
+      >
         <div class="relative flex flex-col gap-6">
           <div class="flex items-center justify-between">
             <h2 class="text-2xl font-bold text-white">Canvas Preview</h2>
             <div class="flex items-center gap-3">
               @if (selectedImage()?.data) {
-              <button (click)="showSaveTemplateInput.set(!showSaveTemplateInput())"
-                class="text-sm font-medium text-primary-400 transition-colors hover:text-primary-300">
-                {{ showSaveTemplateInput() ? 'Cancel' : 'Save as Template' }}
-              </button>
+                <button
+                  (click)="showSaveTemplateInput.set(!showSaveTemplateInput())"
+                  class="text-sm font-medium text-primary-400 transition-colors hover:text-primary-300"
+                >
+                  {{ showSaveTemplateInput() ? 'Cancel' : 'Save as Template' }}
+                </button>
               }
-              <button (click)="_resetEditorState()"
-                class="text-sm font-medium text-white/50 transition-colors hover:text-white/80">
+              <button
+                (click)="_resetEditorState()"
+                class="text-sm font-medium text-white/50 transition-colors hover:text-white/80"
+              >
                 Start Over
               </button>
             </div>
           </div>
 
           @if (showSaveTemplateInput()) {
-          <div class="flex animate-fade-in-up flex-col gap-3 rounded-2xl bg-white/5 p-4 ring-1 ring-white/10">
-            <input type="text" [(ngModel)]="newTemplateName" placeholder="Template Name (e.g., Sad Man)"
-              class="form-glass w-full rounded-xl px-4 py-2 text-white placeholder-white/30" />
-            <button (click)="saveCustomTemplate()" [disabled]="!newTemplateName().trim()"
-              class="btn-primary rounded-xl py-2 font-bold">
-              Confirm Save
-            </button>
-          </div>
+            <div
+              class="flex animate-fade-in-up flex-col gap-3 rounded-2xl bg-white/5 p-4 ring-1 ring-white/10"
+            >
+              <input
+                type="text"
+                [(ngModel)]="newTemplateName"
+                placeholder="Template Name (e.g., Sad Man)"
+                class="form-glass w-full rounded-xl px-4 py-2 text-white placeholder-white/30"
+              />
+              <button
+                (click)="saveCustomTemplate()"
+                [disabled]="!newTemplateName().trim()"
+                class="btn-primary rounded-xl py-2 font-bold"
+              >
+                Confirm Save
+              </button>
+            </div>
           }
 
           <!-- Canvas Display Area -->
           <div
-            class="relative flex min-h-[400px] items-center justify-center overflow-hidden rounded-2xl bg-black shadow-inner lg:min-h-[550px]">
+            class="relative flex min-h-[400px] items-center justify-center overflow-hidden rounded-2xl bg-black shadow-inner lg:min-h-[550px]"
+          >
             @if (hasImage()) {
-            <img #imagePreview [src]="selectedImage()?.url" [alt]="'Meme preview'"
-              class="max-w-full max-h-[70vh] object-contain mx-auto transition-all duration-300"
-              [style.filter]="computedImageFilter()" />
+              <img
+                #imagePreview
+                [src]="selectedImage()?.url"
+                [alt]="'Meme preview'"
+                class="max-w-full max-h-[70vh] object-contain mx-auto transition-all duration-300"
+                [style.filter]="computedImageFilter()"
+              />
             } @else if (loadingPreviewUrl()) {
-            <img [src]="loadingPreviewUrl()" alt="Loading template..."
-              class="max-w-full max-h-[70vh] object-contain mx-auto blur-md opacity-50" />
-            <div class="absolute inset-0 flex items-center justify-center">
-              <span class="h-12 w-12 animate-spin rounded-full border-4 border-white/20 border-t-white"></span>
-            </div>
+              <img
+                [src]="loadingPreviewUrl()"
+                alt="Loading template..."
+                class="max-w-full max-h-[70vh] object-contain mx-auto blur-md opacity-50"
+              />
+              <div class="absolute inset-0 flex items-center justify-center">
+                <span
+                  class="h-12 w-12 animate-spin rounded-full border-4 border-white/20 border-t-white"
+                ></span>
+              </div>
             }
 
             <!-- Floating Layers -->
             @for (layer of layers(); track layer.id) {
-            <div class="absolute w-full px-4 text-center break-words pointer-events-none select-none z-10 font-[Impact]"
-              [style.top.%]="layer.top" [style.transform]="'translateY(-50%)'" [style.color]="layer.fontColor"
-              [style.font-size.px]="layer.fontSize" [style.text-shadow]="getLayerTextShadow(layer)"
-              [style.filter]="getLayerTextFilter(layer)">
-              {{ layer.text }}
-            </div>
+              <div
+                class="absolute w-full px-4 text-center break-words pointer-events-none select-none z-10 font-[Impact]"
+                [style.top.%]="layer.top"
+                [style.transform]="'translateY(-50%)'"
+                [style.color]="layer.fontColor"
+                [style.font-size.px]="layer.fontSize"
+                [style.text-shadow]="getLayerTextShadow(layer)"
+                [style.filter]="getLayerTextFilter(layer)"
+              >
+                {{ layer.text }}
+              </div>
             }
           </div>
 
           <!-- Action Buttons -->
           <div class="flex flex-col gap-4 sm:flex-row">
             <div class="flex flex-1 gap-4">
-              <button (click)="downloadMeme()"
-                class="btn-primary flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-lg font-bold shadow-lg shadow-primary-500/25 transition-all">
+              <button
+                (click)="downloadMeme()"
+                class="btn-primary flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-lg font-bold shadow-lg shadow-primary-500/25 transition-all"
+              >
                 <span>⬇️</span> Download JPEG
               </button>
 
-              <select [ngModel]="downloadQuality()" (ngModelChange)="downloadQuality.set(+$event)"
-                class="form-glass w-32 rounded-xl px-3 font-medium text-white ring-1 ring-white/10 focus:ring-primary-500">
+              <select
+                [ngModel]="downloadQuality()"
+                (ngModelChange)="downloadQuality.set(+$event)"
+                class="form-glass w-32 rounded-xl px-3 font-medium text-white ring-1 ring-white/10 focus:ring-primary-500"
+              >
                 @for (q of downloadQualities; track q.value) {
-                <option [value]="q.value">{{ q.label }}</option>
+                  <option [value]="q.value">{{ q.label }}</option>
                 }
               </select>
             </div>
 
             <!-- Copy Button -->
-            <button (click)="copyMemeToClipboard()"
+            <button
+              (click)="copyMemeToClipboard()"
               class="btn-glass flex flex-1 items-center justify-center gap-2 rounded-xl py-3 font-semibold transition-all hover:bg-white/10"
-              title="Copy to clipboard">
+              title="Copy to clipboard"
+            >
               <span>📋</span> {{ exportService.copyButtonText() }}
             </button>
 
             <!-- Save Work Button -->
-            <button (click)="saveState()"
+            <button
+              (click)="saveState()"
               class="btn-glass flex items-center justify-center gap-3 rounded-xl px-6 py-3 font-semibold transition-all hover:bg-white/10"
-              title="Save progress locally">
+              title="Save progress locally"
+            >
               <span>💾</span> {{ saveButtonText() }}
             </button>
           </div>
 
           @if (savedStateExists()) {
-          <div class="flex justify-center">
-            <button (click)="clearSavedMemeState()"
-              class="text-xs font-medium text-white/30 transition-colors hover:text-red-400">
-              Clear saved work data
-            </button>
-          </div>
+            <div class="flex justify-center">
+              <button
+                (click)="clearSavedMemeState()"
+                class="text-xs font-medium text-white/30 transition-colors hover:text-red-400"
+              >
+                Clear saved work data
+              </button>
+            </div>
           }
         </div>
       </div>

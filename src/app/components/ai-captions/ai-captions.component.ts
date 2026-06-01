@@ -9,12 +9,16 @@ import { CaptionTone } from '../../models/meme.model';
   imports: [CommonModule, FormsModule],
   template: `
     <fieldset class="border border-white/10 p-6 rounded-3xl glass-panel">
-      <legend class="text-xl font-extrabold px-3 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
+      <legend
+        class="text-xl font-extrabold px-3 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400"
+      >
         2. AI Captions
       </legend>
       <div class="flex flex-col gap-6 pt-2">
         <div>
-          <h3 class="text-sm font-bold uppercase tracking-wider text-gray-400 mb-3">Select a Tone</h3>
+          <h3 class="text-sm font-bold uppercase tracking-wider text-gray-400 mb-3">
+            Select a Tone
+          </h3>
           <div class="flex flex-wrap gap-2">
             @for (tone of tones; track tone) {
               <button
@@ -34,47 +38,54 @@ import { CaptionTone } from '../../models/meme.model';
           </div>
         </div>
         <!-- Context and Generate Section -->
-      <div class="space-y-4">
-        <div class="flex flex-col gap-2">
-          <div class="flex items-center justify-between">
-            <label for="userContext" class="text-sm font-medium text-white/70">Context (Optional)</label>
-            @if (userContext) {
-              <button 
-                (click)="onClearContext()" 
-                class="text-xs text-secondary-300 hover:text-secondary-100 transition-colors"
-                title="Clear context"
+        <div class="space-y-4">
+          <div class="flex flex-col gap-2">
+            <div class="flex items-center justify-between">
+              <label for="userContext" class="text-sm font-medium text-white/70"
+                >Context (Optional)</label
               >
-                Clear
-              </button>
-            }
+              @if (userContext) {
+                <button
+                  (click)="onClearContext()"
+                  class="text-xs text-secondary-300 hover:text-secondary-100 transition-colors"
+                  title="Clear context"
+                >
+                  Clear
+                </button>
+              }
+            </div>
+            <textarea
+              id="userContext"
+              [ngModel]="userContext"
+              (ngModelChange)="onContextChange($event)"
+              rows="2"
+              class="form-glass w-full rounded-lg p-3 text-sm text-white placeholder-white/30 resize-y"
+              placeholder="e.g., programming struggle, Monday morning, cats..."
+            ></textarea>
           </div>
-          <textarea
-            id="userContext"
-            [ngModel]="userContext"
-            (ngModelChange)="onContextChange($event)"
-            rows="2"
-            class="form-glass w-full rounded-lg p-3 text-sm text-white placeholder-white/30 resize-y"
-            placeholder="e.g., programming struggle, Monday morning, cats..."
-          ></textarea>
-        </div>
 
-        <button
-          (click)="onGenerate()"
-          [disabled]="isLoading || !isApiKeyConfigured"
-          class="btn-primary flex w-full items-center justify-center gap-2 rounded-xl py-3 font-semibold shadow-lg transition-all"
-          [class.animate-pulse]="isLoading"
-        >
-          @if (isLoading) {
-            <span class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"></span>
-            Thinking...
-          } @else {
-            <span class="text-lg">✨</span> Magic Captions
-          }
-        </button>
-      </div>
+          <button
+            (click)="onGenerate()"
+            [disabled]="isLoading || !isApiKeyConfigured"
+            class="btn-primary flex w-full items-center justify-center gap-2 rounded-xl py-3 font-semibold shadow-lg transition-all"
+            [class.animate-pulse]="isLoading"
+          >
+            @if (isLoading) {
+              <span
+                class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
+              ></span>
+              Thinking...
+            } @else {
+              <span class="text-lg">✨</span> Magic Captions
+            }
+          </button>
+        </div>
         <div aria-live="polite">
           @if (error) {
-            <div class="bg-red-500/20 border border-red-500/50 text-red-200 px-4 py-3 rounded-2xl backdrop-blur-md" role="alert">
+            <div
+              class="bg-red-500/20 border border-red-500/50 text-red-200 px-4 py-3 rounded-2xl backdrop-blur-md"
+              role="alert"
+            >
               <strong class="font-bold">Error:</strong>
               <span class="block sm:inline ml-2">{{ error }}</span>
             </div>
@@ -97,7 +108,7 @@ import { CaptionTone } from '../../models/meme.model';
       </div>
     </fieldset>
   `,
-  styles: []
+  styles: [],
 })
 export class AiCaptionsComponent {
   @Input() tones: CaptionTone[] = [];
