@@ -1,7 +1,17 @@
 import { describe, it, expect, vi, beforeAll } from 'vitest';
 
 const mockGenerateContent = vi.fn().mockResolvedValue({
-  text: JSON.stringify(['Caption 1', 'Caption 2', 'Caption 3', 'Caption 4', 'Caption 5']),
+  candidates: [
+    {
+      content: {
+        parts: [
+          {
+            text: JSON.stringify(['Caption 1', 'Caption 2', 'Caption 3', 'Caption 4', 'Caption 5']),
+          },
+        ],
+      },
+    },
+  ],
 });
 
 // Mock @google/genai

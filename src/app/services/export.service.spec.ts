@@ -9,9 +9,11 @@ describe('ExportService', () => {
     vi.clearAllMocks();
 
     // Mock ClipboardItem if it doesn't exist (JSDOM)
-    if (typeof (globalThis as any).ClipboardItem === 'undefined') {
-      (globalThis as any).ClipboardItem = class ClipboardItem {
-        constructor(public data: any) {}
+    if (
+      typeof (globalThis as unknown as { ClipboardItem: unknown }).ClipboardItem === 'undefined'
+    ) {
+      (globalThis as unknown as { ClipboardItem: unknown }).ClipboardItem = class ClipboardItem {
+        constructor(public data: Record<string, Blob>) {}
       };
     }
 

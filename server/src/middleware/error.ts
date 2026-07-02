@@ -1,6 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 
-export const errorHandler = (err: any, req: Request, res: Response, _next: NextFunction) => {
+interface HttpError extends Error {
+  status?: number;
+}
+
+export const errorHandler = (err: HttpError, req: Request, res: Response, _next: NextFunction) => {
   console.error(`[Error] ${req.method} ${req.url}:`, err);
 
   const status = err.status || 500;

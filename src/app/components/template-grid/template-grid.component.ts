@@ -9,8 +9,8 @@ import { MemeTemplate } from '../../models/meme.model';
   imports: [CommonModule, FormsModule],
   template: `
     <div class="flex flex-col gap-6">
-      <div class="glass-panel p-6 rounded-3xl border border-white/10">
-        <p class="text-sm font-bold uppercase tracking-wider text-gray-400 mb-4">
+      <div class="glass-panel p-6 rounded-3xl border border-gray-200 dark:border-white/10">
+        <p class="text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-4">
           Select a Template
         </p>
         <div class="mb-6">
@@ -32,7 +32,7 @@ import { MemeTemplate } from '../../models/meme.model';
               <button
                 (click)="selectTemplate.emit(template)"
                 [attr.aria-label]="'Select template: ' + template.name"
-                class="w-full h-full p-0 border border-white/10 bg-transparent rounded-2xl overflow-hidden hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-purple-500/50"
+                class="w-full h-full p-0 border border-gray-200 dark:border-white/10 bg-transparent rounded-2xl overflow-hidden hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-purple-500/50"
                 type="button"
               >
                 <img
@@ -87,7 +87,7 @@ import { MemeTemplate } from '../../models/meme.model';
               }
             </div>
           } @empty {
-            <div class="col-span-full text-center py-12 text-gray-400 italic">
+            <div class="col-span-full text-center py-12 text-gray-500 dark:text-gray-400 italic">
               No templates found
             </div>
           }
@@ -96,7 +96,7 @@ import { MemeTemplate } from '../../models/meme.model';
           <button
             (click)="clearAllCustomTemplates.emit()"
             type="button"
-            class="mt-4 text-xs font-bold uppercase tracking-widest text-red-400 hover:text-red-300 transition-colors w-fit"
+            class="mt-4 text-xs font-bold uppercase tracking-widest text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-colors w-fit"
           >
             Clear all custom templates
           </button>

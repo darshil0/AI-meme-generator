@@ -6,28 +6,30 @@ Comprehensive technical reference for developers contributing to the AI Meme Gen
 
 ## 📋 Quick Links
 
-| Resource | Purpose |
-|----------|---------|
-| [Setup](#-first-time-setup) | Get environment running locally |
-| [Architecture](#-architecture) | Understand module structure |
-| [Services](#-service-apis) | API reference for all services |
-| [Code Standards](#-code-standards) | TypeScript, Angular, naming conventions |
+| Resource                                   | Purpose                                          |
+| ------------------------------------------ | ------------------------------------------------ |
+| [Setup](#-first-time-setup)                | Get environment running locally                  |
+| [Architecture](#-architecture)             | Understand module structure                      |
+| [Services](#-service-apis)                 | API reference for all services                   |
+| [Code Standards](#-code-standards)         | TypeScript, Angular, naming conventions          |
 | [Common Tasks](#-common-development-tasks) | Filter, prompt, component walkthroughs with code |
-| [Testing](#-testing-strategy) | Jest patterns, test examples |
-| [API Endpoints](#-backend-api-reference) | Gemini proxy, image proxy routes |
-| [Troubleshooting](#-troubleshooting) | Common issues + solutions |
+| [Testing](#-testing-strategy)              | Jest patterns, test examples                     |
+| [API Endpoints](#-backend-api-reference)   | Gemini proxy, image proxy routes                 |
+| [Troubleshooting](#-troubleshooting)       | Common issues + solutions                        |
 
 ---
 
 ## 🚀 First-Time Setup
 
 ### Prerequisites
+
 ```bash
 node --version  # v18+
 npm --version   # v9+
 ```
 
 ### Clone & Install
+
 ```bash
 git clone https://github.com/your-org/ai-meme-generator.git
 cd ai-meme-generator
@@ -35,6 +37,7 @@ npm install
 ```
 
 ### Configure Backend
+
 ```bash
 cd server
 cat > .env << 'EOF'
@@ -46,17 +49,19 @@ cd ..
 ```
 
 ### Start Dev Servers
+
 ```bash
 # Terminal 1: Backend
 cd server && npm run dev
 # Output: Server running on http://localhost:4000
 
-# Terminal 2: Frontend  
+# Terminal 2: Frontend
 npm run dev
 # Output: Angular dev server on http://localhost:4200
 ```
 
 ### Verify Setup
+
 ```bash
 npm run test              # Tests pass
 npm run lint              # No linting errors
@@ -64,12 +69,15 @@ curl http://localhost:4000/api/health  # Backend responds (if health endpoint ex
 ```
 
 ### IDE Setup (VS Code)
+
 Install extensions:
+
 - Angular Language Service
 - ESLint (dbaeumer.vscode-eslint)
 - Prettier (esbenp.prettier-vscode)
 
 Add to `.vscode/settings.json`:
+
 ```json
 {
   "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -83,6 +91,7 @@ Add to `.vscode/settings.json`:
 ## 🏗️ Architecture
 
 ### Module Hierarchy
+
 ```
 MemeEditorComponent (Orchestrator)
 ├── TemplateGridComponent       (Template selection & search)
@@ -101,6 +110,7 @@ Utilities
 ```
 
 ### File Structure
+
 ```
 src/app/
 ├── components/
@@ -126,6 +136,7 @@ src/app/
 ## 📚 Code Standards
 
 ### TypeScript: Strict Mode Always
+
 ```typescript
 // ✅ DO: Proper types, no `any`
 interface TextLayer {
@@ -138,25 +149,27 @@ interface TextLayer {
 enum ImageFilter {
   NONE = 'none',
   GRAYSCALE = 'grayscale',
-  SEPIA = 'sepia'
+  SEPIA = 'sepia',
 }
 
 // ❌ DON'T: Avoid `any` and non-null assertions
-function process(img: any): any { }
+function process(img: any): any {}
 const layer = layers[0]!;
 ```
 
 ### Naming Conventions
-| Item | Pattern | Example |
-|------|---------|---------|
-| Files | kebab-case | `meme-editor.component.ts` |
-| Classes | PascalCase | `MemeEditorComponent` |
-| Functions | camelCase | `renderMeme()` |
-| Constants | UPPER_SNAKE_CASE | `MAX_LAYERS` |
-| Signals | camelCase | `layers = signal([])` |
-| Private | `#fieldName` | `#canvasRef` |
+
+| Item      | Pattern          | Example                    |
+| --------- | ---------------- | -------------------------- |
+| Files     | kebab-case       | `meme-editor.component.ts` |
+| Classes   | PascalCase       | `MemeEditorComponent`      |
+| Functions | camelCase        | `renderMeme()`             |
+| Constants | UPPER_SNAKE_CASE | `MAX_LAYERS`               |
+| Signals   | camelCase        | `layers = signal([])`      |
+| Private   | `#fieldName`     | `#canvasRef`               |
 
 ### Angular Signals Pattern
+
 ```typescript
 // ✅ DO: Use signals + computed
 export class MemeEditorComponent {
@@ -165,7 +178,7 @@ export class MemeEditorComponent {
   layerCount = computed(() => this.layers().length);
 
   addLayer(layer: TextLayer) {
-    this.layers.update(current => [...current, layer]);
+    this.layers.update((current) => [...current, layer]);
   }
 }
 
@@ -174,6 +187,7 @@ layers$ = new BehaviorSubject<TextLayer[]>([]);
 ```
 
 ### Linting & Formatting
+
 ```bash
 npm run lint       # Check
 npm run lint:fix   # Auto-fix
@@ -189,30 +203,33 @@ npm run format     # Prettier
 **Files affected**: `meme.model.ts`, `filter-controls.component.ts`
 
 **Step 1: Update model** (`src/app/models/meme.model.ts`)
+
 ```typescript
 export enum ImageFilter {
   NONE = 'none',
   GRAYSCALE = 'grayscale',
-  HUE_ROTATE = 'hue-rotate'  // Add
+  HUE_ROTATE = 'hue-rotate', // Add
 }
 
 export const IMAGE_FILTER_CSS_MAP: Record<ImageFilter, string> = {
   [ImageFilter.NONE]: 'filter-none',
   [ImageFilter.GRAYSCALE]: 'grayscale(100%)',
-  [ImageFilter.HUE_ROTATE]: 'hue-rotate(45deg)'  // Add
+  [ImageFilter.HUE_ROTATE]: 'hue-rotate(45deg)', // Add
 };
 ```
 
 **Step 2: Update component** (`filter-controls.component.ts`)
+
 ```typescript
 filters = [
   { label: 'None', value: ImageFilter.NONE },
   { label: 'Grayscale', value: ImageFilter.GRAYSCALE },
-  { label: 'Hue Rotate', value: ImageFilter.HUE_ROTATE }  // Add
+  { label: 'Hue Rotate', value: ImageFilter.HUE_ROTATE }, // Add
 ];
 ```
 
 **Step 3: Test**
+
 ```bash
 npm run test -- --testPathPattern=filter-controls
 ```
@@ -224,6 +241,7 @@ npm run test -- --testPathPattern=filter-controls
 **Files affected**: `server/src/routes/captions.ts`, `ai-captions.component.ts`
 
 **Step 1: Backend prompt** (`server/src/routes/captions.ts`)
+
 ```typescript
 const BASE_PROMPT = `
   Generate 5 hilarious, sarcastic meme captions.
@@ -238,6 +256,7 @@ if (tone === 'dark') {
 ```
 
 **Step 2: Frontend context** (`ai-captions.component.ts`)
+
 ```typescript
 generateCaptions() {
   const payload = {
@@ -250,6 +269,7 @@ generateCaptions() {
 ```
 
 **Step 3: Test**
+
 ```bash
 # Manual: Upload image, select tone, verify captions match intent
 npm run test -- ai-caption.service.spec.ts
@@ -260,11 +280,13 @@ npm run test -- ai-caption.service.spec.ts
 ### Task 3: Add a New Component
 
 **Step 1: Generate**
+
 ```bash
 ng generate component components/meme-history
 ```
 
 **Step 2: Implement**
+
 ```typescript
 // meme-history.component.ts
 @Component({ selector: 'app-meme-history' })
@@ -274,7 +296,7 @@ export class MemeHistoryComponent implements OnInit {
   constructor(private storage: StorageService) {}
 
   ngOnInit() {
-    this.storage.listSessions().then(sessions => {
+    this.storage.listSessions().then((sessions) => {
       this.history.set(sessions);
     });
   }
@@ -282,6 +304,7 @@ export class MemeHistoryComponent implements OnInit {
 ```
 
 **Step 3: Test**
+
 ```bash
 npm run test -- meme-history.component.spec.ts
 ```
@@ -293,6 +316,7 @@ npm run test -- meme-history.component.spec.ts
 ### Test Patterns (AAA Format)
 
 **Service Test (Jest)**
+
 ```typescript
 describe('ImageService', () => {
   let service: ImageService;
@@ -322,6 +346,7 @@ describe('ImageService', () => {
 ```
 
 **Component Test (Jest + DOM)**
+
 ```typescript
 describe('LayerControlsComponent', () => {
   let component: LayerControlsComponent;
@@ -329,7 +354,7 @@ describe('LayerControlsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LayerControlsComponent]
+      imports: [LayerControlsComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(LayerControlsComponent);
@@ -338,11 +363,9 @@ describe('LayerControlsComponent', () => {
   });
 
   it('should add text layer on button click', () => {
-    const button = fixture.debugElement.query(
-      By.css('button[aria-label="Add text layer"]')
-    );
+    const button = fixture.debugElement.query(By.css('button[aria-label="Add text layer"]'));
     button.nativeElement.click();
-    
+
     expect(component.layers().length).toBe(1);
   });
 
@@ -361,6 +384,7 @@ describe('LayerControlsComponent', () => {
 ```
 
 ### Run Tests
+
 ```bash
 npm run test                # Single run
 npm run test:watch          # Watch mode
@@ -376,6 +400,7 @@ npm run test:coverage       # Coverage report
 Generate AI captions from image or template.
 
 **Request:**
+
 ```json
 {
   "imageBase64": "iVBORw0KGgoAAAANS...",
@@ -385,16 +410,15 @@ Generate AI captions from image or template.
 ```
 
 **Response (200):**
+
 ```json
 {
-  "captions": [
-    "When you realize Monday is tomorrow",
-    "POV: You forgot to turn off your camera"
-  ]
+  "captions": ["When you realize Monday is tomorrow", "POV: You forgot to turn off your camera"]
 }
 ```
 
 **Error (400):**
+
 ```json
 { "error": "Invalid tone value" }
 ```
@@ -406,12 +430,14 @@ Generate AI captions from image or template.
 Proxy external template images (CORS-safe).
 
 **Whitelisted domains** (configured in `server/src/routes/images.ts`):
+
 - imgflip.com
 - giphy.com
 - unsplash.com
 - reddit.com
 
 **Parameters:**
+
 - `url` (required): Image URL
 
 **Response:** Image binary (200) or error (403/404)
@@ -421,6 +447,7 @@ Proxy external template images (CORS-safe).
 ## 📚 Service APIs
 
 ### AiCaptionService
+
 ```typescript
 generateCaptions(payload: {
   imageBase64?: string;
@@ -431,6 +458,7 @@ generateCaptions(payload: {
 ```
 
 ### StorageService
+
 ```typescript
 saveMeme(state: SavedMemeState): Promise<string>  // Returns ID
 loadMeme(id: string): Promise<SavedMemeState | null>
@@ -439,12 +467,14 @@ deleteSession(id: string): Promise<void>
 ```
 
 ### ExportService
+
 ```typescript
 downloadMeme(canvas: HTMLCanvasElement, filename: string, quality: number): Promise<void>
 copyToClipboard(canvas: HTMLCanvasElement): Promise<void>
 ```
 
 ### ImageService
+
 ```typescript
 uploadImage(file: File): Promise<string>  // Returns base64
 applyFilter(canvas: HTMLCanvasElement, filter: ImageFilter): void
@@ -456,6 +486,7 @@ isValidImageType(mimeType: string): boolean
 ## 🔒 Security & Best Practices
 
 ### API Key Management
+
 ```typescript
 // ✅ Backend only – SAFE
 const apiKey = process.env.GEMINI_API_KEY;
@@ -469,9 +500,10 @@ fetch('https://api.gemini.com', { headers: { key: apiKey } });
 ```
 
 ### Signal Immutability
+
 ```typescript
 // ✅ DO: Use update() for signals
-this.layers.update(current => [...current, newLayer]);
+this.layers.update((current) => [...current, newLayer]);
 
 // ❌ DON'T: Direct mutation
 this.layers().push(newLayer);
@@ -479,6 +511,7 @@ this.layers()[0].text = 'mutated';
 ```
 
 ### Sanitization
+
 ```typescript
 // All AI captions sanitized before rendering
 import DOMPurify from 'dompurify';
@@ -486,7 +519,9 @@ const clean = DOMPurify.sanitize(aiCaption);
 ```
 
 ### CORS Whitelist
+
 All external images proxied via `/api/template-image`. Whitelist configured in `server/src/routes/images.ts`:
+
 ```typescript
 const ALLOWED_DOMAINS = ['imgflip.com', 'giphy.com'];
 ```
@@ -495,21 +530,22 @@ const ALLOWED_DOMAINS = ['imgflip.com', 'giphy.com'];
 
 ## 🐛 Troubleshooting
 
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| **GEMINI_API_KEY not set** | Missing env var | `cd server && cat > .env` with key |
-| **Port 4000 in use** | Another process | `lsof -i :4000 && kill -9 <PID>` |
-| **Canvas rendering fails** | Canvas not mocked | Add canvas mock in test setup |
-| **CORS error on templates** | Domain not whitelisted | Add to `ALLOWED_DOMAINS` in `images.ts` |
-| **IndexedDB quota exceeded** | Too many sessions | Implement cleanup: `storage.deleteSession(oldId)` |
-| **Build: NG5002 error** | Invalid template syntax | Check `@if/@for` syntax, not `*ngIf` |
+| Issue                        | Cause                   | Solution                                          |
+| ---------------------------- | ----------------------- | ------------------------------------------------- |
+| **GEMINI_API_KEY not set**   | Missing env var         | `cd server && cat > .env` with key                |
+| **Port 4000 in use**         | Another process         | `lsof -i :4000 && kill -9 <PID>`                  |
+| **Canvas rendering fails**   | Canvas not mocked       | Add canvas mock in test setup                     |
+| **CORS error on templates**  | Domain not whitelisted  | Add to `ALLOWED_DOMAINS` in `images.ts`           |
+| **IndexedDB quota exceeded** | Too many sessions       | Implement cleanup: `storage.deleteSession(oldId)` |
+| **Build: NG5002 error**      | Invalid template syntax | Check `@if/@for` syntax, not `*ngIf`              |
 
 ### Debug Mode
+
 ```typescript
 // environment.ts
 export const environment = {
   production: false,
-  debug: true
+  debug: true,
 };
 
 // In services
@@ -521,6 +557,7 @@ if (environment.debug) console.log('Debug:', data);
 ## 🤝 Contribution Workflow
 
 ### Branch Naming
+
 ```
 feat/add-dark-mode
 fix/canvas-rendering
@@ -529,6 +566,7 @@ docs/api-reference
 ```
 
 ### Commit Convention
+
 ```
 feat(ai-captions): add sarcasm tone option
 fix(canvas-utils): resolve font rendering on Firefox
@@ -537,6 +575,7 @@ test(image.service): add compression validation
 ```
 
 ### Pre-Push Checklist
+
 ```bash
 npm run lint:fix
 npm run format

@@ -38,7 +38,7 @@ const mockStorageService = {
 
 // Mock inject
 vi.mock('@angular/core', async (importOriginal) => {
-  const actual = await importOriginal<any>();
+  const actual = await importOriginal<typeof import('@angular/core')>();
   return {
     ...actual,
     inject: vi.fn().mockImplementation((token) => {
@@ -100,5 +100,24 @@ describe('MemeEditorComponent', () => {
   it('should select a tone', () => {
     component.selectTone(CaptionTone.SARCASTIC);
     expect(component.selectedTone()).toBe(CaptionTone.SARCASTIC);
+  });
+
+  it('should toggle dark mode', () => {
+    const initialMode = component.isDarkMode();
+    component.toggleDarkMode();
+    expect(component.isDarkMode()).toBe(!initialMode);
+    expect(mockStorageService.setItem).toHaveBeenCalledWith('darkMode', !initialMode);
+    if (component.isDarkMode()) {
+      expect(document.documentElement.classList.contains('dark')).toBe(true);
+    } else {
+      expect(document.documentElement.classList.contains('dark')).toBe(false);
+    }
+  });
+
+  it('should load dark mode from storage', async () => {
+    mockStorageService.getItem.mockResolvedValueOnce(false);
+    // @ts-expect-error accessing private method for test
+    await component.initializeStorage();
+    expect(component.isDarkMode()).toBe(false);
   });
 });

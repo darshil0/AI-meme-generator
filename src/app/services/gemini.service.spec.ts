@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { GeminiService } from './gemini.service';
 import { of } from 'rxjs';
 import { CaptionTone } from '../models/meme.model';
+import { HttpClient } from '@angular/common/http';
 
 describe('GeminiService', () => {
   it('should generate captions from image', async () => {
@@ -12,7 +13,7 @@ describe('GeminiService', () => {
           captions: ['Caption 1', 'Caption 2'],
         }),
       ),
-    } as any;
+    } as unknown as HttpClient;
 
     const service = new GeminiService(mockHttp);
     const captions = await service.generateMemeCaptions(
@@ -38,7 +39,7 @@ describe('GeminiService', () => {
           error: 'Backend error',
         }),
       ),
-    } as any;
+    } as unknown as HttpClient;
 
     const service = new GeminiService(mockHttp);
     await expect(
