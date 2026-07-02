@@ -9,10 +9,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Planned
 
-- Dark mode support for the editor interface
 - Batch meme generation (create multiple variations at once)
 - Template marketplace for community-created templates
 - Advanced image editing tools (crop, rotate, skew)
+
+---
+
+## [1.10.0] - 2026-07-02
+
+### Added
+
+- **Dark Mode Support**: Full dark/light theme toggle with system preference detection and persistence via IndexedDB
+- **Visual Verification**: Automated UI theme verification using Playwright-based visual auditing
+- **Hardened Type Safety**: Eliminated 45+ `any` type instances across the entire full-stack codebase
+
+### Changed
+
+- **Gemini Integration**: Updated to `gemini-2.0-flash` with improved response parsing and strict error handling
+- **State Management**: Refactored `SavedMemeState` to support schema versioning and optional image dimensions for smoother migrations
+- **Dependency Health**: Upgraded critical security dependencies:
+  - `vitest` to 4.1.9 (fixed vulnerability)
+  - `@babel/core` to 7.29.0 (fixed vulnerability)
+- **Tooling Consistency**: Locked ESLint v9 and `@angular/compiler-cli` versions to resolve peer dependency conflicts
+
+### Fixed
+
+- **Backend API**: Resolved response structure mismatch between `@google/genai` SDK and server-side client
+- **Test Stability**: Improved unit test mocks for `HttpClient` and `StorageService` for more reliable CI runs
 
 ---
 
@@ -337,6 +360,7 @@ Existing `environment.ts` API key references must be removed. Update your `.env`
 
 | Version | Date       | Focus                                    |
 | ------- | ---------- | ---------------------------------------- |
+| 1.10.0  | 2026-07-02 | Dark Mode, Type Safety, Security updates |
 | 1.9.1   | 2026-05-31 | Dependency updates, test improvements    |
 | 1.9.0   | 2026-03-15 | Premium typography, improved testing     |
 | 1.8.0   | 2026-03-05 | Export service, UX polish                |
