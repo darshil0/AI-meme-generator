@@ -1,4 +1,4 @@
-/** AI Meme Generator v1.9.1 | eslint.config.js */
+/** AI Meme Generator v1.10.0 | eslint.config.js */
 import globals from 'globals';
 import pluginJs from '@eslint/js';
 import tseslint from 'typescript-eslint';
