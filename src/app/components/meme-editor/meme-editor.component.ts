@@ -62,6 +62,7 @@ export class MemeEditorComponent {
   saveButtonText = signal('Save Work');
   savedStateExists = signal(false);
   downloadQuality = signal<number>(0.92);
+  isDarkMode = signal(true);
 
   downloadQualities = [
     { label: 'High (Original)', value: 0.95 },
@@ -172,8 +173,32 @@ export class MemeEditorComponent {
     this.initializeStorage();
   }
 
+  toggleDarkMode(): void {
+    this.isDarkMode.update((v) => !v);
+    this.updateDarkMode();
+  }
+
+  private updateDarkMode(): void {
+    if (this.isDarkMode()) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    this.storageService.setItem('darkMode', this.isDarkMode());
+  }
+
   private async initializeStorage(): Promise<void> {
-    await this.storageService.migrateFromLocalStorage(['customMemeTemplates', 'savedMemeState']);
+    await this.storageService.migrateFromLocalStorage([
+      'customMemeTemplates',
+      'savedMemeState',
+      'darkMode',
+    ]);
+    const darkMode = await this.storageService.getItem<boolean>('darkMode');
+    if (darkMode !== null) {
+      this.isDarkMode.set(darkMode);
+    }
+    this.updateDarkMode();
+
     await this.loadCustomTemplates();
     await this.checkForSavedState();
   }
@@ -448,7 +473,7 @@ export class MemeEditorComponent {
     }
   }
 
-  updateSelectedLayerProperty(property: string, value: any) {
+  updateSelectedLayerProperty<K extends keyof TextLayer>(property: K, value: TextLayer[K]) {
     const index = this.selectedLayerIndex();
     if (index === null) return;
 
@@ -459,8 +484,8 @@ export class MemeEditorComponent {
     });
   }
 
-  handleLayerUpdate(event: { property: string; value: any }) {
-    this.updateSelectedLayerProperty(event.property, event.value);
+  handleLayerUpdate(event: { property: string; value: string | number }) {
+    this.updateSelectedLayerProperty(event.property as keyof TextLayer, event.value as never);
   }
 
   async generateCaptions(): Promise<void> {
@@ -612,22 +637,14 @@ export class MemeEditorComponent {
 
       // Handle migration from old state format (without version/dimensions)
       if (state.selectedImage) {
-        if ('dimensions' in state.selectedImage && state.selectedImage.dimensions) {
-          // New format with dimensions
-          this.selectedImage.set({
-            url: state.selectedImage.url,
-            data: state.selectedImage.data,
-            mimeType: state.selectedImage.mimeType,
-          });
+        this.selectedImage.set({
+          url: state.selectedImage.url,
+          data: state.selectedImage.data,
+          mimeType: state.selectedImage.mimeType,
+        });
+
+        if (state.selectedImage.dimensions) {
           this.imageDimensions.set(state.selectedImage.dimensions);
-        } else {
-          // Old format - try to reconstruct without dimensions
-          this.selectedImage.set({
-            url: (state.selectedImage as any).url,
-            data: (state.selectedImage as any).data,
-            mimeType: (state.selectedImage as any).mimeType,
-          });
-          // Dimensions will be set when image loads
         }
       } else {
         this.selectedImage.set(null);

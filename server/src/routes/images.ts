@@ -39,7 +39,11 @@ router.get('/template-image', async (req, res) => {
     res.setHeader('Content-Type', contentType);
     res.setHeader('Cache-Control', 'public, max-age=86400');
 
-    (upstream.body as any).pipe(res);
+    if (upstream.body && typeof (upstream.body as any).pipe === 'function') {
+      (upstream.body as any).pipe(res);
+    } else {
+      res.status(502).send('Upstream body is not pipeable');
+    }
   } catch (err) {
     console.error('Error in /template-image:', err);
     res.status(500).send('Internal image proxy error');

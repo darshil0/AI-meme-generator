@@ -7,20 +7,25 @@ import { ImageFilter } from '../../models/meme.model';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <fieldset class="border border-white/10 p-4 rounded-2xl glass-panel">
-      <legend class="text-xl font-bold px-2 text-purple-300">Image Filters</legend>
+    <fieldset class="border border-gray-200 dark:border-white/10 p-4 rounded-2xl glass-panel">
+      <legend class="text-xl font-bold px-2 text-purple-600 dark:text-purple-300">
+        Image Filters
+      </legend>
       <div class="flex flex-wrap gap-2 pt-2">
         @for (filter of filters; track filter) {
           <button
             (click)="applyFilter.emit(filter)"
             type="button"
             [attr.aria-pressed]="selectedFilter === filter"
-            class="px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300 capitalize border border-white/10"
+            class="px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300 capitalize border border-gray-200 dark:border-white/10"
             [class.bg-purple-600]="selectedFilter === filter"
             [class.text-white]="selectedFilter === filter"
-            [class.bg-white/5]="selectedFilter !== filter"
-            [class.text-gray-300]="selectedFilter !== filter"
-            [class.hover:bg-white/10]="selectedFilter !== filter"
+            [class.bg-white/50]="selectedFilter !== filter"
+            [class.dark:bg-white/5]="selectedFilter !== filter"
+            [class.text-gray-600]="selectedFilter !== filter"
+            [class.dark:text-gray-300]="selectedFilter !== filter"
+            [class.hover:bg-white/80]="selectedFilter !== filter"
+            [class.dark:hover:bg-white/10]="selectedFilter !== filter"
             [class.glass-button]="selectedFilter === filter"
           >
             {{ filter }}

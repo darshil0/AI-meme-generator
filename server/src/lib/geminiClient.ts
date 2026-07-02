@@ -1,6 +1,6 @@
-﻿import { GoogleGenAI, Type, GenerateContentResponse } from '@google/genai';
+import { GoogleGenAI, Type } from '@google/genai';
 
-let ai: any = null;
+let ai: GoogleGenAI | null = null;
 
 export function initializeGemini(apiKey: string | undefined) {
   if (!apiKey) {
@@ -30,7 +30,7 @@ async function generateCaptions(contents: {
     throw new Error('Gemini API not configured on server.');
   }
 
-  const response: GenerateContentResponse = await ai.models.generateContent({
+  const response = await ai.models.generateContent({
     model: 'gemini-2.0-flash',
     contents,
     config: {
@@ -45,8 +45,7 @@ async function generateCaptions(contents: {
     },
   });
 
-  const jsonString =
-    (response as any)?.text ?? response?.candidates?.[0]?.content?.parts?.[0]?.text ?? '';
+  const jsonString = response.candidates?.[0]?.content?.parts?.[0]?.text;
 
   if (!jsonString) {
     throw new Error('Empty response from Gemini.');

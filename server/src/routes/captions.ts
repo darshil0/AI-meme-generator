@@ -25,10 +25,11 @@ router.post('/generate-captions-from-image', async (req, res) => {
       success: true,
     };
     res.json(response);
-  } catch (err: any) {
-    const errorMessage = err?.message || 'Unknown error during image caption generation';
+  } catch (err) {
+    const error = err as Error;
+    const errorMessage = error?.message || 'Unknown error during image caption generation';
     console.error(`[Captions Route] API Error (Image): ${errorMessage}`, {
-      stack: err?.stack,
+      stack: error?.stack,
       body: { mimeType, tone, contextLength: context?.length },
     });
 
@@ -55,10 +56,11 @@ router.post('/generate-captions-from-text', async (req, res) => {
       success: true,
     };
     res.json(response);
-  } catch (err: any) {
-    const errorMessage = err?.message || 'Unknown error during text caption generation';
+  } catch (err) {
+    const error = err as Error;
+    const errorMessage = error?.message || 'Unknown error during text caption generation';
     console.error(`[Captions Route] API Error (Text): ${errorMessage}`, {
-      stack: err?.stack,
+      stack: error?.stack,
       body: { templateName, tone, contextLength: context?.length },
     });
 

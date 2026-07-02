@@ -66,7 +66,7 @@ export interface SavedMemeState {
     url: string;
     data: string;
     mimeType: string;
-    dimensions: { width: number; height: number };
+    dimensions?: { width: number; height: number };
   } | null;
   layers: TextLayer[];
   imageFilter: ImageFilter;

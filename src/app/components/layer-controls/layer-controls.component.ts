@@ -8,9 +8,9 @@ import { TextLayer } from '../../models/meme.model';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <fieldset class="border border-white/10 p-6 rounded-3xl glass-panel">
+    <fieldset class="border border-gray-200 dark:border-white/10 p-6 rounded-3xl glass-panel">
       <legend
-        class="text-xl font-extrabold px-3 text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-400"
+        class="text-xl font-extrabold px-3 text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600 dark:from-green-400 dark:to-emerald-400"
       >
         3. Text Layers
       </legend>
@@ -36,16 +36,17 @@ import { TextLayer } from '../../models/meme.model';
           @for (layer of layers; track layer.id; let i = $index) {
             <div
               (click)="selectLayer.emit(i)"
-              class="flex items-center gap-3 p-4 rounded-2xl cursor-pointer transition-all duration-300 border border-white/5 hover:bg-white/10"
+              class="flex items-center gap-3 p-4 rounded-2xl cursor-pointer transition-all duration-300 border border-gray-200 dark:border-white/5 hover:bg-white/80 dark:hover:bg-white/10"
               [class.bg-purple-600/30]="selectedIndex === i"
               [class.border-purple-500/50]="selectedIndex === i"
-              [class.bg-white/5]="selectedIndex !== i"
+              [class.bg-white/50]="selectedIndex !== i"
+              [class.dark:bg-white/5]="selectedIndex !== i"
               role="button"
               tabindex="0"
               [attr.aria-selected]="selectedIndex === i"
               [attr.aria-label]="'Select layer: ' + (layer.text || 'Empty')"
             >
-              <span class="flex-grow truncate text-white font-bold">{{
+              <span class="flex-grow truncate text-gray-900 dark:text-white font-bold">{{
                 layer.text || 'Empty Layer'
               }}</span>
               <div class="flex items-center gap-2 flex-shrink-0">
@@ -119,17 +120,20 @@ import { TextLayer } from '../../models/meme.model';
     </fieldset>
 
     @if (selectedLayer) {
-      <fieldset class="border border-white/10 p-6 rounded-3xl glass-panel mt-4">
+      <fieldset
+        class="border border-gray-200 dark:border-white/10 p-6 rounded-3xl glass-panel mt-4"
+      >
         <legend
-          class="text-xl font-extrabold px-3 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 max-w-full truncate"
+          class="text-xl font-extrabold px-3 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 max-w-full truncate"
         >
-          Style: <span class="text-white">{{ selectedLayer.text || '...' }}</span>
+          Style:
+          <span class="text-gray-900 dark:text-white">{{ selectedLayer.text || '...' }}</span>
         </legend>
         <div class="pt-2 space-y-6">
           <div>
             <label
               for="layer-text"
-              class="text-sm font-bold uppercase tracking-wider text-gray-400 mb-3 block"
+              class="text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3 block"
               >Layer Text</label
             >
             <input
@@ -145,7 +149,7 @@ import { TextLayer } from '../../models/meme.model';
           <div>
             <label
               for="font-size"
-              class="flex justify-between text-sm font-bold uppercase tracking-wider text-gray-400 mb-3 block"
+              class="flex justify-between text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3 block"
             >
               Font Size <span>{{ selectedLayer.fontSize }}px</span>
             </label>
@@ -163,7 +167,7 @@ import { TextLayer } from '../../models/meme.model';
             <div>
               <label
                 for="font-color"
-                class="text-sm font-bold uppercase tracking-wider text-gray-400 mb-3 block"
+                class="text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3 block"
                 >Fill</label
               >
               <input
@@ -176,7 +180,7 @@ import { TextLayer } from '../../models/meme.model';
             <div>
               <label
                 for="outline-color"
-                class="text-sm font-bold uppercase tracking-wider text-gray-400 mb-3 block"
+                class="text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3 block"
                 >Outline</label
               >
               <input
@@ -191,7 +195,7 @@ import { TextLayer } from '../../models/meme.model';
           <div>
             <label
               for="text-blur"
-              class="flex justify-between text-sm font-bold uppercase tracking-wider text-gray-400 mb-3 block"
+              class="flex justify-between text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3 block"
             >
               Glow/Blur <span>{{ selectedLayer.textBlur }}px</span>
             </label>
@@ -209,7 +213,7 @@ import { TextLayer } from '../../models/meme.model';
           <div>
             <label
               for="layer-top"
-              class="flex justify-between text-sm font-bold uppercase tracking-wider text-gray-400 mb-3 block"
+              class="flex justify-between text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3 block"
             >
               Vertical <span>{{ selectedLayer.top }}%</span>
             </label>
@@ -241,5 +245,8 @@ export class LayerControlsComponent {
     event: MouseEvent;
   }>();
   @Output() deleteLayer = new EventEmitter<{ index: number; event: MouseEvent }>();
-  @Output() updateProperty = new EventEmitter<{ property: string; value: any }>();
+  @Output() updateProperty = new EventEmitter<{
+    property: keyof TextLayer;
+    value: string | number;
+  }>();
 }
