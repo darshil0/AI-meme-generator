@@ -108,16 +108,19 @@ The AI is prompted to return results in structured JSON format, which the applic
 ### Prerequisites
 
 **System Requirements:**
+
 - Node.js (v18.10 or higher)
 - npm (v9+) or yarn (v3+)
 
 **For Backend Image Processing (if using local canvas rendering):**
+
 - Cairo (system library) – required for the optional `canvas` package
   - **macOS:** `brew install cairo`
   - **Ubuntu/Debian:** `sudo apt-get install libcairo2-dev`
   - **Windows:** Included via `node-gyp` (requires Visual Studio Build Tools or equivalent)
 
 **API Requirements:**
+
 - Google Gemini API key (obtain from [Google AI Studio](https://aistudio.google.com/app/apikey))
 - Free tier includes 60 API calls per minute
 
@@ -175,6 +178,7 @@ PORT=4000
 ### 1. Start the Backend (Gemini Proxy Server)
 
 The backend service lives in the `server/` directory and handles:
+
 - Secure communication with the Google Gemini API (API key lives **only** on the server)
 - Proxying external meme template images to avoid CORS issues
 - Input validation and rate limiting
@@ -212,6 +216,7 @@ npm run dev
 The application will be available at `http://localhost:4200`. All `/api/*` requests are automatically proxied to the backend via `proxy.conf.json`.
 
 **Verify both are running:**
+
 - Frontend: http://localhost:4200 (loads the UI)
 - Backend: http://localhost:4000/health (should return OK)
 
@@ -277,6 +282,7 @@ Both should be deployed to handle production traffic, but can operate on separat
 Deploy the `server/` directory to any Node.js-compatible platform:
 
 **Recommended Platforms:**
+
 - [Render](https://render.com/) – Free tier available, auto-deploys from GitHub
 - [Railway](https://railway.app/) – Simple, pay-as-you-go pricing
 - [Cloud Run](https://cloud.google.com/run) – Serverless Google Cloud option
@@ -284,6 +290,7 @@ Deploy the `server/` directory to any Node.js-compatible platform:
 - [Fly.io](https://fly.io/) – Global deployment, good for low-latency APIs
 
 **Required Environment Variables:**
+
 - `GEMINI_API_KEY` – Your real Gemini API key (never hardcode; use platform secrets)
 - `ALLOWED_ORIGIN` – Frontend URL (e.g., `https://your-domain.com`)
 - `NODE_ENV` – Set to `production`
@@ -318,6 +325,7 @@ services:
 Build and deploy the `dist/` folder to a static host:
 
 **Recommended Platforms:**
+
 - [Vercel](https://vercel.com/) – Zero-config for SPAs, integrates with Render backend
 - [Netlify](https://www.netlify.com/) – Excellent SPA support, easy redirects
 - [GitHub Pages](https://pages.github.com/) – Free (public repo only)
@@ -338,7 +346,7 @@ Create `src/environments/environment.prod.ts` to point to your deployed backend:
 ```typescript
 export const environment = {
   production: true,
-  apiBaseUrl: 'https://api.your-domain.com'
+  apiBaseUrl: 'https://api.your-domain.com',
 };
 ```
 
@@ -347,24 +355,29 @@ Then reference this in your API service (verify your Angular service uses `envir
 ### Architecture Patterns
 
 **Option 1: Separate Domains (Recommended)**
+
 ```
 Frontend: https://meme-gen.example.com
 Backend:  https://api.meme-gen.example.com
 ```
+
 - Update `ALLOWED_ORIGIN` on backend to match frontend domain
 - Frontend's `proxy.conf.json` or environment config targets backend domain
 - Easier to scale and manage independently
 
 **Option 2: Single Domain with Reverse Proxy**
+
 ```
 Frontend: https://meme-gen.example.com/
 Backend:  https://meme-gen.example.com/api
 ```
+
 - Use Nginx, Cloudflare Workers, or platform routing to split traffic
 - `/api/*` routes to backend, `/` routes to frontend
 - Requires backend to serve from `/api` path prefix
 
 **Example Nginx config (Option 2):**
+
 ```nginx
 server {
     listen 443 ssl;
@@ -400,17 +413,17 @@ npm run format     # Format with Prettier
 
 ### Useful Commands
 
-| Command | Purpose |
-|---------|---------|
-| `npm run dev` | Start frontend dev server (from root) |
-| `cd server && npm run dev` | Start backend dev server |
-| `npm run build` | Production build for frontend |
-| `npm run test` | Run test suite once |
-| `npm run test:watch` | Run tests in watch mode |
-| `npm run lint` | Check code quality |
-| `npm run lint:fix` | Auto-fix linting issues |
-| `npm run format` | Format code with Prettier |
-| `npm run preview` | Preview production build locally |
+| Command                    | Purpose                               |
+| -------------------------- | ------------------------------------- |
+| `npm run dev`              | Start frontend dev server (from root) |
+| `cd server && npm run dev` | Start backend dev server              |
+| `npm run build`            | Production build for frontend         |
+| `npm run test`             | Run test suite once                   |
+| `npm run test:watch`       | Run tests in watch mode               |
+| `npm run lint`             | Check code quality                    |
+| `npm run lint:fix`         | Auto-fix linting issues               |
+| `npm run format`           | Format code with Prettier             |
+| `npm run preview`          | Preview production build locally      |
 
 ### File Structure
 
@@ -469,12 +482,14 @@ ai-meme-generator/
 If you encounter errors installing the `canvas` package (only needed for optional server-side image rendering):
 
 **macOS:**
+
 ```bash
 brew install cairo
 npm install
 ```
 
 **Ubuntu/Debian:**
+
 ```bash
 sudo apt-get install build-essential libcairo2-dev
 npm install
@@ -482,6 +497,7 @@ npm install
 
 **Windows:**
 Install Visual Studio Build Tools or Node.js build tools:
+
 ```bash
 npm install --global windows-build-tools
 npm install
@@ -490,6 +506,7 @@ npm install
 ### Backend Won't Start
 
 **Error:** `EADDRINUSE: address already in use :::4000`
+
 - Port 4000 is already in use. Kill the process or change `PORT` in `.env`:
   ```bash
   lsof -i :4000          # Find process ID
@@ -497,10 +514,12 @@ npm install
   ```
 
 **Error:** `GEMINI_API_KEY is not set`
+
 - Ensure your `.env` file exists in `server/` or the environment variable is exported
 - Verify the key is valid at [Google AI Studio](https://aistudio.google.com/app/apikey)
 
 **Error:** `ECONNREFUSED` on backend API call
+
 - Verify backend is running (`npm run dev` in `server/` directory)
 - Check it's listening on `http://localhost:4000`
 
@@ -515,6 +534,7 @@ npm install
 ### API Rate Limiting
 
 If you hit Gemini API rate limits (60 requests/minute free tier):
+
 - The frontend will display an error message
 - Wait a moment before retrying
 - Consider upgrading your Gemini API plan for production use
@@ -523,6 +543,7 @@ If you hit Gemini API rate limits (60 requests/minute free tier):
 ### Session Storage Not Working
 
 If saved memes aren't persisting:
+
 - Check browser storage limits (IndexedDB can fail on low disk space)
 - Try clearing browser cache and reload the page
 - Check browser console (DevTools → Console) for storage errors
@@ -547,6 +568,7 @@ If saved memes aren't persisting:
 ---
 
 ## 📝 License
+
 MIT
 
 ---
