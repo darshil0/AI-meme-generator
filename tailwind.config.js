@@ -1,4 +1,4 @@
-/** AI Meme Generator v1.9.1 | tailwind.config.js */
+/** AI Meme Generator v1.10.0 | tailwind.config.js */
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./index.html', './src/**/*.{html,ts}'],
