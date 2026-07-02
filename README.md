@@ -4,7 +4,7 @@
 
 This interactive web application allows you to create hilarious memes by combining images with AI-generated captions. Upload your own picture or choose from a library of popular templates, and let the Gemini AI suggest witty and relevant captions tailored to the image.
 
-![AI Meme Generator](https://img.shields.io/badge/Version-1.9.1-blueviolet?style=flat-square)
+![AI Meme Generator](https://img.shields.io/badge/Version-1.10.0-blueviolet?style=flat-square)
 ![Angular](https://img.shields.io/badge/Angular-21.0-red?style=flat-square&logo=angular)
 ![Gemini AI](https://img.shields.io/badge/Gemini_API-Latest-blue?style=flat-square)
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.x-38B2AC?style=flat-square&logo=tailwind-css)
