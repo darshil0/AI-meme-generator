@@ -1,6 +1,6 @@
 {
   "name": "AI Meme Generator",
   "description": "Your personal AI-powered meme factory. Upload an image or pick a template, and let Gemini AI generate hilarious, witty captions instantly. Customize text and styles, then share your viral creation in seconds.",
-  "version": "1.9.0",
+  "version": "1.11.0",
   "requestFramePermissions": []
 }
