@@ -15,6 +15,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.11.0] - 2026-09-05
+
+### Added
+
+- **Playwright E2E & SIT Testing**: Implemented end-to-end automated testing suite in `e2e/meme-editor.spec.ts` covering title verification, template selection, image uploads, text layer editing, dark mode toggle, filter application, and IndexedDB session save/load state.
+- **Backend Modernization**: Integrated `tsx` watch mode for seamless native Node.js ES Module resolution during development.
+- **Dedicated Application TSConfig**: Added `tsconfig.app.json` for Angular CLI compilation to eliminate unused test file warnings during `ng build`.
+
+### Changed
+
+- **Dependencies Upgrade**: Updated frontend and backend dependencies to latest compatible versions:
+  - Angular CLI & Angular Core to 21.2.x
+  - TypeScript to 5.9.x
+  - `@google/genai` to 1.52.0
+  - `@playwright/test` to 1.63.0
+  - `@typescript-eslint/*` to 8.69.0
+  - `prettier` to 3.9.6, `postcss` to 8.5.28, `autoprefixer` to 10.5.5
+- **Build Configurations**: Cleaned up `angular.json` by removing deprecated `defaultProject` field and pointing `tsConfig` to `tsconfig.app.json`.
+- **Vitest Scoping**: Configured `vitest.config.ts` to exclude `e2e/**` tests from unit test execution.
+
+### Fixed
+
+- **Component Data Binding**: Fixed missing `[selectedLayer]="selectedLayer()"` input binding on `<app-layer-controls>` in `MemeEditorComponent` template.
+- **Component Input Bindings**: Fixed `[filters]="filters"` and `[selectedFilter]="imageFilter()"` input bindings on `<app-filter-controls>` in `MemeEditorComponent` template.
+- **Session State Restoration**: Fixed `loadState()` in `MemeEditorComponent` to restore `selectedLayerIndex` (defaulting to 0) and preserve `selectedImage` upon restoring saved work.
+- **PostCSS Deprecation**: Fixed deprecated CSS `color-adjust: exact` rule in `meme-editor.component.scss` to standard `print-color-adjust: exact`.
+- **Backend ES Modules**: Fixed Node.js ESM relative imports in `server/src/index.ts` and `server/src/routes/captions.ts` to include `.js` extension.
+
+---
+
 ## [1.10.0] - 2026-07-02
 
 ### Added
@@ -358,21 +388,22 @@ Existing `environment.ts` API key references must be removed. Update your `.env`
 
 ## Version Timeline
 
-| Version | Date       | Focus                                    |
-| ------- | ---------- | ---------------------------------------- |
-| 1.10.0  | 2026-07-02 | Dark Mode, Type Safety, Security updates |
-| 1.9.1   | 2026-05-31 | Dependency updates, test improvements    |
-| 1.9.0   | 2026-03-15 | Premium typography, improved testing     |
-| 1.8.0   | 2026-03-05 | Export service, UX polish                |
-| 1.7.0   | 2026-02-15 | Canvas refactor, async storage           |
-| 1.6.0   | 2026-02-01 | IndexedDB migration, mobile optimization |
-| 1.5.0   | 2026-01-13 | Backend proxy, production setup          |
-| 1.4.0   | 2026-01-13 | Project restructuring                    |
-| 1.3.0   | 2026-01-12 | Tooling (ESLint, Prettier)               |
-| 1.2.0   | 2026-01-12 | Service architecture                     |
-| 1.1.0   | 2026-01-11 | Type safety improvements                 |
-| 1.0.1   | 2026-01-11 | Bug fixes, cleanup                       |
-| 1.0.0   | 2026-01-11 | Initial release                          |
+| Version | Date       | Focus                                          |
+| ------- | ---------- | ---------------------------------------------- |
+| 1.11.0  | 2026-09-05 | Playwright E2E, Bug fixes, Dependency upgrades |
+| 1.10.0  | 2026-07-02 | Dark Mode, Type Safety, Security updates       |
+| 1.9.1   | 2026-05-31 | Dependency updates, test improvements          |
+| 1.9.0   | 2026-03-15 | Premium typography, improved testing           |
+| 1.8.0   | 2026-03-05 | Export service, UX polish                      |
+| 1.7.0   | 2026-02-15 | Canvas refactor, async storage                 |
+| 1.6.0   | 2026-02-01 | IndexedDB migration, mobile optimization       |
+| 1.5.0   | 2026-01-13 | Backend proxy, production setup                |
+| 1.4.0   | 2026-01-13 | Project restructuring                          |
+| 1.3.0   | 2026-01-12 | Tooling (ESLint, Prettier)                     |
+| 1.2.0   | 2026-01-12 | Service architecture                           |
+| 1.1.0   | 2026-01-11 | Type safety improvements                       |
+| 1.0.1   | 2026-01-11 | Bug fixes, cleanup                             |
+| 1.0.0   | 2026-01-11 | Initial release                                |
 
 ---
 

@@ -1,4 +1,4 @@
-# AI Meme Generator – Developer's Guide (v1.9.1)
+# AI Meme Generator – Developer's Guide (v1.11.0)
 
 Comprehensive technical reference for developers contributing to the AI Meme Generator.
 
@@ -63,7 +63,8 @@ npm run dev
 ### Verify Setup
 
 ```bash
-npm run test              # Tests pass
+npm run test              # Unit tests pass
+npm run test:e2e          # Playwright E2E tests pass
 npm run lint              # No linting errors
 curl http://localhost:4000/api/health  # Backend responds (if health endpoint exists)
 ```
@@ -604,4 +605,4 @@ npm run build
 
 ---
 
-**Last Updated**: 2026-05-31 | **Version**: 1.9.1
+**Last Updated**: 2026-09-05 | **Version**: 1.11.0
