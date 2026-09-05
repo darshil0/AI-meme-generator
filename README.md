@@ -4,7 +4,7 @@
 
 This interactive web application allows you to create hilarious memes by combining images with AI-generated captions. Upload your own picture or choose from a library of popular templates, and let the Gemini AI suggest witty and relevant captions tailored to the image.
 
-![AI Meme Generator](https://img.shields.io/badge/Version-1.10.0-blueviolet?style=flat-square)
+![AI Meme Generator](https://img.shields.io/badge/Version-1.11.0-blueviolet?style=flat-square)
 ![Angular](https://img.shields.io/badge/Angular-21.0-red?style=flat-square&logo=angular)
 ![Gemini AI](https://img.shields.io/badge/Gemini_API-Latest-blue?style=flat-square)
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.x-38B2AC?style=flat-square&logo=tailwind-css)
@@ -222,16 +222,22 @@ The application will be available at `http://localhost:4200`. All `/api/*` reque
 
 ### 3. Testing
 
-Run the test suite:
+Run unit test suite:
 
 ```bash
 npm run test
 ```
 
-Run tests in watch mode (recommended during development):
+Run unit tests in watch mode:
 
 ```bash
 npm run test:watch
+```
+
+Run Playwright E2E and SIT tests:
+
+```bash
+npm run test:e2e
 ```
 
 Generate coverage report:
@@ -418,8 +424,9 @@ npm run format     # Format with Prettier
 | `npm run dev`              | Start frontend dev server (from root) |
 | `cd server && npm run dev` | Start backend dev server              |
 | `npm run build`            | Production build for frontend         |
-| `npm run test`             | Run test suite once                   |
-| `npm run test:watch`       | Run tests in watch mode               |
+| `npm run test`             | Run unit test suite                   |
+| `npm run test:watch`       | Run unit tests in watch mode          |
+| `npm run test:e2e`         | Run Playwright E2E and SIT tests      |
 | `npm run lint`             | Check code quality                    |
 | `npm run lint:fix`         | Auto-fix linting issues               |
 | `npm run format`           | Format code with Prettier             |
