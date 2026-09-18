@@ -154,6 +154,7 @@ Create a `.env` file in the `server/` directory (never commit this file):
 ```env
 GEMINI_API_KEY=your_actual_gemini_api_key_here
 ALLOWED_ORIGIN=http://localhost:4200
+ALLOWED_HOSTS=custom.domain.com,another.domain.com
 NODE_ENV=development
 PORT=4000
 ```
@@ -299,6 +300,7 @@ Deploy the `server/` directory to any Node.js-compatible platform:
 
 - `GEMINI_API_KEY` – Your real Gemini API key (never hardcode; use platform secrets)
 - `ALLOWED_ORIGIN` – Frontend URL (e.g., `https://your-domain.com`)
+- `ALLOWED_HOSTS` – Optional comma-separated list of additional allowed image proxy hostnames
 - `NODE_ENV` – Set to `production`
 - `PORT` – Optional (defaults to 4000)
 

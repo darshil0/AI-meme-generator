@@ -1,4 +1,4 @@
-﻿import express from 'express';
+import express from 'express';
 import cors from 'cors';
 import captionsRouter from './routes/captions';
 import imagesRouter from './routes/images';

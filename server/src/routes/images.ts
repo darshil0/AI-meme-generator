@@ -10,7 +10,7 @@ router.get('/template-image', async (req, res) => {
       return res.status(400).send('Missing url parameter');
     }
 
-    const allowedHosts = [
+    const defaultAllowedHosts = [
       'i.imgur.com',
       'imgflip.com',
       'i.imgflip.com',
@@ -21,13 +21,20 @@ router.get('/template-image', async (req, res) => {
       'unsplash.com',
       'images.unsplash.com',
     ];
+    const envHosts = process.env.ALLOWED_HOSTS
+      ? process.env.ALLOWED_HOSTS.split(',')
+          .map((h) => h.trim())
+          .filter(Boolean)
+      : [];
+    const allowedHosts = new Set([...defaultAllowedHosts, ...envHosts]);
+
     const parsed = new URL(url);
-    if (!allowedHosts.includes(parsed.hostname)) {
+    if (!allowedHosts.has(parsed.hostname)) {
       return res.status(400).send('Host not allowed');
     }
 
     const upstream = await fetch(url);
-    if (!upstream.ok || !upstream.body) {
+    if (!upstream.ok) {
       return res.status(502).send('Failed to fetch image from upstream');
     }
 
@@ -39,10 +46,14 @@ router.get('/template-image', async (req, res) => {
     res.setHeader('Content-Type', contentType);
     res.setHeader('Cache-Control', 'public, max-age=86400');
 
-    if (upstream.body && typeof (upstream.body as any).pipe === 'function') {
-      (upstream.body as any).pipe(res);
+    type StreamWithPipe = { pipe: (destination: unknown) => void };
+    if (upstream.body && typeof (upstream.body as unknown as StreamWithPipe).pipe === 'function') {
+      (upstream.body as unknown as StreamWithPipe).pipe(res);
+    } else if (upstream.body) {
+      const buffer = Buffer.from(await upstream.arrayBuffer());
+      res.send(buffer);
     } else {
-      res.status(502).send('Upstream body is not pipeable');
+      res.status(502).send('Upstream body unavailable');
     }
   } catch (err) {
     console.error('Error in /template-image:', err);

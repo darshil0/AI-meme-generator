@@ -1,5 +1,6 @@
-﻿import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 import { CaptionTone } from '../models/meme.model';
 
 interface CaptionsResponse {
@@ -16,7 +17,9 @@ export class GeminiService {
   // Check if API key is configured on the backend
   async checkConfiguration(): Promise<boolean> {
     try {
-      const resp = await this.http.get<{ configured: boolean }>('/api/config-status').toPromise();
+      const resp = await firstValueFrom(
+        this.http.get<{ configured: boolean }>('/api/config-status'),
+      );
       return !!resp?.configured;
     } catch (e) {
       console.warn('Failed to check backend configuration:', e);
@@ -35,14 +38,14 @@ export class GeminiService {
     tone: CaptionTone,
     context: string,
   ): Promise<string[]> {
-    const resp = await this.http
-      .post<CaptionsResponse>('/api/generate-captions-from-image', {
+    const resp = await firstValueFrom(
+      this.http.post<CaptionsResponse>('/api/generate-captions-from-image', {
         imageBase64: base64ImageData,
         mimeType,
         tone,
         context,
-      })
-      .toPromise();
+      }),
+    );
 
     if (!resp?.success) {
       throw new Error(resp?.error ?? 'Failed to generate captions.');
@@ -56,13 +59,13 @@ export class GeminiService {
     tone: CaptionTone,
     context: string,
   ): Promise<string[]> {
-    const resp = await this.http
-      .post<CaptionsResponse>('/api/generate-captions-from-text', {
+    const resp = await firstValueFrom(
+      this.http.post<CaptionsResponse>('/api/generate-captions-from-text', {
         templateName,
         tone,
         context,
-      })
-      .toPromise();
+      }),
+    );
 
     if (!resp?.success) {
       throw new Error(resp?.error ?? 'Failed to generate captions.');
