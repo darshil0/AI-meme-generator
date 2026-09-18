@@ -13,6 +13,7 @@
 - [2026-03-05] Implemented `CanvasUtils` for centralized meme rendering.
 - [2026-07-02] Implemented dark mode with Angular Signals and IndexedDB persistence.
 - [2026-07-02] Hardened type safety by removing 'any' casts in critical paths (Gemini client, state management).
+- [2026-09-05] Standardized codebase documentation with comprehensive JSDoc/TSDoc annotations for components, services, models, utilities, and backend routes.
 
 ### Mistakes & Corrections
 

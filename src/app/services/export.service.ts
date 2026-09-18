@@ -1,11 +1,21 @@
 import { Injectable, signal } from '@angular/core';
 
+/**
+ * Service responsible for meme export operations including image file downloads
+ * and clipboard copying.
+ */
 @Injectable({
   providedIn: 'root',
 })
 export class ExportService {
+  /** Signal holding the current clipboard copy button status text */
   copyButtonText = signal('Copy to Clipboard');
 
+  /**
+   * Downloads the rendered meme canvas as a JPEG file with specified compression quality.
+   * @param canvas The HTMLCanvasElement containing the rendered meme.
+   * @param quality Quality ratio between 0.0 and 1.0.
+   */
   async downloadMeme(canvas: HTMLCanvasElement, quality: number): Promise<void> {
     const dataUrl = canvas.toDataURL('image/jpeg', quality);
     const link = document.createElement('a');
@@ -14,6 +24,11 @@ export class ExportService {
     link.click();
   }
 
+  /**
+   * Copies the rendered meme canvas as a PNG blob directly to the user's system clipboard.
+   * @param canvas The HTMLCanvasElement containing the rendered meme.
+   * @returns Promise resolving to true if copy succeeded, false otherwise.
+   */
   async copyToClipboard(canvas: HTMLCanvasElement): Promise<boolean> {
     try {
       return new Promise((resolve) => {

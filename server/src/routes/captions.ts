@@ -1,9 +1,16 @@
 import { Router } from 'express';
-import { generateCaptionsFromImage, generateCaptionsFromTemplateName } from '../lib/geminiClient';
-import { CaptionTone, GeneratedCaptionsResponse } from '../models/api-types';
+import {
+  generateCaptionsFromImage,
+  generateCaptionsFromTemplateName,
+} from '../lib/geminiClient.js';
+import { CaptionTone, GeneratedCaptionsResponse } from '../models/api-types.js';
 
 const router = Router();
 
+/**
+ * POST /api/generate-captions-from-image
+ * Express route endpoint for generating AI meme captions from uploaded base64 image data.
+ */
 router.post('/generate-captions-from-image', async (req, res) => {
   const { imageBase64, mimeType, tone, context } = req.body ?? {};
   try {
@@ -40,6 +47,10 @@ router.post('/generate-captions-from-image', async (req, res) => {
   }
 });
 
+/**
+ * POST /api/generate-captions-from-text
+ * Express route endpoint for generating AI meme captions from a stock template name.
+ */
 router.post('/generate-captions-from-text', async (req, res) => {
   const { templateName, tone, context } = req.body ?? {};
   try {

@@ -2,7 +2,11 @@ import { GoogleGenAI, Type } from '@google/genai';
 
 let ai: GoogleGenAI | null = null;
 
-export function initializeGemini(apiKey: string | undefined) {
+/**
+ * Initializes the GoogleGenAI client instance with the given API key.
+ * @param apiKey Google Gemini API key string or undefined.
+ */
+export function initializeGemini(apiKey: string | undefined): void {
   if (!apiKey) {
     console.warn('[Gemini] GEMINI_API_KEY is not set. Caption endpoints will fail.');
     ai = null;
@@ -11,18 +15,32 @@ export function initializeGemini(apiKey: string | undefined) {
   }
 }
 
-// Initial initialization
+// Initial initialization with environment variable
 initializeGemini(process.env.GEMINI_API_KEY);
 
+/**
+ * Checks whether the Gemini API client is initialized.
+ * @returns True if GoogleGenAI instance is ready.
+ */
 export function isGeminiConfigured(): boolean {
   return !!ai;
 }
 
+/**
+ * Sanitizes captions by stripping HTML tags and trimming whitespace.
+ * @param captions Raw string array returned by API.
+ * @returns Cleaned array of caption strings.
+ */
 function sanitizeCaptions(captions: string[]): string[] {
   const tagRegex = /<[^>]*>/g;
   return captions.map((c) => c.replace(tagRegex, '').trim());
 }
 
+/**
+ * Executes content generation via Google Gemini API using structured JSON output schemas.
+ * @param contents Content payload containing text prompts or inline image data.
+ * @returns Promise resolving to an array of up to 5 caption strings.
+ */
 async function generateCaptions(contents: {
   parts: Array<{ text?: string; inlineData?: { mimeType: string; data: string } }>;
 }): Promise<string[]> {
@@ -67,6 +85,14 @@ async function generateCaptions(contents: {
   return sanitizeCaptions(stringArray.slice(0, 5));
 }
 
+/**
+ * Generates 5 meme captions from uploaded base64 image data.
+ * @param base64ImageData Base64 image payload string.
+ * @param mimeType Image MIME type.
+ * @param tone Requested caption tone.
+ * @param context User-supplied contextual hint string.
+ * @returns Promise resolving to an array of generated captions.
+ */
 export async function generateCaptionsFromImage(
   base64ImageData: string,
   mimeType: string,
@@ -86,6 +112,13 @@ export async function generateCaptionsFromImage(
   return generateCaptions(contents);
 }
 
+/**
+ * Generates 5 meme captions based on a stock template name.
+ * @param templateName Name of the meme template.
+ * @param tone Requested caption tone.
+ * @param context User-supplied contextual hint string.
+ * @returns Promise resolving to an array of generated captions.
+ */
 export async function generateCaptionsFromTemplateName(
   templateName: string,
   tone: string,

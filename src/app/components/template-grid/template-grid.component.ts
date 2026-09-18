@@ -3,6 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MemeTemplate } from '../../models/meme.model';
 
+/**
+ * Component displaying a searchable grid of meme templates,
+ * supporting both default stock templates and custom user uploads.
+ */
 @Component({
   selector: 'app-template-grid',
   standalone: true,
@@ -107,20 +111,32 @@ import { MemeTemplate } from '../../models/meme.model';
   styles: [],
 })
 export class TemplateGridComponent {
+  /** Array of meme templates to render in grid */
   @Input() templates: MemeTemplate[] = [];
+  /** URL of template currently being loaded */
   @Input() loadingUrl: string | null = null;
+  /** Active search query string */
   @Input() searchQuery: string = '';
+  /** Flag indicating if user has custom templates saved */
   @Input() hasCustomTemplates: boolean = false;
 
+  /** Event emitted when a template is selected */
   @Output() selectTemplate = new EventEmitter<MemeTemplate>();
+  /** Event emitted when user requests deletion of a custom template */
   @Output() deleteCustomTemplate = new EventEmitter<{
     template: MemeTemplate;
     event: MouseEvent;
   }>();
+  /** Event emitted when user requests deletion of all custom templates */
   @Output() clearAllCustomTemplates = new EventEmitter<void>();
+  /** Event emitted when search query text changes */
   @Output() searchQueryChange = new EventEmitter<string>();
 
-  onSearchChange(value: string) {
+  /**
+   * Emits the updated template search query string to parent component.
+   * @param value Search query input string.
+   */
+  onSearchChange(value: string): void {
     this.searchQueryChange.emit(value);
   }
 }

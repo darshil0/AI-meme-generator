@@ -3,6 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CaptionTone } from '../../models/meme.model';
 
+/**
+ * Component providing UI controls for Gemini AI caption generation,
+ * including tone selection presets, optional context input, and caption suggestions.
+ */
 @Component({
   selector: 'app-ai-captions',
   standalone: true,
@@ -118,32 +122,57 @@ import { CaptionTone } from '../../models/meme.model';
   styles: [],
 })
 export class AiCaptionsComponent {
+  /** List of available caption tones */
   @Input() tones: CaptionTone[] = [];
+  /** Currently selected caption tone */
   @Input() selectedTone: CaptionTone | null = null;
+  /** User-provided context text */
   @Input() userContext: string = '';
+  /** Loading state indicator for AI generation process */
   @Input() isLoading: boolean = false;
+  /** Flag indicating whether backend API key is configured */
   @Input() isApiKeyConfigured: boolean = true;
+  /** Error message to display if AI generation fails */
   @Input() error: string | null = null;
+  /** Generated caption strings returned from Gemini API */
   @Input() captions: string[] = [];
 
+  /** Event emitted when a tone button is clicked */
   @Output() selectTone = new EventEmitter<CaptionTone>();
+  /** Event emitted when user updates context text input */
   @Output() userContextChange = new EventEmitter<string>();
+  /** Event emitted when user clicks Magic Captions generate button */
   @Output() generateCaptions = new EventEmitter<void>();
+  /** Event emitted when user selects a suggested caption string */
   @Output() applyCaption = new EventEmitter<string>();
 
-  onToneSelect(tone: CaptionTone) {
+  /**
+   * Handles tone button selection.
+   * @param tone The selected CaptionTone value.
+   */
+  onToneSelect(tone: CaptionTone): void {
     this.selectTone.emit(tone);
   }
 
-  onContextChange(value: string) {
+  /**
+   * Handles context textarea value changes.
+   * @param value The updated context text string.
+   */
+  onContextChange(value: string): void {
     this.userContextChange.emit(value);
   }
 
-  onClearContext() {
+  /**
+   * Clears the context input text.
+   */
+  onClearContext(): void {
     this.userContextChange.emit('');
   }
 
-  onGenerate() {
+  /**
+   * Triggers AI caption generation event.
+   */
+  onGenerate(): void {
     this.generateCaptions.emit();
   }
 }
