@@ -3,6 +3,11 @@ import fetch from 'node-fetch';
 
 const router = Router();
 
+/**
+ * GET /api/template-image?url=https://...
+ * CORS-safe image proxy route endpoint that fetches and streams external meme template images
+ * to avoid client cross-origin issues during canvas manipulation.
+ */
 router.get('/template-image', async (req, res) => {
   try {
     const url = req.query.url as string | undefined;

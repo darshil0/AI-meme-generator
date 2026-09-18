@@ -2,6 +2,9 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ImageFilter } from '../../models/meme.model';
 
+/**
+ * Component providing CSS image filter selection controls for meme background rendering.
+ */
 @Component({
   selector: 'app-filter-controls',
   standalone: true,
@@ -37,7 +40,10 @@ import { ImageFilter } from '../../models/meme.model';
   styles: [],
 })
 export class FilterControlsComponent {
+  /** List of available ImageFilter enum options */
   @Input() filters: ImageFilter[] = [];
+  /** Currently selected ImageFilter */
   @Input() selectedFilter: ImageFilter = ImageFilter.NONE;
+  /** Event emitted when user selects an image filter */
   @Output() applyFilter = new EventEmitter<ImageFilter>();
 }

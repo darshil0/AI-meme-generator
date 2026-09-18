@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Playwright E2E & SIT Testing**: Implemented end-to-end automated testing suite in `e2e/meme-editor.spec.ts` covering title verification, template selection, image uploads, text layer editing, dark mode toggle, filter application, and IndexedDB session save/load state.
 - **Backend Modernization**: Integrated `tsx` watch mode for seamless native Node.js ES Module resolution during development.
 - **Dedicated Application TSConfig**: Added `tsconfig.app.json` for Angular CLI compilation to eliminate unused test file warnings during `ng build`.
+- **Comprehensive Documentation**: Updated codebase-wide JSDoc/TSDoc annotations for all services, components, models, utilities, and backend Express endpoints.
 
 ### Changed
 
@@ -34,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `prettier` to 3.9.6, `postcss` to 8.5.28, `autoprefixer` to 10.5.5
 - **Build Configurations**: Cleaned up `angular.json` by removing deprecated `defaultProject` field and pointing `tsConfig` to `tsconfig.app.json`.
 - **Vitest Scoping**: Configured `vitest.config.ts` to exclude `e2e/**` tests from unit test execution.
+- **Documentation Guides**: Refreshed `README.md`, `docs/DEV_GUIDE.md`, `docs/GEMINI.md`, and `tasks/lessons.md` to accurately reflect Angular 21, 10 caption tone presets, dark mode, and backend proxy configuration options.
 
 ### Fixed
 

@@ -1,37 +1,60 @@
-// meme.model.ts
+/**
+ * @file meme.model.ts
+ * Domain interfaces, models, enums, and constants for the AI Meme Generator frontend.
+ */
+
+import { CaptionTone, GeneratedCaptionsResponse } from './api-types';
+
+export { CaptionTone };
+export type { GeneratedCaptionsResponse };
 
 /**
- * Meme template configuration for both default and custom templates.
+ * Meme template configuration for both default library templates and custom user uploads.
  */
 export interface MemeTemplate {
+  /** Display name of the meme template */
   name: string;
+  /** Image URL or base64 data URL */
   url: string;
+  /** True if the template was created/uploaded by the user */
   isCustom?: boolean;
-  description?: string; // Optional description for AI caption generation
-  category?: 'popular' | 'classic' | 'recent' | 'custom'; // Template categorization
+  /** Optional description used as prompt context for AI caption generation */
+  description?: string;
+  /** Categorization tag for sorting/filtering templates */
+  category?: 'popular' | 'classic' | 'recent' | 'custom';
 }
 
 /**
- * Individual text layer configuration for meme rendering.
+ * Individual text layer configuration rendered on the meme canvas.
  */
 export interface TextLayer {
+  /** Unique numeric identifier for tracking the layer */
   id: number;
+  /** Text content displayed in the layer */
   text: string;
+  /** Font size in pixels */
   fontSize: number;
+  /** Hex color code for the text fill */
   fontColor: string;
+  /** Hex color code for the text outline stroke */
   outlineColor: string;
+  /** Text blur/glow effect radius in pixels (0 for none) */
   textBlur: number;
-  top: number; // Position as percentage (0-100) from top edge
+  /** Vertical position as a percentage (0-100) from the top of the canvas */
+  top: number;
 
-  // Additional styling options
+  /** Optional font weight specification */
   fontWeight?: 'normal' | 'bold' | 'bolder';
+  /** Optional text alignment specification */
   textAlign?: 'left' | 'center' | 'right';
-  maxWidth?: number; // Optional max width constraint in pixels
-  rotation?: number; // Optional rotation in degrees
+  /** Optional maximum width constraint in pixels */
+  maxWidth?: number;
+  /** Optional layer rotation angle in degrees */
+  rotation?: number;
 }
 
 /**
- * Image filter options for canvas manipulation.
+ * Supported CSS image filter options for meme canvas rendering.
  */
 export enum ImageFilter {
   NONE = 'none',
@@ -46,51 +69,64 @@ export enum ImageFilter {
   OPACITY = 'opacity',
 }
 
-import { CaptionTone } from './api-types';
-export { CaptionTone };
-
 /**
- * Download quality presets.
+ * Download quality preset option for JPEG export.
  */
 export interface DownloadQuality {
+  /** Human-readable quality label shown in UI */
   label: string;
-  value: number; // 0.0 to 1.0
+  /** JPEG export quality compression value (0.0 to 1.0) */
+  value: number;
 }
 
 /**
- * Complete saved meme state for persistence.
+ * Complete persisted meme editor state structure stored in IndexedDB.
  */
 export interface SavedMemeState {
-  version: number; // Schema version for future migrations
+  /** Schema version for state migrations */
+  version: number;
+  /** Selected base image payload or null */
   selectedImage: {
     url: string;
     data: string;
     mimeType: string;
     dimensions?: { width: number; height: number };
   } | null;
+  /** Configured text layers */
   layers: TextLayer[];
+  /** Applied image filter */
   imageFilter: ImageFilter;
+  /** Name of the active selected template */
   selectedTemplateName: string | null;
+  /** Custom user context string for AI generation */
   userContext: string;
+  /** Selected caption tone */
   selectedTone: CaptionTone;
+  /** Download JPEG quality value */
   downloadQuality: number;
+  /** Next layer ID counter value */
   nextLayerId: number;
-  timestamp: string; // ISO timestamp
+  /** ISO timestamp string when state was saved */
+  timestamp: string;
 }
 
-import { GeneratedCaptionsResponse } from './api-types';
-export type { GeneratedCaptionsResponse };
-
 /**
- * Validation utilities.
+ * Application-wide limits and configuration constants.
  */
 export const MEME_CONSTANTS = {
-  MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB
+  /** Maximum allowed file size for image uploads (10MB) */
+  MAX_FILE_SIZE: 10 * 1024 * 1024,
+  /** Maximum number of text layers allowed per meme */
   MAX_LAYERS: 10,
+  /** Maximum font size in pixels */
   MAX_FONT_SIZE: 200,
+  /** Minimum font size in pixels */
   MIN_FONT_SIZE: 12,
+  /** Default export JPEG quality ratio */
   DEFAULT_QUALITY: 0.92,
+  /** Maximum number of custom user templates allowed */
   MAX_CUSTOM_TEMPLATES: 50,
+  /** List of supported image MIME types */
   SUPPORTED_MIME_TYPES: [
     'image/jpeg',
     'image/png',
@@ -102,12 +138,12 @@ export const MEME_CONSTANTS = {
 } as const;
 
 /**
- * Utility type for template filtering.
+ * Filter category options for template library navigation.
  */
 export type TemplateCategory = 'all' | 'popular' | 'classic' | 'recent' | 'custom';
 
 /**
- * Computed filter mapping for CSS.
+ * CSS filter rule mappings for each `ImageFilter` enum value.
  */
 export const IMAGE_FILTER_CSS_MAP: Record<ImageFilter, string> = {
   [ImageFilter.NONE]: 'none',
@@ -123,7 +159,7 @@ export const IMAGE_FILTER_CSS_MAP: Record<ImageFilter, string> = {
 };
 
 /**
- * Tone descriptions for UI tooltips.
+ * Descriptive human-readable tooltips for caption tone options.
  */
 export const CAPTION_TONE_DESCRIPTIONS: Record<CaptionTone, string> = {
   [CaptionTone.HUMOROUS]: 'Funny and lighthearted',

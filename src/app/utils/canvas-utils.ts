@@ -1,11 +1,14 @@
 import { ImageFilter, IMAGE_FILTER_CSS_MAP, TextLayer } from '../models/meme.model';
 
 /**
- * Utility for canvas-based meme rendering.
+ * Utility class providing canvas rendering operations, CSS filter handling,
+ * and export conversions for meme generation.
  */
 export class CanvasUtils {
   /**
-   * Calculates the text shadow style for an outline effect.
+   * Calculates the CSS text shadow value required for layer outline effects.
+   * @param layer The text layer configuration.
+   * @returns CSS text-shadow string.
    */
   static getLayerTextShadow(layer: TextLayer): string {
     const color = layer.outlineColor;
@@ -21,14 +24,21 @@ export class CanvasUtils {
   }
 
   /**
-   * Gets the CSS filter string for a text layer.
+   * Calculates the CSS filter string for a text layer glow/blur effect.
+   * @param layer The text layer configuration.
+   * @returns CSS filter rule string.
    */
   static getLayerTextFilter(layer: TextLayer): string {
     return layer.textBlur > 0 ? `blur(${layer.textBlur}px)` : 'none';
   }
 
   /**
-   * Generates a meme canvas from an image and text layers.
+   * Renders a high-resolution canvas element combining the base image, applied filters,
+   * and centered text layers.
+   * @param imageSrc Base image source URL or data URL.
+   * @param layers Array of text layer configurations to render.
+   * @param imageFilter Active image filter selection.
+   * @returns Promise resolving to the HTMLCanvasElement or null on error.
    */
   static async generateMemeCanvas(
     imageSrc: string,
@@ -91,14 +101,20 @@ export class CanvasUtils {
   }
 
   /**
-   * Converts a canvas to a data URL with specified quality.
+   * Converts an HTML canvas element to a JPEG data URL string.
+   * @param canvas The rendered HTMLCanvasElement.
+   * @param quality Quality ratio between 0.0 and 1.0 (defaults to 0.92).
+   * @returns Base64 data URL string.
    */
   static canvasToDataUrl(canvas: HTMLCanvasElement, quality: number = 0.92): string {
     return canvas.toDataURL('image/jpeg', quality);
   }
 
   /**
-   * Converts a canvas to a Blob.
+   * Converts an HTML canvas element to a Blob.
+   * @param canvas The rendered HTMLCanvasElement.
+   * @param type Output MIME type (defaults to 'image/png').
+   * @returns Promise resolving to a Blob or null.
    */
   static canvasToBlob(canvas: HTMLCanvasElement, type: string = 'image/png'): Promise<Blob | null> {
     return new Promise((resolve) => {

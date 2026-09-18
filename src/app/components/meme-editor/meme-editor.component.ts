@@ -27,6 +27,10 @@ import { LayerControlsComponent } from '../layer-controls/layer-controls.compone
 import { FilterControlsComponent } from '../filter-controls/filter-controls.component';
 import { ExportService } from '../../services/export.service';
 
+/**
+ * Main orchestrator component for meme creation, editing, AI caption generation,
+ * text layer manipulation, dark mode toggling, state persistence, and exporting.
+ */
 @Component({
   selector: 'app-meme-editor',
   standalone: true,
@@ -43,6 +47,7 @@ import { ExportService } from '../../services/export.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MemeEditorComponent {
+  /** ViewChild reference to the rendered HTMLImageElement preview */
   @ViewChild('imagePreview') imagePreview?: ElementRef<HTMLImageElement>;
 
   private geminiService = inject(GeminiService);
@@ -50,20 +55,34 @@ export class MemeEditorComponent {
   exportService = inject(ExportService);
 
   // State Signals
+  /** Selected image state holding data URL, raw base64 data, and MIME type */
   selectedImage = signal<{ url: string; data: string; mimeType: string } | null>(null);
+  /** Generated AI captions list */
   captions = signal<string[]>([]);
+  /** Loading state indicator for AI caption requests */
   isLoading = signal(false);
+  /** Template URL currently being fetched */
   loadingTemplateUrl = signal<string | null>(null);
+  /** Active error message string */
   error = signal<string | null>(null);
+  /** Flag indicating if backend Gemini API key is configured */
   isApiKeyConfigured = signal(false);
+  /** Upload progress percentage (0-100) or null */
   uploadProgress = signal<number | null>(null);
+  /** Selected template display name */
   selectedTemplateName = signal<string | null>(null);
+  /** Loading preview URL */
   loadingPreviewUrl = signal<string | null>(null);
+  /** Save work button text state */
   saveButtonText = signal('Save Work');
+  /** Flag indicating if saved state exists in storage */
   savedStateExists = signal(false);
+  /** JPEG download export quality value */
   downloadQuality = signal<number>(0.92);
+  /** Active theme state (true for dark mode, false for light mode) */
   isDarkMode = signal(true);
 
+  /** Quality preset dropdown options */
   downloadQualities = [
     { label: 'High (Original)', value: 0.95 },
     { label: 'High', value: 0.92 },
@@ -72,12 +91,17 @@ export class MemeEditorComponent {
   ] as const;
 
   // Layer management signals
+  /** Canvas text layers list */
   layers = signal<TextLayer[]>([]);
+  /** Index of currently selected text layer */
   selectedLayerIndex = signal<number | null>(null);
+  /** Counter for generating unique layer IDs */
   private nextLayerId = signal(1);
 
   // Image filter signals
+  /** Active CSS image filter selection */
   imageFilter = signal<ImageFilter>(ImageFilter.NONE);
+  /** Available filter options list */
   filters: ImageFilter[] = [
     ImageFilter.NONE,
     ImageFilter.GRAYSCALE,
@@ -89,7 +113,9 @@ export class MemeEditorComponent {
   ];
 
   // Caption tone signals
+  /** Selected AI caption tone */
   selectedTone = signal<CaptionTone>(CaptionTone.HUMOROUS);
+  /** Available caption tone presets */
   tones: CaptionTone[] = [
     CaptionTone.HUMOROUS,
     CaptionTone.SARCASTIC,
@@ -99,12 +125,17 @@ export class MemeEditorComponent {
     CaptionTone.PROFESSIONAL,
     CaptionTone.POETIC,
   ];
+  /** User context input text for AI captions */
   userContext = signal('');
 
   // Custom Template signals
+  /** Saved custom template list */
   customTemplates = signal<MemeTemplate[]>([]);
+  /** Visibility toggle for custom template save form */
   showSaveTemplateInput = signal(false);
+  /** Input name for saving new custom template */
   newTemplateName = signal('');
+  /** Template search query string */
   templateSearchQuery = signal('');
 
   // In-memory cache for template data
@@ -115,9 +146,12 @@ export class MemeEditorComponent {
   private readonly maxCustomTemplates = MEME_CONSTANTS.MAX_CUSTOM_TEMPLATES;
 
   // Computed Signals
+  /** Computed flag evaluating whether an image is selected */
   hasImage = computed(() => !!this.selectedImage());
+  /** Computed flag evaluating whether editor has an active image or loading preview */
   isEditing = computed(() => this.hasImage() || this.loadingPreviewUrl() !== null);
 
+  /** Filtered templates list matching user search query */
   filteredTemplates = computed(() => {
     const all = [...this.defaultTemplates, ...this.customTemplates()];
     const query = this.templateSearchQuery().toLowerCase().trim();
@@ -125,6 +159,7 @@ export class MemeEditorComponent {
     return all.filter((template) => template.name.toLowerCase().includes(query));
   });
 
+  /** Configuration object for currently selected layer */
   selectedLayer = computed(() => {
     const index = this.selectedLayerIndex();
     const currentLayers = this.layers();
@@ -133,11 +168,13 @@ export class MemeEditorComponent {
       : null;
   });
 
+  /** CSS filter property string computed for active selection */
   computedImageFilter = computed(() => {
     const filter = this.imageFilter();
     return IMAGE_FILTER_CSS_MAP[filter] || IMAGE_FILTER_CSS_MAP[ImageFilter.NONE];
   });
 
+  /** Stock template library list */
   defaultTemplates: MemeTemplate[] = [
     { name: 'Surprised Pikachu', url: '/api/template-image?url=https://i.imgur.com/2N2gM4i.jpg' },
     { name: 'Doge', url: '/api/template-image?url=https://i.imgur.com/Vb69B6Y.jpg' },
@@ -164,7 +201,6 @@ export class MemeEditorComponent {
   ];
 
   constructor() {
-    // Optimistically set to true, then check with backend
     this.isApiKeyConfigured.set(true);
     this.geminiService.checkConfiguration().then((configured) => {
       this.isApiKeyConfigured.set(configured);
@@ -173,11 +209,17 @@ export class MemeEditorComponent {
     this.initializeStorage();
   }
 
+  /**
+   * Toggles dark/light application theme and persists preference to IndexedDB.
+   */
   toggleDarkMode(): void {
     this.isDarkMode.update((v) => !v);
     this.updateDarkMode();
   }
 
+  /**
+   * Applies active dark mode class to document root element and saves theme state.
+   */
   private updateDarkMode(): void {
     if (this.isDarkMode()) {
       document.documentElement.classList.add('dark');
@@ -187,6 +229,9 @@ export class MemeEditorComponent {
     this.storageService.setItem('darkMode', this.isDarkMode());
   }
 
+  /**
+   * Initializes persistent storage, performs LocalStorage migration, and loads state.
+   */
   private async initializeStorage(): Promise<void> {
     await this.storageService.migrateFromLocalStorage([
       'customMemeTemplates',
@@ -203,6 +248,7 @@ export class MemeEditorComponent {
     await this.checkForSavedState();
   }
 
+  /** Loads custom saved user templates from IndexedDB */
   private async loadCustomTemplates(): Promise<void> {
     const templates = await this.storageService.getItem<MemeTemplate[]>('customMemeTemplates');
     if (templates) {
@@ -210,25 +256,38 @@ export class MemeEditorComponent {
     }
   }
 
+  /** Checks IndexedDB for saved editor state */
   private async checkForSavedState(): Promise<void> {
     const savedState = await this.storageService.getItem<SavedMemeState>('savedMemeState');
     this.savedStateExists.set(!!savedState);
   }
 
-  // Layer Style Helpers
+  /**
+   * Calculates layer text shadow CSS rule.
+   * @param layer Text layer configuration.
+   */
   getLayerTextShadow(layer: TextLayer): string {
     return CanvasUtils.getLayerTextShadow(layer);
   }
 
+  /**
+   * Calculates layer filter CSS rule.
+   * @param layer Text layer configuration.
+   */
   getLayerTextFilter(layer: TextLayer): string {
     return CanvasUtils.getLayerTextFilter(layer);
   }
 
+  /** Retrieves natural pixel dimensions of selected image preview */
   private getImageDimensions(): { width: number; height: number } | null {
     const img = this.imagePreview?.nativeElement;
     return img ? { width: img.naturalWidth, height: img.naturalHeight } : null;
   }
 
+  /**
+   * Initializes default top and bottom text layers for a newly loaded image.
+   * @param imageWidth Natural pixel width of the loaded image.
+   */
   initializeLayers(imageWidth: number): void {
     this.nextLayerId.set(1);
     const baseFontSize = Math.max(Math.round(imageWidth / 18), 36);
@@ -260,6 +319,7 @@ export class MemeEditorComponent {
     this.selectedLayerIndex.set(0);
   }
 
+  /** Resets editor state signals */
   private _resetEditorState(keepTemplateName = false): void {
     this.error.set(null);
     this.selectedImage.set(null);
@@ -276,6 +336,7 @@ export class MemeEditorComponent {
     this.imageDimensions.set(null);
   }
 
+  /** Finalizes image loading, measures dimensions, and initializes text layers */
   private _finalizeImageSelection(dataUrl: string, mimeType: string): void {
     const base64Data = dataUrl.split(',', 2)[1] ?? '';
     this.selectedImage.set({ url: dataUrl, data: base64Data, mimeType });
@@ -283,7 +344,6 @@ export class MemeEditorComponent {
     this.loadingTemplateUrl.set(null);
     this.loadingPreviewUrl.set(null);
 
-    // Measure image dimensions
     const img = new Image();
     img.onload = () => {
       this.imageDimensions.set({ width: img.naturalWidth, height: img.naturalHeight });
@@ -292,6 +352,10 @@ export class MemeEditorComponent {
     img.src = dataUrl;
   }
 
+  /**
+   * Handles user image upload file selection event.
+   * @param event File input change event.
+   */
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement | null;
     const file = input?.files?.[0];
@@ -299,7 +363,6 @@ export class MemeEditorComponent {
       return;
     }
 
-    // Validate MIME type against supported list
     if (
       !MEME_CONSTANTS.SUPPORTED_MIME_TYPES.includes(
         file.type as (typeof MEME_CONSTANTS.SUPPORTED_MIME_TYPES)[number],
@@ -309,7 +372,6 @@ export class MemeEditorComponent {
       return;
     }
 
-    // Validate file size
     if (file.size > MEME_CONSTANTS.MAX_FILE_SIZE) {
       this.error.set(
         `File size must be less than ${MEME_CONSTANTS.MAX_FILE_SIZE / 1024 / 1024}MB.`,
@@ -319,7 +381,7 @@ export class MemeEditorComponent {
 
     this._resetEditorState();
     this.uploadProgress.set(0);
-    input.value = ''; // Reset input
+    input.value = '';
 
     const reader = new FileReader();
     reader.onprogress = (e) => {
@@ -335,12 +397,15 @@ export class MemeEditorComponent {
     reader.readAsDataURL(file);
   }
 
+  /**
+   * Selects and loads a meme template image.
+   * @param template Template object to load.
+   */
   async selectTemplate(template: MemeTemplate): Promise<void> {
     this._resetEditorState(true);
     this.selectedTemplateName.set(template.name);
     this.error.set(null);
 
-    // Custom template (data URL)
     if (template.isCustom) {
       const match = template.url.match(/^data:(.+?);base64,/);
       if (match) {
@@ -349,7 +414,6 @@ export class MemeEditorComponent {
       }
     }
 
-    // Try cache first
     const cached = this.templateCache.get(template.url);
     if (cached) {
       const dataUrl = `data:${cached.mimeType};base64,${cached.data}`;
@@ -381,6 +445,7 @@ export class MemeEditorComponent {
     }
   }
 
+  /** Loads image binary data URL via HTML Canvas */
   private loadImageData(url: string): Promise<{ data: string; mimeType: string } | null> {
     return new Promise((resolve, reject) => {
       const img = new Image();
@@ -413,11 +478,15 @@ export class MemeEditorComponent {
     });
   }
 
-  // Layer Management
+  /**
+   * Sets the active selected text layer by index.
+   * @param index Layer index.
+   */
   selectLayer(index: number): void {
     this.selectedLayerIndex.set(this.selectedLayerIndex() === index ? null : index);
   }
 
+  /** Adds a new text layer to the meme canvas */
   addTextLayer(): void {
     const currentLayers = this.layers();
     if (currentLayers.length >= MEME_CONSTANTS.MAX_LAYERS) {
@@ -443,6 +512,11 @@ export class MemeEditorComponent {
     this.selectedLayerIndex.set(this.layers().length - 1);
   }
 
+  /**
+   * Deletes a text layer by index.
+   * @param index Layer index.
+   * @param event Event trigger.
+   */
   deleteLayer(index: number, event?: Event): void {
     event?.stopPropagation();
     const currentIndex = this.selectedLayerIndex();
@@ -456,6 +530,12 @@ export class MemeEditorComponent {
     }
   }
 
+  /**
+   * Reorders a text layer up or down in rendering order.
+   * @param index Layer index.
+   * @param direction Order direction ('up' or 'down').
+   * @param event Trigger event.
+   */
   moveLayer(index: number, direction: 'up' | 'down', event?: Event): void {
     event?.stopPropagation();
     const layers = this.layers();
@@ -473,7 +553,8 @@ export class MemeEditorComponent {
     }
   }
 
-  updateSelectedLayerProperty<K extends keyof TextLayer>(property: K, value: TextLayer[K]) {
+  /** Updates a property value on the active selected layer */
+  updateSelectedLayerProperty<K extends keyof TextLayer>(property: K, value: TextLayer[K]): void {
     const index = this.selectedLayerIndex();
     if (index === null) return;
 
@@ -484,10 +565,12 @@ export class MemeEditorComponent {
     });
   }
 
-  handleLayerUpdate(event: { property: string; value: string | number }) {
+  /** Handler for layer property update event emitted from child component */
+  handleLayerUpdate(event: { property: string; value: string | number }): void {
     this.updateSelectedLayerProperty(event.property as keyof TextLayer, event.value as never);
   }
 
+  /** Triggers Gemini AI caption generation for selected image or template name */
   async generateCaptions(): Promise<void> {
     if (!this.hasImage() && !this.selectedTemplateName()) {
       this.error.set('Please select an image or template first.');
@@ -522,7 +605,7 @@ export class MemeEditorComponent {
         );
       }
 
-      this.captions.set(captions.slice(0, 10)); // Limit to 10 captions
+      this.captions.set(captions.slice(0, 10));
     } catch (error) {
       this.error.set(error instanceof Error ? error.message : 'Failed to generate captions.');
     } finally {
@@ -530,6 +613,10 @@ export class MemeEditorComponent {
     }
   }
 
+  /**
+   * Applies a suggested AI caption string across text layers.
+   * @param caption AI caption text string.
+   */
   applyCaption(caption: string): void {
     const parts = caption.split(/[-|/]\s+|\s+\/\s+|\s+-\s+/i);
     this.layers.update((layers) => {
@@ -546,6 +633,7 @@ export class MemeEditorComponent {
     });
   }
 
+  /** Exports and downloads rendered meme as a JPEG image file */
   async downloadMeme(): Promise<void> {
     const preview = this.imagePreview?.nativeElement;
     if (!preview?.src) {
@@ -567,6 +655,7 @@ export class MemeEditorComponent {
     await this.exportService.downloadMeme(canvas, this.downloadQuality());
   }
 
+  /** Copies rendered meme canvas directly to the system clipboard */
   async copyMemeToClipboard(): Promise<void> {
     const preview = this.imagePreview?.nativeElement;
     if (!preview?.src) {
@@ -591,6 +680,7 @@ export class MemeEditorComponent {
     }
   }
 
+  /** Saves active editor work state to IndexedDB */
   async saveState(): Promise<void> {
     if (!this.isEditing()) return;
 
@@ -628,6 +718,7 @@ export class MemeEditorComponent {
     }
   }
 
+  /** Loads saved editor work state from IndexedDB */
   async loadState(): Promise<void> {
     try {
       const state = await this.storageService.getItem<SavedMemeState>('savedMemeState');
@@ -635,7 +726,6 @@ export class MemeEditorComponent {
 
       this._resetEditorState(state.selectedTemplateName !== null);
 
-      // Handle migration from old state format (without version/dimensions)
       if (state.selectedImage) {
         this.selectedImage.set({
           url: state.selectedImage.url,
@@ -666,6 +756,7 @@ export class MemeEditorComponent {
     }
   }
 
+  /** Saves uploaded image as a custom reusable template in IndexedDB */
   async saveCustomTemplate(): Promise<void> {
     const name = this.newTemplateName().trim();
     const image = this.selectedImage();
@@ -702,6 +793,11 @@ export class MemeEditorComponent {
     this.error.set(null);
   }
 
+  /**
+   * Deletes a custom user template from IndexedDB.
+   * @param template Template object to delete.
+   * @param event Trigger event.
+   */
   async deleteCustomTemplate(template: MemeTemplate, event?: Event): Promise<void> {
     event?.stopPropagation();
 
@@ -714,27 +810,36 @@ export class MemeEditorComponent {
     }
   }
 
+  /** Clears saved meme work session state from IndexedDB */
   async clearSavedMemeState(): Promise<void> {
     await this.storageService.removeItem('savedMemeState');
     this.savedStateExists.set(false);
     this._resetEditorState();
   }
 
+  /** Clears all custom templates saved by user from IndexedDB */
   async clearAllCustomTemplates(): Promise<void> {
     await this.storageService.removeItem('customMemeTemplates');
     this.customTemplates.set([]);
 
     const selected = this.selectedImage();
     if (selected && selected.url.startsWith('data:')) {
-      // Selected image was likely a custom template; reset the editor.
       this._resetEditorState();
     }
   }
 
+  /**
+   * Applies an image filter to the background image.
+   * @param filter ImageFilter enum choice.
+   */
   applyFilter(filter: ImageFilter): void {
     this.imageFilter.set(filter);
   }
 
+  /**
+   * Selects an AI caption tone option.
+   * @param tone CaptionTone enum choice.
+   */
   selectTone(tone: CaptionTone): void {
     this.selectedTone.set(tone);
   }

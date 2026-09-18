@@ -3,6 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TextLayer } from '../../models/meme.model';
 
+/**
+ * Component providing UI controls for managing and styling meme canvas text layers,
+ * including font size, fill color, outline color, blur/glow, and vertical position.
+ */
 @Component({
   selector: 'app-layer-controls',
   standalone: true,
@@ -233,18 +237,26 @@ import { TextLayer } from '../../models/meme.model';
   styles: [],
 })
 export class LayerControlsComponent {
+  /** List of all text layers on the meme canvas */
   @Input() layers: TextLayer[] = [];
+  /** Index of currently selected active layer */
   @Input() selectedIndex: number | null = null;
+  /** Configuration object for the currently selected active layer */
   @Input() selectedLayer: TextLayer | null = null;
 
+  /** Event emitted when user requests adding a new text layer */
   @Output() addLayer = new EventEmitter<void>();
+  /** Event emitted when user selects a layer item */
   @Output() selectLayer = new EventEmitter<number>();
+  /** Event emitted when user reorders a layer up or down */
   @Output() moveLayer = new EventEmitter<{
     index: number;
     direction: 'up' | 'down';
     event: MouseEvent;
   }>();
+  /** Event emitted when user deletes a text layer */
   @Output() deleteLayer = new EventEmitter<{ index: number; event: MouseEvent }>();
+  /** Event emitted when user changes a styling property on the active layer */
   @Output() updateProperty = new EventEmitter<{
     property: keyof TextLayer;
     value: string | number;
