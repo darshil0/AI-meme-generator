@@ -79,6 +79,7 @@ Create `.env` inside `server/`:
 ```env
 GEMINI_API_KEY=your_gemini_api_key
 ALLOWED_ORIGIN=http://localhost:4200
+ALLOWED_HOSTS=custom.domain.com,another.domain.com
 NODE_ENV=development
 PORT=4000
 

@@ -1,4 +1,4 @@
-﻿// environment.prod.ts
+// environment.prod.ts
 // Production configuration.
 
 export const environment = {

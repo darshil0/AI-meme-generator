@@ -23,3 +23,6 @@
 - [2026-05-31] Fixed frontend test failures by adding the `canvas` dependency to mock `HTMLCanvasElement.toDataURL()` in JSDOM.
 - [2026-07-02] Resolved `@google/genai` SDK response structure mismatch in backend tests and client code.
 - [2026-07-02] Fixed ESLint v10 peer dependency conflicts by pinning `@angular/compiler-cli` versions.
+- [2026-07-03] Removed UTF-8 BOM byte sequences from TypeScript source files to prevent file signature/diff issues.
+- [2026-07-03] Replaced deprecated `HttpClient.toPromise()` with RxJS `firstValueFrom` in Angular services.
+- [2026-07-03] Extended backend image proxy route to support dynamic `ALLOWED_HOSTS` via environment variables.
