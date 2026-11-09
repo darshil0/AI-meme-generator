@@ -12,7 +12,11 @@ Caption routes validate input types, supported MIME types and tone values before
 
 ## Canvas export
 
-Canvas rendering now honors text alignment, optional font weight, rotation, and maximum width from `TextLayer`. Invalid canvas contexts and unloaded images fail cleanly rather than causing an exception.
+Canvas rendering honors text alignment, optional font weight, rotation, and maximum width from `TextLayer`. Invalid canvas contexts and unloaded images fail cleanly rather than causing an exception.
+
+## Editor state and template names
+
+The editor exposes a public reset action for Angular template bindings while keeping its reset implementation private. Loading a saved meme selects the first layer when present, allowing immediate editing. Custom template names are checked against the full stock and custom template collections, independently of the current search filter.
 
 ## Verification
 
