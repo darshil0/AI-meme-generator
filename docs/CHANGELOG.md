@@ -15,9 +15,14 @@ Notable project changes, following [Keep a Changelog](https://keepachangelog.com
 - Exposed a public editor reset action for template use, selected the first layer when restoring saved work, and made custom-template duplicate checks independent of search filtering.
 - Aligned layer and filter component inputs/outputs with the editor template so layer selection and filter controls receive the expected values.
 
+### Added
+
+- Added Playwright E2E coverage in `e2e/meme-editor.spec.ts` for landing/template-picker rendering, upload and text/filter editing, mocked caption generation and application, saved-work restoration, and caption generation by template name when an image fails to load.
+
 ### Documentation
 
 - Corrected setup requirements, environment configuration instructions, implemented feature descriptions, API limits, proxy behavior, and test/build commands in the README.
+- Documented the exact E2E test path, coverage, browser prerequisite, and test command.
 - Restored the full developer guide and documented audit behavior in `docs/CODE_AUDIT.md`.
 
 ## [1.11.0]
@@ -38,7 +43,7 @@ This is the version declared in the root and backend package manifests. The repo
 
 ### Notes
 
-- The repository contains Playwright configuration but no checked-in `e2e/` test files. The presence of the runner configuration alone does not mean an E2E suite is implemented.
+- The E2E suite is located at `e2e/meme-editor.spec.ts` and is configured to run in Chromium.
 - The editor currently exposes seven caption tones and seven filter choices; the backend tone enum and image-filter model define additional values not all surfaced in the UI.
 
 ---

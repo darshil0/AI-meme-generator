@@ -26,13 +26,14 @@ The browser accepts image uploads up to 10 MB, but the caption API accepts raste
 - TypeScript 5.9, Tailwind CSS 3.4
 - Express backend and Google GenAI SDK (`gemini-2.0-flash`)
 - IndexedDB through `idb-keyval`
-- Vitest and Playwright tooling
+- Vitest and Playwright
 
 ## Requirements
 
 - Node.js 20.19 or newer (required by the Angular 21 toolchain)
 - npm 9 or newer
 - A Google Gemini API key for caption generation
+- Playwright Chromium browser installed (`npx playwright install chromium`)
 
 ## Local setup
 
@@ -43,6 +44,7 @@ git clone https://github.com/darshil0/AI-meme-generator.git
 cd AI-meme-generator
 npm install
 cd server && npm install && cd ..
+npx playwright install chromium
 ```
 
 The backend reads configuration from its process environment. The repository does not load `server/.env` automatically, so setting values in that file alone will not configure the server. Export the variables in the backend shell (or configure them in your process manager):
@@ -75,7 +77,7 @@ From the repository root:
 | `npm run build` | Build the frontend for production |
 | `npm test` | Run frontend Vitest tests |
 | `npm run lint` | Run ESLint |
-| `npm run test:e2e` | Run Playwright tests (there are currently no checked-in E2E test files) |
+| `npm run test:e2e` | Run the Playwright browser tests in `e2e/meme-editor.spec.ts` |
 
 From `server/`:
 
@@ -86,7 +88,17 @@ From `server/`:
 | `npm test` | Run backend Vitest tests |
 | `npm run lint` | Lint backend source |
 
-The Playwright configuration starts both servers, but the repository currently has no `e2e/` test suite. Add tests there before relying on `npm run test:e2e` for verification.
+### End-to-end test coverage
+
+The Playwright suite at [`e2e/meme-editor.spec.ts`](e2e/meme-editor.spec.ts) covers:
+
+1. Landing page and template picker render.
+2. Image upload, adding a text layer, editing its text, and applying a filter.
+3. Caption generation for an uploaded image and applying a generated suggestion.
+4. Saving and restoring edited work.
+5. Caption generation by template name when a selected template image cannot be loaded.
+
+The tests mock caption/configuration API responses and do not require a live Gemini API key. `playwright.config.ts` starts the frontend and backend servers automatically. Run `npm run test:e2e` from the repository root.
 
 ## Production build
 
