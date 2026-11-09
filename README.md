@@ -1,191 +1,115 @@
 # AI Meme Generator 🤖
 
-**Your personal AI-powered meme factory. Create viral-worthy memes in seconds with generative AI.**
+Create and edit memes with an Angular app and AI-generated captions. Upload an image or choose a built-in template, customize text and filters, then download the result or copy it to your clipboard.
 
-This web application generates memes by combining images with AI-generated captions. Upload a picture or choose from a library of templates to generate context-aware captions via the Gemini API.
+![Angular 21.2](https://img.shields.io/badge/Angular-21.2-red?style=flat-square&logo=angular)
+![TypeScript 5.9](https://img.shields.io/badge/TypeScript-5.9-blue?style=flat-square)
+![Gemini API](https://img.shields.io/badge/Gemini-gemini--2.0--flash-blue?style=flat-square)
 
-![AI Meme Generator](https://img.shields.io/badge/Version-1.11.0-blueviolet?style=flat-square)
-![Angular](https://img.shields.io/badge/Angular-21.2-red?style=flat-square&logo=angular)
-![Gemini AI](https://img.shields.io/badge/Gemini_API-v1.52-blue?style=flat-square)
-![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4-38B2AC?style=flat-square&logo=tailwind-css)
+## Features
 
----
+- Upload JPG, PNG, GIF, WebP, BMP, and SVG images up to 10 MB, or select from 13 built-in meme templates.
+- Save up to 50 custom templates in browser IndexedDB.
+- Generate captions from an image or template name using Google's Gemini API. The editor offers seven tone choices: humorous, sarcastic, wholesome, absurd, dark, professional, and poetic. The backend API also recognizes dramatic, inspirational, and snarky tones.
+- Edit up to 10 text layers, including text, size, fill, outline, blur, vertical position, alignment, rotation, width, and font weight.
+- Apply seven filters in the editor: grayscale, sepia, invert, blur, brightness, and contrast, plus the no-filter option. The model also defines saturate, hue-rotate, and opacity filters, but they are not currently exposed in the editor's filter list.
+- Switch between dark and light themes; save and resume editor state using IndexedDB.
+- Download a JPEG with selectable quality or copy a PNG to the clipboard.
 
-## ✨ Features
+### Caption image limits
 
-### 🖼️ Image Management
+The browser accepts image uploads up to 10 MB, but the caption API accepts raster images up to 8 MiB. SVG files can be edited/exported in the browser, but the caption API does not accept SVG. To generate captions from an uploaded image, use JPEG, PNG, GIF, WebP, or BMP within the API limit. Built-in templates can still generate captions by template name when image loading fails.
 
-- Upload custom image files (JPG, PNG, GIF, WebP, BMP, SVG) up to 10MB with client-side validation.
-- Select from 13+ popular meme templates with real-time text filtering.
-- Save uploaded images as custom, reusable templates (up to 50 custom templates).
-- IndexedDB image and state caching for offline/fast access via `idb-keyval`.
+## Technology
 
-### 🧠 AI Captions
+- Angular 21.2 with zoneless change detection and Signals
+- TypeScript 5.9, Tailwind CSS 3.4
+- Express backend and Google GenAI SDK (`gemini-2.0-flash`)
+- IndexedDB through `idb-keyval`
+- Vitest and Playwright tooling
 
-- Generate contextual captions per request using Google's `gemini-2.0-flash` model via `@google/genai`.
-- Analyzes base64 image data or template titles for contextual caption positioning.
-- 10 selectable tone presets: Humorous, Sarcastic, Wholesome, Absurd, Dark, Professional, Poetic, Dramatic, Inspirational, Snarky.
-- Custom context prompt support with fallback mechanics for rate limits and structural errors.
+## Requirements
 
-### ✏️ Text & Filter Editor
+- Node.js 20.19 or newer (required by the Angular 21 toolchain)
+- npm 9 or newer
+- A Google Gemini API key for caption generation
 
-- Unlimited canvas text layers with drag-and-drop or position ordering.
-- Custom controls: font size (10–200px), font color (fill), outline color, text blur/glow (0–10px), vertical placement (0–100%).
-- Image filter adjustments: Grayscale, Sepia, Invert, Blur, Brightness, Contrast, Saturate, Hue Rotate, Opacity.
-- Premium typography using Anton and Impact meme font fallbacks.
+## Local setup
 
-### 🌙 Dark Mode & State Management
-
-- Seamless dark/light mode toggle with Angular Signals and persistent theme state stored in IndexedDB.
-- Save and load active editor work sessions on-demand.
-- Backward-compatible migration from legacy LocalStorage data models.
-
-### 💾 Storage & Export
-
-- Save and load work via browser IndexedDB (`idb-keyval`).
-- Export as JPEG with selectable quality presets (50%, 75%, 92%, 95%).
-- One-click copy-to-clipboard functionality.
-
----
-
-## 🛠️ Tech Stack
-
-- **Frontend:** Angular 21 (Zoneless Signals architecture)
-- **AI Integration:** Google Gemini API (`gemini-2.0-flash`) via `@google/genai`
-- **Styling:** Tailwind CSS 3.4
-- **Language:** TypeScript 5.9+
-- **Backend:** Express.js / Node.js 18.13+ (using `tsx` native ESM execution)
-- **Storage:** IndexedDB via `idb-keyval`
-- **Testing:** Vitest (Unit testing) & Playwright (E2E / SIT testing)
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- **Node.js:** v18.13.0 or higher
-- **npm:** v9.0.0 or higher
-- **Gemini API Key:** Obtained from [Google AI Studio](https://aistudio.google.com/app/apikey)
-
-### Installation
-
-1. Clone repository:
+Clone and install dependencies:
 
 ```bash
-git clone <repository-url>
-cd ai-meme-generator
-```
-
-2. Install root and server dependencies:
-
-```bash
-npm install --legacy-peer-deps
+git clone https://github.com/darshil0/AI-meme-generator.git
+cd AI-meme-generator
+npm install
 cd server && npm install && cd ..
 ```
 
-3. Configure Environment Variables:
-   Create `.env` inside `server/`:
-
-```env
-GEMINI_API_KEY=your_gemini_api_key
-ALLOWED_ORIGIN=http://localhost:4200
-ALLOWED_HOSTS=custom.domain.com,another.domain.com
-NODE_ENV=development
-PORT=4000
-```
-
----
-
-## 🏃 Running the Application
-
-### 1. Start Backend Proxy
+The backend reads configuration from its process environment. The repository does not load `server/.env` automatically, so setting values in that file alone will not configure the server. Export the variables in the backend shell (or configure them in your process manager):
 
 ```bash
 cd server
+export GEMINI_API_KEY='your_gemini_api_key'
+export ALLOWED_ORIGIN='http://localhost:4200'
+export PORT=4000
+# Optional: add comma-separated exact hostnames to the proxy allowlist.
+export ALLOWED_HOSTS='images.example.com'
 npm run dev
 ```
 
-Backend runs at `http://localhost:4000`.
-
-### 2. Start Frontend App
-
-In a second terminal, from the root folder:
+In another terminal, from the repository root:
 
 ```bash
 npm run dev
 ```
 
-Frontend runs at `http://localhost:4200`.
+The frontend is served at `http://localhost:4200`; the backend listens on port 4000 by default. `ALLOWED_HOSTS` adds exact hostnames to the built-in allowlist; it does not replace the built-in hosts.
 
-### 3. Testing & Verification
+## Commands
+
+From the repository root:
+
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Start Angular with the `/api` development proxy |
+| `npm run build` | Build the frontend for production |
+| `npm test` | Run frontend Vitest tests |
+| `npm run lint` | Run ESLint |
+| `npm run test:e2e` | Run Playwright tests (there are currently no checked-in E2E test files) |
+
+From `server/`:
+
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Start the backend with `tsx` watch mode |
+| `npm run build` | Compile the backend TypeScript |
+| `npm test` | Run backend Vitest tests |
+| `npm run lint` | Lint backend source |
+
+The Playwright configuration starts both servers, but the repository currently has no `e2e/` test suite. Add tests there before relying on `npm run test:e2e` for verification.
+
+## Production build
+
+Build the Angular frontend with `npm run build`; Angular's configured output path is `dist/app/browser`. Build the backend separately:
 
 ```bash
-npm run test          # Run Vitest unit tests
-npm run test:e2e      # Run Playwright E2E tests
-npm run lint          # Run ESLint check
-npm run format        # Run Prettier code formatting
-```
-
----
-
-## 📦 Production Deployment
-
-### Build Application
-
-```bash
+cd server
 npm run build
+npm start
 ```
 
-Output is compiled into `dist/ai-meme-generator/browser` using `tsconfig.app.json`.
+Set `GEMINI_API_KEY`, `ALLOWED_ORIGIN`, `ALLOWED_HOSTS` (if needed), and `PORT` in the backend runtime environment. Keep the Gemini key on the server; do not put it in frontend environment files or commit it.
 
-### Backend Environment Rules
+## Backend API
 
-Ensure production instances expose:
+- `GET /api/health` — returns `{"status":"ok"}`.
+- `GET /api/config-status` — reports whether the backend has a Gemini key configured.
+- `POST /api/generate-captions-from-image` — accepts `imageBase64`, `mimeType`, optional `tone`, and optional `context`. Supported MIME types are JPEG, PNG, GIF, WebP, and BMP; decoded image size is limited to 8 MiB; context is limited to 500 characters.
+- `POST /api/generate-captions-from-text` — accepts `templateName` (1–100 characters), optional `tone`, and optional `context` (up to 500 characters).
+- `GET /api/template-image?url=...` — proxies supported raster images from HTTPS URLs whose hostname is allowed. Redirects are rejected; requests time out after 10 seconds and responses are limited to 10 MiB.
 
-- `GEMINI_API_KEY`
-- `ALLOWED_ORIGIN` (Set to exact domain hosting the frontend)
-- `ALLOWED_HOSTS` (Comma-separated list of allowed host domains for external template proxying)
-- `NODE_ENV=production`
+The backend uses the `cors` middleware. `ALLOWED_ORIGIN` controls the CORS response header; it is not an authentication mechanism and does not reject unauthorized callers. The image proxy's host allowlist is likewise not user authentication.
 
----
+## Documentation and license
 
-## 🛠️ Development Tools
-
-| Command                    | Action                                          |
-| -------------------------- | ----------------------------------------------- |
-| `npm run dev`              | Start local Angular frontend                    |
-| `cd server && npm run dev` | Start local Express proxy backend (using `tsx`) |
-| `npm run build`            | Compile production frontend assets              |
-| `npm run test`             | Execute unit tests with Vitest                  |
-| `npm run test:e2e`         | Run Playwright end-to-end tests                 |
-| `npm run lint`             | Run ESLint checks                               |
-| `npm run format`           | Execute Prettier code formatting                |
-
----
-
-## 🔒 Security Measures
-
-- **Key Isolation:** API keys remain strictly on the Express backend server and are never exposed to the client bundle.
-- **Payload Validation:** Image uploads undergo client-side and server-side MIME type verification and 10MB file size checks.
-- **CORS & Proxy Protection:** Backend rejects origin header mismatches outside `ALLOWED_ORIGIN` and limits external template image proxying to configured `ALLOWED_HOSTS`.
-
----
-
-## 🐛 Troubleshooting
-
-**Port 4000 unavailable (`EADDRINUSE`):**
-
-```bash
-lsof -i :4000
-kill -9 <PID>
-```
-
-**Missing API Key Error:**
-Confirm `server/.env` contains a valid `GEMINI_API_KEY` string and that the Express server was restarted after creation.
-
----
-
-## 📝 License
-
-MIT
+See [`docs/DEV_GUIDE.md`](docs/DEV_GUIDE.md), [`docs/GEMINI.md`](docs/GEMINI.md), and [`docs/CODE_AUDIT.md`](docs/CODE_AUDIT.md) for developer setup, Gemini configuration, and audit details. This project is licensed under the MIT License; see [`LICENSE`](LICENSE).
