@@ -17,10 +17,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Canvas exports now render the text alignment, font weight, rotation, and maximum-width options defined by text layers.
 - Canvas rendering now handles unavailable contexts and invalid image dimensions without throwing.
 - Replaced the private reset method's template call with a public action, restored the first active layer when loading saved work, and made template-name duplicate checks independent of search filtering.
+- Aligned layer/filter component input and output aliases with the editor template so saved-layer selection and filter controls work with the current bindings.
 
 ### Documentation
 
-- Added `docs/CODE_AUDIT.md` describing API validation limits, proxy security controls, editor behavior, and verification guidance.
+- Added `docs/CODE_AUDIT.md` describing API validation limits, proxy security controls, editor behavior, and verification status.
 
 ### Planned
 

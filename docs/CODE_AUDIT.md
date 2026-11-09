@@ -1,6 +1,6 @@
-# Code audit fixes
+# Code audit fixes and verification status
 
-This note describes validation and rendering guarantees added after the initial code review.
+This note records the fixes made during the code review and what was checked afterward.
 
 ## Template image proxy
 
@@ -14,10 +14,14 @@ Caption routes validate input types, supported MIME types and tone values before
 
 Canvas rendering honors text alignment, optional font weight, rotation, and maximum width from `TextLayer`. Invalid canvas contexts and unloaded images fail cleanly rather than causing an exception.
 
-## Editor state and template names
+## Editor state and controls
 
-The editor exposes a public reset action for Angular template bindings while keeping its reset implementation private. Loading a saved meme selects the first layer when present, allowing immediate editing. Custom template names are checked against the full stock and custom template collections, independently of the current search filter.
+- The editor exposes a public reset action for Angular template bindings while keeping its reset implementation private.
+- Loading a saved meme selects the first layer when present, allowing immediate editing.
+- Custom template names are checked against the full stock and custom template collections, independently of the current search filter.
+- Layer controls accept the parent's `selectedLayerIndex` binding and resolve the selected layer from that index, so style controls stay connected without requiring a second template binding.
+- Filter controls support the parent's `currentFilter` and `selectFilter` bindings, and provide the available filter options by default.
 
-## Verification
+## Verification status
 
-Run `npm test`, `npm run build`, and, from `server/`, `npm test` and `npm run build` after changes. Proxy checks should include malformed URLs, disallowed hosts, redirects, unsupported MIME types, timeouts, and bodies above the configured limit.
+Source inspection confirms that the names used in the editor template now match Angular input/output aliases on the layer and filter controls. Automated tests and Angular/backend builds were not executed in this session. Run `npm test`, `npm run build`, and, from `server/`, `npm test` and `npm run build` before merging. Proxy tests should cover malformed URLs, disallowed hosts, redirects, unsupported MIME types, timeouts, and bodies above the configured limit.
