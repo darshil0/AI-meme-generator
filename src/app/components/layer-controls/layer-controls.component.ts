@@ -1,264 +1,95 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TextLayer } from '../../models/meme.model';
 
-/**
- * Component providing UI controls for managing and styling meme canvas text layers,
- * including font size, fill color, outline color, blur/glow, and vertical position.
- */
 @Component({
   selector: 'app-layer-controls',
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
     <fieldset class="border border-gray-200 dark:border-white/10 p-6 rounded-3xl glass-panel">
-      <legend
-        class="text-xl font-extrabold px-3 text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600 dark:from-green-400 dark:to-emerald-400"
-      >
-        3. Text Layers
-      </legend>
+      <legend class="text-xl font-extrabold px-3 text-purple-600 dark:text-purple-300">3. Text Layers</legend>
       <div class="flex flex-col gap-6 pt-2">
-        <button
-          (click)="addLayer.emit()"
-          type="button"
-          class="btn-primary w-full flex items-center justify-center gap-2"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            stroke-width="3"
-          >
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-          </svg>
-          Add Text Layer
-        </button>
+        <button (click)="addLayer.emit()" type="button" class="btn-primary w-full">Add Text Layer</button>
         <div class="space-y-3 max-h-64 overflow-y-auto pr-2 scrollbar-thin">
           @for (layer of layers; track layer.id; let i = $index) {
-            <div
-              (click)="selectLayer.emit(i)"
-              class="flex items-center gap-3 p-4 rounded-2xl cursor-pointer transition-all duration-300 border border-gray-200 dark:border-white/5 hover:bg-white/80 dark:hover:bg-white/10"
-              [class.bg-purple-600/30]="selectedIndex === i"
-              [class.border-purple-500/50]="selectedIndex === i"
-              [class.bg-white/50]="selectedIndex !== i"
-              [class.dark:bg-white/5]="selectedIndex !== i"
-              role="button"
-              tabindex="0"
-              [attr.aria-selected]="selectedIndex === i"
-              [attr.aria-label]="'Select layer: ' + (layer.text || 'Empty')"
-            >
-              <span class="flex-grow truncate text-gray-900 dark:text-white font-bold">{{
-                layer.text || 'Empty Layer'
-              }}</span>
-              <div class="flex items-center gap-2 flex-shrink-0">
-                <button
-                  (click)="
-                    moveLayer.emit({ index: i, direction: 'up', event: $event });
-                    $event.stopPropagation()
-                  "
-                  [disabled]="i === 0"
-                  class="p-2 rounded-xl bg-white/10 hover:bg-white/20 disabled:opacity-20 transition-colors"
-                  type="button"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-4 w-4"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                </button>
-                <button
-                  (click)="
-                    moveLayer.emit({ index: i, direction: 'down', event: $event });
-                    $event.stopPropagation()
-                  "
-                  [disabled]="i === layers.length - 1"
-                  class="p-2 rounded-xl bg-white/10 hover:bg-white/20 disabled:opacity-20 transition-colors"
-                  type="button"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-4 w-4"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                </button>
-                <button
-                  (click)="deleteLayer.emit({ index: i, event: $event }); $event.stopPropagation()"
-                  class="p-2 rounded-xl bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition-all duration-300"
-                  type="button"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-4 w-4"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                </button>
-              </div>
+            <div class="flex items-center gap-3 p-4 rounded-2xl border border-gray-200 dark:border-white/10" [class.bg-purple-600/30]="selectedIndex === i">
+              <button type="button" class="flex-grow truncate text-left" (click)="selectLayer.emit(i)" [attr.aria-pressed]="selectedIndex === i">
+                {{ layer.text || 'Empty Layer' }}
+              </button>
+              <button type="button" (click)="moveLayer.emit({ index: i, direction: 'up', event: $event }); $event.stopPropagation()" [disabled]="i === 0" aria-label="Move layer up">↑</button>
+              <button type="button" (click)="moveLayer.emit({ index: i, direction: 'down', event: $event }); $event.stopPropagation()" [disabled]="i === layers.length - 1" aria-label="Move layer down">↓</button>
+              <button type="button" (click)="deleteLayer.emit({ index: i, event: $event }); $event.stopPropagation()" [attr.aria-label]="'Delete layer ' + (layer.text || i + 1)">×</button>
             </div>
           }
         </div>
       </div>
     </fieldset>
 
-    @if (selectedLayer) {
-      <fieldset
-        class="border border-gray-200 dark:border-white/10 p-6 rounded-3xl glass-panel mt-4"
-      >
-        <legend
-          class="text-xl font-extrabold px-3 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 max-w-full truncate"
-        >
-          Style:
-          <span class="text-gray-900 dark:text-white">{{ selectedLayer.text || '...' }}</span>
-        </legend>
+    @if (selectedLayer; as layer) {
+      <fieldset class="border border-gray-200 dark:border-white/10 p-6 rounded-3xl glass-panel mt-4">
+        <legend class="text-xl font-extrabold px-3">Style: {{ layer.text || '...' }}</legend>
         <div class="pt-2 space-y-6">
-          <div>
-            <label
-              for="layer-text"
-              class="text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3 block"
-              >Layer Text</label
-            >
-            <input
-              id="layer-text"
-              type="text"
-              [ngModel]="selectedLayer.text"
-              (ngModelChange)="updateProperty.emit({ property: 'text', value: $event })"
-              placeholder="Enter text..."
-              class="w-full form-glass focus:ring-2 focus:ring-purple-500/50 outline-none"
-            />
-          </div>
-
-          <div>
-            <label
-              for="font-size"
-              class="flex justify-between text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3 block"
-            >
-              Font Size <span>{{ selectedLayer.fontSize }}px</span>
-            </label>
-            <input
-              id="font-size"
-              type="range"
-              [ngModel]="selectedLayer.fontSize"
-              (ngModelChange)="updateProperty.emit({ property: 'fontSize', value: +$event })"
-              min="10"
-              max="200"
-            />
-          </div>
-
+          <label class="block">Layer Text
+            <input type="text" [ngModel]="layer.text" (ngModelChange)="updateProperty.emit({ property: 'text', value: $event })" class="w-full form-glass" />
+          </label>
+          <label class="block">Font Size: {{ layer.fontSize }}px
+            <input type="range" [ngModel]="layer.fontSize" (ngModelChange)="updateProperty.emit({ property: 'fontSize', value: +$event })" min="10" max="200" />
+          </label>
           <div class="grid grid-cols-2 gap-6">
-            <div>
-              <label
-                for="font-color"
-                class="text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3 block"
-                >Fill</label
-              >
-              <input
-                id="font-color"
-                type="color"
-                [ngModel]="selectedLayer.fontColor"
-                (ngModelChange)="updateProperty.emit({ property: 'fontColor', value: $event })"
-              />
-            </div>
-            <div>
-              <label
-                for="outline-color"
-                class="text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3 block"
-                >Outline</label
-              >
-              <input
-                id="outline-color"
-                type="color"
-                [ngModel]="selectedLayer.outlineColor"
-                (ngModelChange)="updateProperty.emit({ property: 'outlineColor', value: $event })"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label
-              for="text-blur"
-              class="flex justify-between text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3 block"
-            >
-              Glow/Blur <span>{{ selectedLayer.textBlur }}px</span>
+            <label class="block">Fill
+              <input type="color" [ngModel]="layer.fontColor" (ngModelChange)="updateProperty.emit({ property: 'fontColor', value: $event })" />
             </label>
-            <input
-              id="text-blur"
-              type="range"
-              [ngModel]="selectedLayer.textBlur"
-              (ngModelChange)="updateProperty.emit({ property: 'textBlur', value: +$event })"
-              min="0"
-              max="10"
-              step="0.5"
-            />
-          </div>
-
-          <div>
-            <label
-              for="layer-top"
-              class="flex justify-between text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3 block"
-            >
-              Vertical <span>{{ selectedLayer.top }}%</span>
+            <label class="block">Outline
+              <input type="color" [ngModel]="layer.outlineColor" (ngModelChange)="updateProperty.emit({ property: 'outlineColor', value: $event })" />
             </label>
-            <input
-              id="layer-top"
-              type="range"
-              [ngModel]="selectedLayer.top"
-              (ngModelChange)="updateProperty.emit({ property: 'top', value: +$event })"
-              min="0"
-              max="100"
-            />
           </div>
+          <label class="block">Glow/Blur: {{ layer.textBlur }}px
+            <input type="range" [ngModel]="layer.textBlur" (ngModelChange)="updateProperty.emit({ property: 'textBlur', value: +$event })" min="0" max="10" step="0.5" />
+          </label>
+          <label class="block">Vertical: {{ layer.top }}%
+            <input type="range" [ngModel]="layer.top" (ngModelChange)="updateProperty.emit({ property: 'top', value: +$event })" min="0" max="100" />
+          </label>
+          <label class="block">Alignment
+            <select [ngModel]="layer.textAlign ?? 'center'" (ngModelChange)="updateProperty.emit({ property: 'textAlign', value: $event })">
+              <option value="left">Left</option><option value="center">Center</option><option value="right">Right</option>
+            </select>
+          </label>
+          <label class="block">Rotation: {{ layer.rotation ?? 0 }}°
+            <input type="range" [ngModel]="layer.rotation ?? 0" (ngModelChange)="updateProperty.emit({ property: 'rotation', value: +$event })" min="-180" max="180" />
+          </label>
+          <label class="block">Maximum width (px)
+            <input type="number" [ngModel]="layer.maxWidth ?? ''" (ngModelChange)="updateProperty.emit({ property: 'maxWidth', value: $event === '' ? 0 : +$event })" min="0" />
+          </label>
+          <label class="block">Font weight
+            <select [ngModel]="layer.fontWeight ?? 'normal'" (ngModelChange)="updateProperty.emit({ property: 'fontWeight', value: $event })">
+              <option value="normal">Normal</option><option value="bold">Bold</option><option value="bolder">Bolder</option>
+            </select>
+          </label>
         </div>
       </fieldset>
     }
   `,
-  styles: [],
 })
 export class LayerControlsComponent {
-  /** List of all text layers on the meme canvas */
   @Input() layers: TextLayer[] = [];
-  /** Index of currently selected active layer */
-  @Input() selectedIndex: number | null = null;
-  /** Configuration object for the currently selected active layer */
-  @Input() selectedLayer: TextLayer | null = null;
+  // Alias matches the parent template's existing binding.
+  @Input('selectedLayerIndex') selectedIndex: number | null = null;
 
-  /** Event emitted when user requests adding a new text layer */
+  private explicitSelectedLayer: TextLayer | null = null;
+  @Input()
+  set selectedLayer(value: TextLayer | null) {
+    this.explicitSelectedLayer = value;
+  }
+  get selectedLayer(): TextLayer | null {
+    if (this.explicitSelectedLayer) return this.explicitSelectedLayer;
+    return this.selectedIndex !== null ? this.layers[this.selectedIndex] ?? null : null;
+  }
+
   @Output() addLayer = new EventEmitter<void>();
-  /** Event emitted when user selects a layer item */
   @Output() selectLayer = new EventEmitter<number>();
-  /** Event emitted when user reorders a layer up or down */
-  @Output() moveLayer = new EventEmitter<{
-    index: number;
-    direction: 'up' | 'down';
-    event: MouseEvent;
-  }>();
-  /** Event emitted when user deletes a text layer */
+  @Output() moveLayer = new EventEmitter<{ index: number; direction: 'up' | 'down'; event: MouseEvent }>();
   @Output() deleteLayer = new EventEmitter<{ index: number; event: MouseEvent }>();
-  /** Event emitted when user changes a styling property on the active layer */
-  @Output() updateProperty = new EventEmitter<{
-    property: keyof TextLayer;
-    value: string | number;
-  }>();
+  @Output() updateProperty = new EventEmitter<{ property: keyof TextLayer; value: string | number }>();
 }

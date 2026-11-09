@@ -236,7 +236,7 @@ export async function generateCaptionsFromImage(
   tone: string,
   context: string,
 ): Promise<string[]> {
-  let prompt = `Analyze this image and generate 5 short, witty, and funny captions suitable for a meme. The captions should be in the style of popular internet memes. The tone should be ${tone}.`;
+  let prompt = `Analyze this image and generate 5 short, witty, and funny captions suitable for a meme. The captions should be in the style of popular internet memes. The tone should be ${tone}.`[...]
   if (context.trim()) {
     prompt += `\n\nConsider this context for inspiration: "${context}".`;
   }
@@ -364,4 +364,16 @@ Health check returning `{"status": "ok"}`.
 
 ---
 
-**Last Updated**: 2026-09-05 | **Version**: 1.11.0
+## Control component bindings
+
+`MemeEditorComponent` currently binds the layer controls with `[selectedLayerIndex]`. The layer-controls component aliases that input to its internal `selectedIndex` and derives the active layer from the `layers` array. The optional `[selectedLayer]` input can still be supplied by other callers. Filter controls accept the template's `[currentFilter]` and `(selectFilter)` names; if no explicit filters array is supplied, all `ImageFilter` enum values are shown.
+
+When renaming component inputs or outputs, update both the parent template and the child `@Input`/`@Output` aliases together. Angular's strict template checker catches unknown binding names during `npm run build`.
+
+## Audit verification
+
+See [Code audit fixes](CODE_AUDIT.md) for backend validation limits, proxy restrictions, editor-state behavior, and the tests/builds still required before merging.
+
+---
+
+**Last Updated**: 2026-11-09 | **Version**: 1.11.0
